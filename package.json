@@ -9,6 +9,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "buefy": "^0.7.5",
     "core-js": "^2.6.5",
     "dexie": "^2.0.4",

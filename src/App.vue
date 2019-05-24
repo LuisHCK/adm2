@@ -1,12 +1,25 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <component :is="layout"></component>
 </template>
+
+<script>
+import AuthLayout from './layouts/AuthLayout.vue'
+import MainLayout from './layouts/MainLayout.vue'
+
+export default {
+  components: {
+    AuthLayout,
+    MainLayout
+  },
+
+  computed: {
+    layout() {
+      return this.$route.meta.layout
+    }
+  }
+}
+</script>
+
 
 <style lang="scss">
 #app {
@@ -25,5 +38,8 @@
       color: #42b983;
     }
   }
+}
+.is-white {
+  color: white;
 }
 </style>

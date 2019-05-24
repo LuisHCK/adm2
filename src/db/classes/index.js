@@ -7,20 +7,22 @@ const timestamps = {
 }
 
 //  User model
-export const User = {
+const User = {
   name: String,
   email: String,
+  username: String,
   age: Number,
   phone_number: String,
   address: String,
   status: Array,
   photo: String,
   password_digest: String,
+  role: String,
   ...timestamps
 }
 
 // Provider Model
-export const Provider = {
+const Provider = {
   name: String,
   categories: Array,
   phone_number: String,
@@ -32,7 +34,7 @@ export const Provider = {
 }
 
 // Customer Model
-export const Customer = {
+const Customer = {
   name: String,
   email: String,
   age: Number,
@@ -45,7 +47,7 @@ export const Customer = {
 }
 
 // Produce Model
-export const Product = {
+const Product = {
   name: String,
   description: String,
   brand: String,
@@ -58,7 +60,7 @@ export const Product = {
 }
 
 // Product Provider Model
-export const ProductProvider = {
+const ProductProvider = {
   product_id: Number,
   provider_id: Number,
   active: Boolean,
@@ -66,7 +68,7 @@ export const ProductProvider = {
 }
 
 // Inventory Model
-export const Inventory = {
+const Inventory = {
   name: String,
   description: String,
   location: String,
@@ -75,7 +77,7 @@ export const Inventory = {
 }
 
 // Product Inventory Relationship
-export const InventoryProduct = {
+const InventoryProduct = {
   product_id: Number,
   invetory_id: Number,
   quantity: Number,
@@ -87,7 +89,7 @@ export const InventoryProduct = {
 }
 
 // Tax Model
-export const Tax = {
+const Tax = {
   name: String,
   amount: Number,
   user_id: Number,
@@ -95,18 +97,32 @@ export const Tax = {
 }
 
 // Coupon
-export const Coupon = {
+const Coupon = {
   name: String,
   amount: Number,
+  is_percent: Boolean,
   valid_until: String,
   ...timestamps
 }
 
 // Sale Model
-export const Sale = {
+const Sale = {
   invetory_product_id: Number,
   quantity: Number,
   user_id: Number,
   discount: Number,
   ...timestamps
+}
+
+export default {
+  User,
+  Provider,
+  Customer,
+  Product,
+  ProductProvider,
+  Inventory,
+  InventoryProduct,
+  Tax,
+  Coupon,
+  Sale
 }

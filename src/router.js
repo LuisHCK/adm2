@@ -1,25 +1,64 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Vue from "vue"
+import Router from "vue-router"
+import Home from "./views/Home.vue"
+import store from "./store"
 
 Vue.use(Router)
 
-export default new Router({
-  mode: 'history',
+const router = new Router({
+  mode: "history",
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'home',
+      path: "/",
+      name: "home",
+      meta: {
+        layout: 'main-layout'
+      },
       component: Home
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+      path: "/about",
+      name: "about",
+      meta: {
+        layout: 'main-layout'
+      },
+      component: () =>
+        import(/* webpackChunkName: "about" */ "./views/About.vue")
+    },
+    {
+      path: "/login",
+      name: "login",
+      meta: {
+        isPublic: true,
+        layout: 'auth-layout'
+      },
+      component: () => import("./views/Login.vue")
+    },
+    {
+      path: "/registration",
+      name: "registration",
+      meta: {
+        isPublic: true,
+        layout: 'auth-layout'
+      },
+      component: () => import("./views/Registration.vue")
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.isPublic || store.getters.isAuthenticated) {
+    next()
+  } else {
+    store.getters.userCount.then(count => {
+      if (count) {
+        next({ name: "login" })
+      } else {
+        next({ name: "registration" })
+      }
+    })
+  }
+})
+
+export default router
