@@ -1,8 +1,13 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import {getUserCount} from './lib/auth'
+import Vue from "vue"
+import Vuex from "vuex"
+import { getUserCount } from "./lib/auth"
+import VuexPersistence from "vuex-persist"
 
 Vue.use(Vuex)
+
+const vuexLocal = new VuexPersistence({
+  storage: window.localStorage
+})
 
 export default new Vuex.Store({
   state: {
@@ -29,7 +34,9 @@ export default new Vuex.Store({
     },
 
     isAuthenticated: state => {
-      return (state.user != undefined)
+      return state.user != undefined
     }
-  }
+  },
+
+  plugins: [vuexLocal.plugin]
 })

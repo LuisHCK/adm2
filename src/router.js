@@ -13,7 +13,7 @@ const router = new Router({
       path: "/",
       name: "home",
       meta: {
-        layout: 'main-layout'
+        layout: "main-layout"
       },
       component: Home
     },
@@ -21,7 +21,7 @@ const router = new Router({
       path: "/about",
       name: "about",
       meta: {
-        layout: 'main-layout'
+        layout: "main-layout"
       },
       component: () =>
         import(/* webpackChunkName: "about" */ "./views/About.vue")
@@ -31,7 +31,7 @@ const router = new Router({
       name: "login",
       meta: {
         isPublic: true,
-        layout: 'auth-layout'
+        layout: "auth-layout"
       },
       component: () => import("./views/Login.vue")
     },
@@ -40,9 +40,27 @@ const router = new Router({
       name: "registration",
       meta: {
         isPublic: true,
-        layout: 'auth-layout'
+        layout: "auth-layout"
       },
       component: () => import("./views/Registration.vue")
+    },
+    {
+      path: "/products",
+      name: "products",
+      meta: { layout: "main-layout" },
+      component: () => import("./views/Products.vue")
+    },
+    {
+      path: "/inventories",
+      name: "inventories",
+      meta: { layout: "main-layout" },
+      component: () => import("./views/Inventories.vue")
+    },
+    {
+      path: '/inventories/:id',
+      name: 'inventory',
+      meta: { layout: "main-layout" },
+      component: () => import("./views/Inventory.vue"),
     }
   ]
 })

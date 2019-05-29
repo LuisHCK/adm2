@@ -55,6 +55,7 @@ const Product = {
   categories: Array,
   codebar: String,
   status: String,
+  unit: String,
   user_id: Number,
   ...timestamps
 }

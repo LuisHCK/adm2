@@ -4,8 +4,8 @@
       <h1>ADM</h1>
       <hr>
       <div class="nav-items">
-        <div @click="to('/')" class="nav-item">Productos</div>
-        <div @click="to('/')" class="nav-item">Inventario</div>
+        <div @click="to('/products')" class="nav-item">Productos</div>
+        <div @click="to('/inventories')" class="nav-item">Inventario</div>
         <div @click="to('/')" class="nav-item">Ventas</div>
         <div @click="to('/')" class="nav-item">Empleados</div>
       </div>
@@ -26,7 +26,7 @@ export default {
 
   computed: {
     classes() {
-      return "is-2-desktop " + "is-3-tablet";
+      return "is-2-desktop " + "is-2-mobile";
     }
   },
 

@@ -28,6 +28,6 @@ export default {
 
 <style lang="scss" scoped>
 .view-container {
-  margin-top: 52px;
+  padding: 10px;
 }
 </style>
