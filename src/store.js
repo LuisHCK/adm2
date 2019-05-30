@@ -12,7 +12,8 @@ const vuexLocal = new VuexPersistence({
 export default new Vuex.Store({
   state: {
     user: undefined,
-    users: []
+    users: [],
+    company: undefined
   },
 
   mutations: {
@@ -23,6 +24,10 @@ export default new Vuex.Store({
      */
     setUser(state, user) {
       state.user = user
+    },
+
+    setCompany(state, company) {
+      state.company = company
     }
   },
 
@@ -35,7 +40,9 @@ export default new Vuex.Store({
 
     isAuthenticated: state => {
       return state.user != undefined
-    }
+    },
+
+    company: state => {return state.company}
   },
 
   plugins: [vuexLocal.plugin]

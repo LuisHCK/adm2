@@ -61,6 +61,12 @@ const router = new Router({
       name: 'inventory',
       meta: { layout: "main-layout" },
       component: () => import("./views/Inventory.vue"),
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      meta: { layout: "main-layout" },
+      component: () => import("./views/Settings.vue"),
     }
   ]
 })

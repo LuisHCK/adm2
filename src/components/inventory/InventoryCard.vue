@@ -5,17 +5,17 @@
         <strong class="is-size-4" v-text="inventory.name"/>
       </div>
       <div>
-        <strong>Ubicación:</strong>
+        <strong>Ubicación: </strong>
         <span v-text="inventory.location"/>
       </div>
       <div>
-        <strong>Descripción:</strong>
+        <strong>Descripción: </strong>
         <span v-text="inventory.description"/>
       </div>
     </section>
     <section class="counter">
-      <h1 class="is-size-2">0</h1>
-      <span>Productos</span>
+      <h1 class="is-size-2" v-text="inventory.productsCount || 0" />
+      <small>Productos</small>
     </section>
   </div>
 </template>
