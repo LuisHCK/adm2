@@ -5,12 +5,16 @@
 
     <hr>
 
+
+
     <b-table
+      :paginated=true
+      :pagination-simple="true"
+      :per-page="perPage"
       :data="products"
       :striped="true"
       :hoverable="true"
       :loading="loading"
-      :focusable="true"
     >
       <template slot-scope="props">
         <b-table-column field="id" label="ID" width="40" numeric>{{ props.row.id }}</b-table-column>
@@ -31,6 +35,11 @@
           <b-taglist>
             <b-tag v-for="(cat, i) in props.row.categories" :key="`catg-${i}`" v-text="cat" type="is-info"/>
           </b-taglist>
+        </b-table-column>
+        <b-table-column label="">
+          <button class="button is-info is-small is-rounded is-outlined">
+            <i class="mdi mdi-pencil"></i>
+          </button>
         </b-table-column>
       </template>
 
@@ -74,7 +83,8 @@ export default {
     return {
       products: [],
       loading: true,
-      showForm: false
+      showForm: false,
+      perPage: 50
     };
   },
 
