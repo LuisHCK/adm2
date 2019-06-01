@@ -86,6 +86,7 @@ const InventoryProduct = {
   minimum: Number,
   alert_on_min: Boolean,
   lot: String,
+  product: Object,
   ...timestamps
 }
 

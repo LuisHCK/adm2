@@ -14,7 +14,7 @@
       </div>
     </section>
     <section class="counter">
-      <h1 class="is-size-2" v-text="inventory.productsCount || 0" />
+      <h1 class="is-size-2" v-text="productsCount" />
       <small>Productos</small>
     </section>
   </div>
@@ -31,13 +31,32 @@ export default {
     }
   },
 
+  data () {
+    return {
+      productsCount: 0
+    };
+  },
+
   methods: {
     goToInventory() {
       this.$router.push({
         name: "inventory",
         params: { id: this.inventory.id }
       });
-    }
+    },
+
+    countInventoryProducts() {
+      Database
+        .inventory_product
+        .where('inventory_id')
+        .equals(this.inventory.id)
+        .count()
+        .then(count => this.productsCount = count)
+    },
+  },
+
+  mounted() {
+    this.countInventoryProducts()
   }
 };
 </script>

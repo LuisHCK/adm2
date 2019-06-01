@@ -57,16 +57,22 @@ const router = new Router({
       component: () => import("./views/Inventories.vue")
     },
     {
-      path: '/inventories/:id',
-      name: 'inventory',
+      path: "/inventories/:id",
+      name: "inventory",
       meta: { layout: "main-layout" },
-      component: () => import("./views/Inventory.vue"),
+      component: () => import("./views/Inventory.vue")
     },
     {
-      path: '/settings',
-      name: 'settings',
+      path: "/settings",
+      name: "settings",
       meta: { layout: "main-layout" },
-      component: () => import("./views/Settings.vue"),
+      component: () => import("./views/Settings.vue")
+    },
+    {
+      path: "/pos",
+      name: "pos",
+      meta: { layout: "main-layout" },
+      component: () => import("./views/Pos.vue")
     }
   ]
 })

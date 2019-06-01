@@ -54,20 +54,8 @@ export default {
         .toArray()
         .then(inventories => {
           this.inventories = inventories
-          this.countInventoryProducts()
         })
         .catch(err => console.log(err));
-    },
-
-    countInventoryProducts() {
-      this.inventories.map(inventory => {
-        Database
-          .inventory_product
-          .where('inventory_id')
-          .equals(inventory.id)
-          .count()
-          .then(count => inventory.productsCount = count)
-      })
     },
 
     saveInventory(data) {

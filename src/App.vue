@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import AuthLayout from './layouts/AuthLayout.vue'
-import MainLayout from './layouts/MainLayout.vue'
+import AuthLayout from "./layouts/AuthLayout.vue";
+import MainLayout from "./layouts/MainLayout.vue";
 
 export default {
   components: {
@@ -14,16 +14,20 @@ export default {
 
   computed: {
     layout() {
-      return this.$route.meta.layout
+      return this.$route.meta.layout;
     }
   }
-}
+};
 </script>
-
+100%
 
 <style lang="scss">
+body {
+  background-color: #fafafa;
+  min-height: 100vh;
+}
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -41,5 +45,12 @@ export default {
 }
 .is-white {
   color: white;
+}
+
+.panel {
+  background-color: white;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid rgb(231, 231, 231);
 }
 </style>

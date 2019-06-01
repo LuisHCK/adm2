@@ -3,14 +3,46 @@
     <button class="button is-primary is-small is-pulled-right" @click="showForm=!showForm">Nuevo</button>
     <h1 class="has-text-weight-bold" v-text="inventory.name"/>
     <hr>
+    <b-table
+      :data="inventoryProducts"
+      :striped="true"
+      :hoverable="true"
+      :loading="loading"
+      :focusable="true"
+    >
+      <template slot-scope="props">
+        <b-table-column field="id" label="ID" width="40" numeric>{{ props.row.id }}</b-table-column>
 
-    <ul>
-      <li>item</li>
-      <li
-        v-for="inventoryProduct in inventoryProducts"
-        :key="inventoryProduct.id"
-      >{{ inventoryProduct }}</li>
-    </ul>
+        <b-table-column field="product_id" label="Nombre">
+          <strong v-text="getProduct(props.row.product_id).name"/>
+        </b-table-column>
+
+        <b-table-column field="product" label="Unidad">
+          <span v-text="getProduct(props.row.product_id).unit"/>
+        </b-table-column>
+
+        <b-table-column field="price" label="Precio">
+          <b-tag type="is-primary">C${{ props.row.price }}</b-tag>
+        </b-table-column>
+
+        <b-table-column field="quantity" label="Cantidad">{{ props.row.quantity }}</b-table-column>
+
+        <b-table-column field="lot" label="Lote">
+          <b-tag v-text="props.row.lot" type="is-info"/>
+        </b-table-column>
+      </template>
+
+      <template slot="empty">
+        <section class="section">
+          <div class="content has-text-grey has-text-centered">
+            <p>
+              <b-icon icon="emoticon-sad" size="is-large"></b-icon>
+            </p>
+            <p>No hay productos para mostrar.</p>
+          </div>
+        </section>
+      </template>
+    </b-table>
 
     <!-- Product modal form -->
     <b-modal :active.sync="showForm" has-modal-card>
@@ -42,7 +74,9 @@ export default {
     return {
       inventory: {},
       inventoryProducts: [],
-      showForm: false
+      products: [],
+      showForm: false,
+      loading: false
     };
   },
 
@@ -50,9 +84,28 @@ export default {
     getInventoryProducts() {
       Database.inventory_product
         .where({ inventory_id: this.inventory.id })
-        .toArray()
-        .then(data => (this.inventoryProducts = data))
-        .catch(err => console.log(err));
+        .toArray(data => {
+          this.inventoryProducts = data;
+          this.getProducts();
+        });
+    },
+
+    getProducts() {
+      this.inventoryProducts.map(element => {
+        Database.product.get(element.product_id).then(product => {
+          this.products.push(product);
+        });
+      });
+    },
+
+    getProduct(id) {
+      const product = this.products.find(product => {
+        return product.id == id;
+      });
+      // Return empty objetct if not product
+      if (!product) return {};
+
+      return product;
     },
 
     saveInventoryProduct(data) {

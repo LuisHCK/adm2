@@ -13,7 +13,8 @@ export default new Vuex.Store({
   state: {
     user: undefined,
     users: [],
-    company: undefined
+    company: undefined,
+    shoppingCart: []
   },
 
   mutations: {
@@ -28,6 +29,28 @@ export default new Vuex.Store({
 
     setCompany(state, company) {
       state.company = company
+    },
+
+    /**
+     * Add inventory product to shopping cart
+     * @param {*} state
+     * @param {*} inventoryProduct
+     */
+    addInventoryProduct(state, inventoryProduct) {
+      state.shoppingCart = [...state.shoppingCart, inventoryProduct]
+    },
+
+    /**
+     * Remove Inventory Product form shopping cart
+     * @param {*} state
+     * @param {*} index
+     */
+    removeInventoryProduct(state, index) {
+      state.shoppingCart.splice(index, 0)
+    },
+
+    setInventoryProductBuyQty(state, payload) {
+      state.shoppingCart[payload.index].buyQty = Number(payload.quantity)
     }
   },
 
