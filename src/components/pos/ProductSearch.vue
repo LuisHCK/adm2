@@ -1,8 +1,11 @@
 <template>
   <div class="product-search">
-    <form @submit.prevent="submit">
+    <form autocomplete="off" @submit.prevent="submit">
       <input
+        autocomplete="off"
+        id="searchInput"
         type="text"
+        class="input"
         required
         v-model="searchValue"
         placeholder="Buscar producto"
@@ -11,7 +14,7 @@
         @focus="focusInput"
       >
       <div class="search-result" v-if="showResults && loadComplete">
-        <ul v-if="inventoryProducts.length">
+        <ul v-if="results.length">
           <li
             v-for="(inventoryProduct, i) in results"
             :key="`res-${i}`"
@@ -25,7 +28,7 @@
               <small>{{ inventoryProduct.product.brand }} | {{ inventoryProduct.inventory.name }}</small>
             </div>
             <div class="right-info">
-              <b-tag type="is-info">Disp: {{ inventoryProduct.quantity }}</b-tag>
+              <b-tag type="is-info">Disp: {{ inventoryProduct.stock }}</b-tag>
             </div>
           </li>
         </ul>
@@ -40,7 +43,7 @@
 
 <script>
 export default {
-  name: "product-search",
+  name: 'product-search',
 
   data() {
     return {
@@ -48,19 +51,19 @@ export default {
       inventoryProducts: [],
       showResults: false,
       loadComplete: false
-    };
+    }
   },
 
   computed: {
     results() {
-      return this.searchProduct();
+      return this.searchProduct()
     }
   },
 
   methods: {
     submit() {
       if (this.inventoryProducts.length) {
-        this.selectInventoryProduct(this.inventoryProducts[0]);
+        this.selectInventoryProduct(this.inventoryProducts[0])
         this.blurredInput()
       }
     },
@@ -70,17 +73,17 @@ export default {
      */
     blurredInput() {
       setTimeout(() => {
-        this.showResults = false;
-      }, 300);
+        this.showResults = false
+      }, 300)
     },
 
     changeInput() {
-      this.showResults = true;
+      this.showResults = true
     },
 
     focusInput() {
       if (this.searchValue) {
-        this.showResults = true;
+        this.showResults = true
       }
     },
 
@@ -89,9 +92,9 @@ export default {
      */
     getInventoryProducts() {
       Database.inventory_product.toArray().then(data => {
-        this.inventoryProducts = data;
-        this.getRelationships();
-      });
+        this.inventoryProducts = data
+        this.getRelationships()
+      })
     },
 
     /**
@@ -103,14 +106,14 @@ export default {
         Database.product.get(
           inventoryProduct.product_id,
           product => (inventoryProduct.product = product)
-        );
+        )
         // Get inventory
         Database.inventory.get(
           inventoryProduct.inventory_id,
           inventory => (inventoryProduct.inventory = inventory)
-        );
-      });
-      this.loadComplete = true;
+        )
+      })
+      this.loadComplete = true
     },
 
     /**
@@ -119,37 +122,51 @@ export default {
     searchProduct() {
       if (this.loadComplete) {
         return this.inventoryProducts.filter(inventoryProduct => {
+          // If product codebar match instantly return
+          if (this.codebarMatch(inventoryProduct.product.codebar)) {
+            this.selectInventoryProduct(inventoryProduct)
+            return true
+          }
           return (
             this.compare(inventoryProduct.product.name, this.searchValue) ||
             this.compare(inventoryProduct.product.codebar, this.searchValue) ||
             this.compare(inventoryProduct.product.brand, this.searchValue) ||
             this.compare(inventoryProduct.product.brand, this.searchValue)
-          );
-        });
+          )
+        })
       } else {
-        return [];
+        return []
       }
+    },
+
+    codebarMatch(codebar) {
+      return String(codebar).toLowerCase() == this.searchValue.toLowerCase()
     },
 
     /**
      * Normalize and compare 2 values
      */
     compare(val1, val2) {
-      return String(val1).toLowerCase() == String(val2).toLowerCase();
+      const source = String(val1).toLowerCase()
+      return source.search(val2.toLowerCase()) !== -1
     },
 
     /**
      * Emit Inventory Product selection
      */
     selectInventoryProduct(inventoryProduct) {
-      this.$emit("input", inventoryProduct);
+      this.$emit('input', inventoryProduct)
+      this.searchValue = ''
+      this.blurredInput()
     }
   },
 
   mounted() {
-    this.getInventoryProducts();
+    this.getInventoryProducts()
+    // Focus search box
+    const searchInput = document.getElementById('searchInput').focus()
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -170,6 +187,7 @@ export default {
     border-end-start-radius: 6px;
     overflow-y: scroll;
     transition: 0.3s;
+    z-index: 1;
 
     li {
       padding: 8px 10px;

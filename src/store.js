@@ -1,7 +1,7 @@
-import Vue from "vue"
-import Vuex from "vuex"
-import { getUserCount } from "./lib/auth"
-import VuexPersistence from "vuex-persist"
+import Vue from 'vue'
+import Vuex from 'vuex'
+import { getUserCount } from './lib/auth'
+import VuexPersistence from 'vuex-persist'
 
 Vue.use(Vuex)
 
@@ -36,8 +36,8 @@ export default new Vuex.Store({
      * @param {*} state
      * @param {*} inventoryProduct
      */
-    addInventoryProduct(state, inventoryProduct) {
-      state.shoppingCart = [...state.shoppingCart, inventoryProduct]
+    ADD_PRODUCT_TO_SHOPPING_CART(state, payload) {
+      state.shoppingCart = [...state.shoppingCart, payload]
     },
 
     /**
@@ -45,12 +45,38 @@ export default new Vuex.Store({
      * @param {*} state
      * @param {*} index
      */
-    removeInventoryProduct(state, index) {
+    REMOVE_ITEM_SHOPPING_CART(state, index) {
       state.shoppingCart.splice(index, 0)
     },
 
-    setInventoryProductBuyQty(state, payload) {
-      state.shoppingCart[payload.index].buyQty = Number(payload.quantity)
+    /**
+     * Set the quantity of shopping cart
+     * @param {Object} state Vuex state
+     * @param {Object} payload Data
+     */
+    SET_PRODUCT_QTY_SHOPPING_CART(state, payload) {
+      state.shoppingCart[payload.index].quantity = Number(payload.quantity)
+      // Compute subtotal
+      const qty = state.shoppingCart[payload.index].quantity
+      const price = state.shoppingCart[payload.index].inventoryProduct.price
+      state.shoppingCart[[payload.index]].subTotal = qty * price
+    },
+
+    /**
+     * Increase by 1 the shopping cart product Quantity
+     * @param {Object} state
+     * @param {Number} index
+     */
+    INCREASE_PRODUCT_SHOPPING_CART(state, index) {
+      state.shoppingCart[index].quantity++
+      // Compute subtotal
+      const qty = state.shoppingCart[index].quantity
+      const price = state.shoppingCart[index].inventoryProduct.price
+      state.shoppingCart[[index]].subTotal = qty * price
+    },
+
+    CLEAR_SHOPPING_CART(state) {
+      state.shoppingCart = []
     }
   },
 
@@ -65,7 +91,18 @@ export default new Vuex.Store({
       return state.user != undefined
     },
 
-    company: state => {return state.company}
+    company: state => {
+      return state.company
+    },
+
+    /**
+     * Sum all subtotals
+     */
+    shoppingCartTotal: state => {
+      return state.shoppingCart.reduce((val, obj) => {
+        return val + obj.subTotal
+      }, 0)
+    }
   },
 
   plugins: [vuexLocal.plugin]

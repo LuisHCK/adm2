@@ -10,7 +10,7 @@ database.version(0.1).stores({
   product: "++id,name,description,brand,codebar,user_id",
   product_provider: "++id,product_id,provider_id,active,user_id",
   inventory: "++id,name,location,user_id",
-  inventory_product: "++id,product_id,inventory_id,price,lot,quantity",
+  inventory_product: "++id,product_id,inventory_id,price,lot,stock",
   tax: "++id,name,amount,user_id",
   coupon: "++id,name,amount",
   sale: "++id,inventory_product_id,quantity,user_id"

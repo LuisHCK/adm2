@@ -25,7 +25,7 @@
           <b-tag type="is-primary">C${{ props.row.price }}</b-tag>
         </b-table-column>
 
-        <b-table-column field="quantity" label="Cantidad">{{ props.row.quantity }}</b-table-column>
+        <b-table-column field="stock" label="Cantidad">{{ props.row.stock }}</b-table-column>
 
         <b-table-column field="lot" label="Lote">
           <b-tag v-text="props.row.lot" type="is-info"/>
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import InventoryProductForm from "@/components/inventory/InventoryProductForm.vue";
+import InventoryProductForm from '@/components/inventory/InventoryProductForm.vue'
 
 export default {
   components: {
@@ -77,7 +77,7 @@ export default {
       products: [],
       showForm: false,
       loading: false
-    };
+    }
   },
 
   methods: {
@@ -85,50 +85,50 @@ export default {
       Database.inventory_product
         .where({ inventory_id: this.inventory.id })
         .toArray(data => {
-          this.inventoryProducts = data;
-          this.getProducts();
-        });
+          this.inventoryProducts = data
+          this.getProducts()
+        })
     },
 
     getProducts() {
       this.inventoryProducts.map(element => {
         Database.product.get(element.product_id).then(product => {
-          this.products.push(product);
-        });
-      });
+          this.products.push(product)
+        })
+      })
     },
 
     getProduct(id) {
       const product = this.products.find(product => {
-        return product.id == id;
-      });
+        return product.id == id
+      })
       // Return empty objetct if not product
-      if (!product) return {};
+      if (!product) return {}
 
-      return product;
+      return product
     },
 
     saveInventoryProduct(data) {
       Database.inventory_product
         .add(data)
         .then(() => this.getInventoryProducts())
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
     },
 
     getInventory() {
-      const inventoryId = this.$route.params.id;
+      const inventoryId = this.$route.params.id
 
       Database.inventory.get(inventoryId, data => {
-        this.inventory = data;
-        this.getInventoryProducts();
-      });
+        this.inventory = data
+        this.getInventoryProducts()
+      })
     }
   },
 
   mounted() {
-    this.getInventory();
+    this.getInventory()
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

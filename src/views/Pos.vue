@@ -3,7 +3,10 @@
     <div class="panel">
       <div class="columns">
         <div class="column is-6">
-          <product-search @input="addInventoryProduct"/>
+          <product-search @input="addToShoppingCart"/>
+        </div>
+        <div class="column">
+          <button @click="cancelSale" class="button is-danger">Cancelar venta</button>
         </div>
       </div>
     </div>
@@ -23,34 +26,36 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(inventoryProduct, index) in shoppingCart" :key="'ip-' + index">
+              <tr v-for="(item, index) in shoppingCart" :key="'ip-' + index">
                 <td>{{ index + 1 }}</td>
                 <td>
-                  <div>{{ inventoryProduct.product.name }}</div>
-                  <small>{{ inventoryProduct.inventory.name }}</small>
+                  <div>{{ item.inventoryProduct.product.name }}</div>
+                  <small>{{ item.inventoryProduct.inventory.name }}</small>
                 </td>
                 <td>
-                  <b-tag
-                    :type="inventoryProduct.quantity > 1? 'is-success':'is-warning'"
-                    v-text="`${inventoryProduct.quantity} ${inventoryProduct.product.unit}`"
+                  <span
+                    v-text="`${item.inventoryProduct.stock} ${item.inventoryProduct.product.unit}`"
                   />
                 </td>
                 <td>
                   <input
+                    id="qtyInput"
                     :ref="`qty-input-${index}`"
-                    class="quantity-input"
+                    class="quantity-input input"
                     type="number"
                     min="1"
-                    :value="inventoryProduct.buyQty || 1"
-                    :max="inventoryProduct.quantity"
+                    :value="item.quantity || 1"
+                    :max="item.inventoryProduct.stock"
                     @input="setInventoryProductBuyQty(index, $event)"
+                    @change="setInventoryProductBuyQty(index, $event)"
+                    @focus="focusSelect"
                   >
                 </td>
                 <td>
-                  <span v-text="`C$${inventoryProduct.price}`"/>
+                  <span v-text="`C$${item.inventoryProduct.price}`"/>
                 </td>
                 <td>
-                  <b-tag type="is-success" v-text="`C$${getSubTotal(inventoryProduct)}`"/>
+                  <span v-text="`C$${item.subTotal}`"/>
                 </td>
               </tr>
             </tbody>
@@ -59,13 +64,57 @@
       </div>
       <div class="column is-4-desktop is-4-tablet">
         <div class="panel">
-          <div class="has-text-centered">
-            <h3 class="is-size-5">Venta</h3>
-            <hr>
-            <h1 class="is-size-2 has-text-primary">C$150</h1>
-            <span>Total</span>
+          <div class="columns is-multiline">
+            <!-- Sub total -->
+            <div class="column is-half">
+              <span>Subtotal</span>
+            </div>
+            <div class="column is-half has-text-right">
+              <span v-text="`C$${shoppingCartTotal}`"/>
+            </div>
+            <!-- Discounts -->
+            <div class="column is-half">
+              <span>Descuento</span>
+            </div>
+            <div class="column is-half has-text-right">
+              <span>
+                <span v-text="`-C$${discounted} `"/>
+                <small v-text="`(${discount}%)`"/>
+              </span>
+            </div>
+            <!-- Total -->
+            <div class="column is-half">
+              <span>TOTAL</span>
+            </div>
+            <div class="column is-half has-text-right">
+              <strong class="is-size-4 has-text-danger" v-text="`C$${finalTotal}`"/>
+            </div>
           </div>
 
+          <hr>
+
+          <!-- payment section -->
+          <div class="columns is-multiline">
+            <div class="column is-half">
+              <span>Paga con</span>
+            </div>
+            <div class="column is-half has-text-right">
+              <b-input
+                ref="payWithInput"
+                @focus="focusSelect"
+                type="number"
+                v-model="payWith"
+                :min="1"
+              ></b-input>
+            </div>
+            <!-- Exchange -->
+            <div class="column is-half">
+              <span>Vuelto</span>
+            </div>
+            <div class="column is-half has-text-right">
+              <strong class="hast-text-success" v-text="`C$${exchange}`"/>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -73,8 +122,9 @@
 </template>
 
 <script>
-import ProductSearch from "@/components/pos/ProductSearch.vue";
-import { mapState } from "vuex";
+import ProductSearch from '@/components/pos/ProductSearch.vue'
+import { mapState, mapGetters } from 'vuex'
+import Maths from '@/lib/maths'
 
 export default {
   components: {
@@ -82,80 +132,101 @@ export default {
   },
 
   computed: {
-    ...mapState(["shoppingCart"])
+    ...mapState(['shoppingCart']),
+    ...mapGetters(['shoppingCartTotal']),
+
+    totalSale() {
+      return 0
+    },
+
+    discounted() {
+      return Maths.percentOfNum(this.discount, this.shoppingCartTotal)
+    },
+
+    finalTotal() {
+      return this.shoppingCartTotal - this.discounted
+    },
+
+    exchange() {
+      if (this.payWith) {
+        return this.payWith - this.finalTotal
+      } else {
+        return 0
+      }
+    }
   },
 
   data() {
     return {
-      quantities: []
-    };
+      quantities: [],
+      discount: 5,
+      payWith: undefined
+    }
   },
 
   methods: {
-    addInventoryProduct(data) {
-      let index;
-      const exists = this.shoppingCart.find((inventoryProduct, idx) => {
-        if (inventoryProduct.id == data.id) {
-          index = idx;
-          return true;
+    addToShoppingCart(inventoryProduct) {
+      // Check if inventory product is in shopping cart
+      let itemIndex
+      const item = this.shoppingCart.find((item, index) => {
+        if (item.inventoryProduct.id == inventoryProduct.id) {
+          itemIndex = index
+          return true
         }
-      });
+      })
 
-      // if exists increase by 1
-      if (exists) {
-        // Get current value or set 0 by default, then add 1
-        let buyQty = exists.buyQty || 0;
-        buyQty += 1;
-
-        // Call Mutation if quantity is smaller o eq to existences
-        if (buyQty <= exists.quantity) {
-          this.$store.commit("setInventoryProductBuyQty", {
-            index,
-            quantity: buyQty
-          });
-
-          // If theres no enoguht products show error
-        } else {
-          this.showErrorToast("Inventario agotado");
-        }
-
-        // Update Quantity input
-        this.$refs[`qty-input-${index}`].value = buyQty;
-
-        // Add product to cart
-      } else {
-        this.$store.commit("addInventoryProduct", data);
+      // If items exists just increase the quantity
+      if (item) {
+        this.$store.commit('INCREASE_PRODUCT_SHOPPING_CART', itemIndex)
       }
+      // Add the product to shopping cart
+      else {
+        this.$store.commit('ADD_PRODUCT_TO_SHOPPING_CART', {
+          inventoryProduct,
+          quantity: 1,
+          subTotal: inventoryProduct.price * 1
+        })
+      }
+      // Allways focus Quantity input
+      document.getElementById('qtyInput').focus()
+      setTimeout(() => {
+        document.getElementById('qtyInput').select()
+      }, 100)
     },
 
     /**
      * Call muttation to add Product Buy Quantity
      */
     setInventoryProductBuyQty(index, event) {
-      this.$store.commit("setInventoryProductBuyQty", {
+      this.$store.commit('SET_PRODUCT_QTY_SHOPPING_CART', {
         index,
         quantity: event.target.value
-      });
+      })
     },
 
-    getSubTotal(inventoryProduct) {
-      return Number(inventoryProduct.price) * Number(inventoryProduct.buyQty);
+    cancelSale() {
+      this.$store.commit('CLEAR_SHOPPING_CART')
     },
 
     showErrorToast(message) {
       this.$toast.open({
         message: message,
-        type: "is-danger",
-        position: "is-bottom"
-      });
+        type: 'is-danger',
+        position: 'is-bottom'
+      })
+    },
+
+    focusSelect(event) {
+      event.target.select()
     }
-  }
-};
+  },
+
+  mounted() {}
+}
 </script>
 
 <style lang="scss" scoped>
 .quantity-input {
-  width: 80px;
-  height: 32px;
+  width: 60px;
 }
 </style>

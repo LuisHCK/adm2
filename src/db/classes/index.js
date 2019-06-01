@@ -81,7 +81,7 @@ const Inventory = {
 const InventoryProduct = {
   product_id: Number,
   invetory_id: Number,
-  quantity: Number,
+  stock: Number,
   price: Number,
   minimum: Number,
   alert_on_min: Boolean,

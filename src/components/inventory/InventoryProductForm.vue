@@ -13,15 +13,15 @@
         :reduce="product => product.id"
       ></v-select>
     </b-field>
-    
+
     <!-- Location -->
     <b-field label="Precio*">
       <b-numberinput v-model="form.price" min="1"></b-numberinput>
     </b-field>
-    
+
     <!-- Description -->
     <b-field label="Existencias*">
-      <b-numberinput v-model="form.quantity" min="0"></b-numberinput>
+      <b-numberinput v-model="form.stock" min="0"></b-numberinput>
     </b-field>
 
     <!-- Lote -->
@@ -70,7 +70,7 @@ export default {
     },
 
     submit() {
-      if (this.form.product_id && this.form.price && this.form.quantity) {
+      if (this.form.product_id && this.form.price && this.form.stock) {
         this.form.inventory_id = this.inventoryId
         this.$emit("submit", this.form);
       } else {
