@@ -5,10 +5,12 @@
 
     <hr>
 
-
+    <form @submit.prevent="searchProduct" class="search-form">
+      <input ref="searchInput" class="input" placeholder="Nombre, marca, codigo" type="text">
+    </form>
 
     <b-table
-      :paginated=true
+      :paginated="true"
       :pagination-simple="true"
       :per-page="perPage"
       :data="products"
@@ -33,11 +35,19 @@
 
         <b-table-column field="categories" label="Categorías">
           <b-taglist>
-            <b-tag v-for="(cat, i) in props.row.categories" :key="`catg-${i}`" v-text="cat" type="is-info"/>
+            <b-tag
+              v-for="(cat, i) in props.row.categories"
+              :key="`catg-${i}`"
+              v-text="cat"
+              type="is-info"
+            />
           </b-taglist>
         </b-table-column>
-        <b-table-column label="">
-          <button class="button is-info is-small is-rounded is-outlined">
+        <b-table-column field="product" label="Acciones">
+          <button
+            @click="openUpdateForm(props.row)"
+            class="button is-info is-small is-rounded is-outlined"
+          >
             <i class="mdi mdi-pencil"></i>
           </button>
         </b-table-column>
@@ -66,14 +76,27 @@
         </section>
       </div>
     </b-modal>
+
+    <!-- Product edit form -->
+    <b-modal :active.sync="showUpdateForm" has-modal-card>
+      <div v-if="selectedProduct" class="modal-card">
+        <header class="modal-card-head">
+          <span class="modal-card-title" v-text="selectedProduct.name"/>
+        </header>
+        <section class="modal-card-body">
+          <product-form :product-id="selectedProduct.id" @submit="updateProduct"/>
+        </section>
+      </div>
+    </b-modal>
   </div>
 </template>
 
 <script>
-import ProductForm from "@/components/product/Form.vue";
+import ProductForm from '@/components/product/Form.vue'
+import EventBus from '@/event-bus'
 
 export default {
-  name: "products",
+  name: 'products',
 
   components: {
     ProductForm
@@ -84,8 +107,10 @@ export default {
       products: [],
       loading: true,
       showForm: false,
-      perPage: 50
-    };
+      perPage: 50,
+      selectedProduct: undefined,
+      showUpdateForm: false
+    }
   },
 
   methods: {
@@ -94,7 +119,7 @@ export default {
       Database.product
         .toArray()
         .then(products => (this.products = products))
-        .then(() => (this.loading = false));
+        .then(() => (this.loading = false))
     },
 
     /**
@@ -105,17 +130,45 @@ export default {
         .add(data)
         .then(product => {
           // Save the product
-          this.getProducts();
-          this.showForm = false;
+          this.getProducts()
+          this.showForm = false
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
+    },
+
+    updateProduct(data) {
+      Database.product.update(data.id, data).then(() => {
+        this.getProducts()
+      })
+    },
+
+    openUpdateForm(product) {
+      this.selectedProduct = product
+      this.showUpdateForm = true
+      EventBus.$emit('SELECT_PROJECT_UPDATE')
+    },
+
+    searchProduct() {
+      const value = this.$refs.searchInput.value
+      if (value.length) {
+        Database.product
+          .where('name')
+          .startsWithIgnoreCase(value)
+          .or('brand')
+          .startsWithIgnoreCase(value)
+          .or('codebar')
+          .startsWithIgnoreCase(value)
+          .toArray(products => (this.products = products))
+      } else {
+        this.getProducts()
+      }
     }
   },
 
   mounted() {
-    this.getProducts();
+    this.getProducts()
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -124,5 +177,9 @@ export default {
 }
 .tag {
   margin-right: 2px;
+}
+.search-form {
+  width: 200px;
+  margin-bottom: 8px;
 }
 </style>
