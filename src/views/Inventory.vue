@@ -64,6 +64,7 @@
 
 <script>
 import InventoryProductForm from '@/components/inventory/InventoryProductForm.vue'
+import EventBus from '@/event-bus'
 
 export default {
   components: {
@@ -93,6 +94,7 @@ export default {
     getProducts() {
       this.inventoryProducts.map(element => {
         Database.product.get(element.product_id).then(product => {
+          EventBus.$emit('RESET_INVENTORY_PRODUCT_FORM')
           this.products.push(product)
         })
       })
@@ -111,7 +113,11 @@ export default {
     saveInventoryProduct(data) {
       Database.inventory_product
         .add(data)
-        .then(() => this.getInventoryProducts())
+        .then(() => {
+          this.showToast('Se agregó el producto al inventario')
+          this.getInventoryProducts()
+          this.showForm = false
+        })
         .catch(err => console.log(err))
     },
 
@@ -121,6 +127,17 @@ export default {
       Database.inventory.get(inventoryId, data => {
         this.inventory = data
         this.getInventoryProducts()
+      })
+    },
+
+    /**
+     * Show a toast
+     */
+    showToast(message, error = false) {
+      this.$toast.open({
+        message: message,
+        type: error ? 'is-danger' : 'is-success',
+        position: 'is-bottom'
       })
     }
   },

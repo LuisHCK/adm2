@@ -8,6 +8,9 @@
     <b-field label="Marca*" :type="messages.brand? 'is-danger':''" :message="messages.brand">
       <b-input v-model="form.brand" placeholder="Marca del producto"></b-input>
     </b-field>
+    <b-field label="Presentación">
+      <b-input v-model="form.content" placeholder="Presentación del producto"></b-input>
+    </b-field>
     <!-- Unit -->
     <b-field label="Unidad*" :type="messages.unit? 'is-danger':''" :message="messages.unit">
       <b-input v-model="form.unit" placeholder="Unidad de medida"></b-input>
@@ -39,7 +42,15 @@
 
 <script>
 export default {
-  name: "product-form",
+  name: 'product-form',
+
+  props: {
+    product: {
+      type: Object,
+      default: () => {}
+    },
+    productId: Number
+  },
 
   data() {
     return {
@@ -49,29 +60,29 @@ export default {
         unity: undefined
       },
       messages: {},
-      statuses: ["activo", "en revisión", "deshabilitado"]
-    };
+      statuses: ['activo', 'en revisión', 'deshabilitado']
+    }
   },
 
   methods: {
     submit() {
       if (this.form.name && this.form.brand && this.form.unit) {
-        this.$emit("submit", this.form);
+        this.$emit('submit', this.form)
       } else {
-        this.notifyError("Por favor revise el formulario");
-        this.showMessages();
+        this.notifyError('Por favor revise el formulario')
+        this.showMessages()
       }
     },
 
     showMessages() {
       if (!this.form.name) {
-        this.messages.name = "Este campo es requerido";
+        this.messages.name = 'Este campo es requerido'
       }
       if (!this.form.brand) {
-        this.messages.brand = "Este campo es requerido";
+        this.messages.brand = 'Este campo es requerido'
       }
       if (!this.form.unit) {
-        this.messages.unit = "Este campo es requerido";
+        this.messages.unit = 'Este campo es requerido'
       }
       this.$forceUpdate()
     },
@@ -80,12 +91,25 @@ export default {
       this.$toast.open({
         duration: 3000,
         message: text,
-        position: "is-bottom",
-        type: "is-danger"
-      });
+        position: 'is-bottom',
+        type: 'is-danger'
+      })
+    },
+
+    /**
+     * Load product from db using ID prop
+     */
+    getProduct(id) {
+      Database.product.get(id).then(product => {
+        this.form = product
+      })
     }
+  },
+
+  mounted() {
+    this.getProduct(this.productId)
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
