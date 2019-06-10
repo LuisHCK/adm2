@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="submit">
+  <form @submit.prevent="submit" id="inventoryProductForm">
     <!-- Name -->
     <b-field
       label="Producto*"
@@ -36,21 +36,22 @@
 </template>
 
 <script>
-import vSelect from "vue-select";
-import "vue-select/dist/vue-select.css";
+import vSelect from 'vue-select'
+import 'vue-select/dist/vue-select.css'
+import EventBus from '@/event-bus'
 
 export default {
-  name: "inventory-product-form",
+  name: 'inventory-product-form',
 
   components: {
-    "v-select": vSelect
+    'v-select': vSelect
   },
 
   props: {
     inventoryId: {
       type: Number,
       default: undefined
-    },
+    }
   },
 
   data() {
@@ -58,7 +59,7 @@ export default {
       form: {},
       messages: {},
       products: []
-    };
+    }
   },
 
   methods: {
@@ -66,40 +67,44 @@ export default {
       Database.product
         .toArray()
         .then(products => (this.products = products))
-        .then(() => (this.loading = false));
+        .then(() => (this.loading = false))
     },
 
     submit() {
       if (this.form.product_id && this.form.price && this.form.stock) {
         this.form.inventory_id = this.inventoryId
-        this.$emit("submit", this.form);
+        this.$emit('submit', this.form)
       } else {
-        this.notifyError("Por favor revise el formulario");
-        this.showMessages();
+        this.notifyError('Por favor revise el formulario')
+        this.showMessages()
       }
     },
 
     showMessages() {
       if (!this.form.product_id) {
-        this.messages.product_id = "Este campo es requerido";
+        this.messages.product_id = 'Este campo es requerido'
       }
-      this.$forceUpdate();
+      this.$forceUpdate()
     },
 
     notifyError(text) {
       this.$toast.open({
         duration: 3000,
         message: text,
-        position: "is-bottom",
-        type: "is-danger"
-      });
+        position: 'is-bottom',
+        type: 'is-danger'
+      })
     }
   },
 
   mounted() {
-    this.getProducts();
+    this.getProducts()
+    EventBus.$on('RESET_INVENTORY_PRODUCT_FORM', () => {
+      document.getElementById('inventoryProductForm')
+      this.form = {}
+    })
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
