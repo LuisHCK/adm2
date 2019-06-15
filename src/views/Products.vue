@@ -57,7 +57,7 @@
         <section class="section">
           <div class="content has-text-grey has-text-centered">
             <p>
-              <b-icon icon="emoticon-sad" size="is-large"></b-icon>
+              <b-icon icon="package-variant" size="is-large"></b-icon>
             </p>
             <p>No hay productos para mostrar.</p>
           </div>

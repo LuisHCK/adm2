@@ -1,7 +1,15 @@
 <template>
   <form @submit.prevent="submit" id="inventoryProductForm">
     <!-- Name -->
+    <div v-if="inventoryProduct" style="margin-bottom: 20px;">
+      <strong v-text="getProductName(inventoryProduct.product)"/>
+      <br>
+      <small v-text="inventoryProduct.product.brand" />
+    </div>
+
+    <!-- Select -->
     <b-field
+      v-else
       label="Producto*"
       :type="messages.product_id? 'is-danger':''"
       :message="messages.product_id"
@@ -51,6 +59,10 @@ export default {
     inventoryId: {
       type: Number,
       default: undefined
+    },
+    inventoryProductId: {
+      type: Number,
+      default: undefined
     }
   },
 
@@ -58,7 +70,8 @@ export default {
     return {
       form: {},
       messages: {},
-      products: []
+      products: [],
+      inventoryProduct: undefined
     }
   },
 
@@ -72,12 +85,27 @@ export default {
 
     submit() {
       if (this.form.product_id && this.form.price && this.form.stock) {
-        this.form.inventory_id = this.inventoryId
+        // Append inventory id if not updating mode
+        if (!this.inventoryProduct) {
+          this.form.inventory_id = this.inventoryId
+        }
+
         this.$emit('submit', this.form)
       } else {
         this.notifyError('Por favor revise el formulario')
         this.showMessages()
       }
+    },
+
+    getInventoryProduct() {
+      Database.inventory_product.get(this.inventoryProductId).then(data => {
+        // set form data
+        this.form = data
+        Database.product.get(data.product_id).then(product => {
+          this.inventoryProduct = data
+          this.inventoryProduct.product = product
+        })
+      })
     },
 
     showMessages() {
@@ -94,15 +122,22 @@ export default {
         position: 'is-bottom',
         type: 'is-danger'
       })
+    },
+
+    getProductName(product) {
+      return `${product.name} - ${product.content} ${product.unit}`
     }
   },
 
   mounted() {
-    this.getProducts()
-    EventBus.$on('RESET_INVENTORY_PRODUCT_FORM', () => {
-      document.getElementById('inventoryProductForm')
-      this.form = {}
-    })
+    if (this.inventoryId) {
+      this.getProducts()
+    }
+
+    if (this.inventoryProductId) {
+      console.log(this.inventoryProductId)
+      this.getInventoryProduct()
+    }
   }
 }
 </script>
