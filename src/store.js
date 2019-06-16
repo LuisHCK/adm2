@@ -46,7 +46,7 @@ export default new Vuex.Store({
      * @param {*} index
      */
     REMOVE_ITEM_SHOPPING_CART(state, index) {
-      state.shoppingCart.splice(index, 0)
+      state.shoppingCart.splice(index, 1)
     },
 
     /**

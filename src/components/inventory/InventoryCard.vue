@@ -63,6 +63,7 @@ export default {
 
 <style lang="scss" scoped>
 .inventory-card {
+  background-color: white;
   border: 1px solid rgb(224, 224, 224);
   padding: 12px;
   border-radius: 8px;

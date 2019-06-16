@@ -120,7 +120,7 @@ export default {
      * Filter Inventory Products by search input value
      */
     searchProduct() {
-      if (this.loadComplete) {
+      if (this.loadComplete && this.searchValue.length) {
         return this.inventoryProducts.filter(inventoryProduct => {
           // If product codebar match instantly return
           if (this.codebarMatch(inventoryProduct.product.codebar)) {

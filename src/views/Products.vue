@@ -27,8 +27,11 @@
 
         <b-table-column field="brand" label="Marca">{{ props.row.brand }}</b-table-column>
 
-        <b-table-column field="unit" label="Unidad">
-          <b-tag type="is-primary">{{ props.row.unit }}</b-tag>
+        <b-table-column field="unit" label="Presentación">
+          <b-tag type="is-primary">
+            {{ props.row.content }}
+            {{ props.row.unit }}
+          </b-tag>
         </b-table-column>
 
         <b-table-column field="codebar" label="Código">{{ props.row.codebar }}</b-table-column>
@@ -46,9 +49,15 @@
         <b-table-column field="product" label="Acciones">
           <button
             @click="openUpdateForm(props.row)"
-            class="button is-info is-small is-rounded is-outlined"
+            class="button is-success is-small is-rounded"
           >
             <i class="mdi mdi-pencil"></i>
+          </button>
+          <button
+            @click="openUpdateForm(props.row)"
+            class="button is-danger is-small is-rounded"
+          >
+            <i class="mdi mdi-delete"></i>
           </button>
         </b-table-column>
       </template>
