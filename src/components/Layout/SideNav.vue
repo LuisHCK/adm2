@@ -55,7 +55,7 @@ export default {
         { label: "POS", path: "pos" },
         { label: "Productos", path: "products" },
         { label: "Inventarios", path: "inventories" },
-        { label: "Ventas", path: "home" },
+        { label: "Ventas", path: "sales" },
         { label: "Empleados", path: "home" }
       ]
     };

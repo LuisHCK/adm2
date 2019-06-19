@@ -128,7 +128,13 @@
               <span>Cliente</span>
             </div>
             <div class="column" style="display: flex;">
-              <v-select v-model="customer" label="name" style="width: 100%;" :options="customers">
+              <v-select
+                label="name"
+                style="width: 100%;"
+                :options="customers"
+                @input="setCustomer"
+                :value="shoppingCartCustomer"
+              >
                 <div slot="no-options">No hay clientes registrados</div>
               </v-select>
               <b-button @click="showCustomerForm=true" type="is-primary" style="margin-left: 8px;">
@@ -179,7 +185,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['shoppingCart']),
+    ...mapState(['shoppingCart', 'shoppingCartCustomer']),
     ...mapGetters(['shoppingCartTotal']),
 
     totalSale() {
@@ -209,7 +215,6 @@ export default {
       discount: 0,
       payWith: undefined,
       customers: [],
-      customer: {},
       showCustomerForm: false
     }
   },
@@ -285,13 +290,25 @@ export default {
     },
 
     /**
+     * Set customer for of this shopping cart
+     */
+    setCustomer(event) {
+      this.$store.commit('SET_SHOPPING_CART_CUSTOMER', event)
+    },
+
+    /**
      * Finalice shopping cart and store the info in db
      */
     completeSale() {
       Database.sale.add({
         shoppingCart: this.shoppingCart,
         discount: this.discount,
-        customer: this.customer
+        customer: this.shoppingCartCustomer,
+        subTotal: this.shoppingCartTotal,
+        discounted: this.discounted,
+        total: this.finalTotal,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       })
       this.showToast('Se completó la venta')
     },

@@ -7,12 +7,18 @@ import VeeValidate from 'vee-validate'
 import './db'
 import 'buefy/dist/buefy.css'
 import './assets/materialdesignicons.css'
+import moment from 'moment'
+import 'moment/locale/es'
 
 Vue.use(Buefy)
 
 Vue.config.productionTip = false
 
 Vue.use(VeeValidate)
+
+Vue.use(require('vue-moment'), {
+  moment
+})
 
 window.app = new Vue({
   router,

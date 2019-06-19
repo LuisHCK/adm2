@@ -14,7 +14,8 @@ export default new Vuex.Store({
     user: undefined,
     users: [],
     company: undefined,
-    shoppingCart: []
+    shoppingCart: [],
+    shoppingCartCustomer: {}
   },
 
   mutations: {
@@ -73,6 +74,10 @@ export default new Vuex.Store({
       const qty = state.shoppingCart[index].quantity
       const price = state.shoppingCart[index].inventoryProduct.price
       state.shoppingCart[[index]].subTotal = qty * price
+    },
+
+    SET_SHOPPING_CART_CUSTOMER(state, payload) {
+      state.shoppingCartCustomer = payload
     },
 
     CLEAR_SHOPPING_CART(state) {
