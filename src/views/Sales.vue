@@ -42,9 +42,14 @@
 
         <b-table-column field="actions" label="Actions">
           <div class="buttons">
-            <b-button type="is-primary" rounded icon-right="eye" size="is-small"/>
-            <b-button type="is-info" rounded icon-right="printer" size="is-small"/>
-            <b-button type="is-warning" rounded icon-right="pencil" size="is-small"/>
+            <b-button
+              @click="selectSale(props.row)"
+              type="is-primary"
+              rounded
+              icon-right="eye"
+              size="is-small"
+            />
+            <b-button disabled type="is-info" rounded icon-right="printer" size="is-small"/>
           </div>
         </b-table-column>
       </template>
@@ -60,18 +65,37 @@
         </section>
       </template>
     </b-table>
+
+    <b-modal :active.sync="showSaleDetails" has-modal-card>
+      <div class="modal-card" style="width: auto">
+        <header class="modal-card-head">
+          <span class="modal-card-title" v-if="selectedSale" v-text="`Venta #${selectedSale.id}`"></span>
+        </header>
+        <section class="modal-card-body">
+          <sale-details :sale="selectedSale"></sale-details>
+        </section>
+      </div>
+    </b-modal>
   </div>
 </template>
 
 <script>
+import SaleDetails from '@/components/sales/SaleDetails.vue'
+
 export default {
   name: 'sales-page',
+
+  components: {
+    SaleDetails
+  },
 
   data() {
     return {
       sales: [],
       perPage: 50,
-      loading: false
+      loading: false,
+      showSaleDetails: false,
+      selectedSale: undefined
     }
   },
 
@@ -81,7 +105,27 @@ export default {
       Database.sale.toArray().then(sales => {
         this.sales = sales
         this.loading = false
+        // Load sale if params is set
+        this.showDetailsByParam()
       })
+    },
+
+    selectSale(sale) {
+      this.selectedSale = sale
+      this.showSaleDetails = true
+    },
+
+    /** Optinally load a sale */
+    showDetailsByParam() {
+      const saleId = this.$route.query.saleId
+      if (saleId) {
+        // Find the sale by id
+        this.selectedSale = this.sales.find(sale => {
+          return sale.id == saleId
+        })
+        // open the modal
+        this.showSaleDetails = true
+      }
     }
   },
 

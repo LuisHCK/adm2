@@ -215,7 +215,8 @@ export default {
       discount: 0,
       payWith: undefined,
       customers: [],
-      showCustomerForm: false
+      showCustomerForm: false,
+
     }
   },
 
@@ -300,17 +301,33 @@ export default {
      * Finalice shopping cart and store the info in db
      */
     completeSale() {
-      Database.sale.add({
-        shoppingCart: this.shoppingCart,
-        discount: this.discount,
-        customer: this.shoppingCartCustomer,
-        subTotal: this.shoppingCartTotal,
-        discounted: this.discounted,
-        total: this.finalTotal,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
+      Database.sale
+        .add({
+          shoppingCart: this.shoppingCart,
+          discount: this.discount,
+          customer: this.shoppingCartCustomer,
+          subTotal: this.shoppingCartTotal,
+          discounted: this.discounted,
+          total: this.finalTotal,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .then(sale => {
+          // Reduce inventory stock
+          this.reduceInventoryQuantity()
+          // Clear the sale form
+          this.cancelSale()
+          // Open detail retult
+          this.$router.push(`/sales?saleId=${sale}`)
+        })
       this.showToast('Se completó la venta')
+    },
+
+    reduceInventoryQuantity() {
+      this.shoppingCart.map(item => {
+        const totalStock = item.inventoryProduct.stock - item.quantity
+        Database.inventory_product.update(item.inventoryProduct.id, {stock: totalStock})
+      })
     },
 
     showErrorToast(message) {
@@ -339,11 +356,28 @@ export default {
 
     getProductName(product) {
       return `${product.name} - ${product.content} ${product.unit}`
+    },
+
+    initShortCuts() {
+      window.addEventListener('keydown', e => {
+        // CTRL + 1 = Focus on search
+        if (e.which == 49 && e.ctrlKey) {
+          console.log('CTRL + 1')
+          document.getElementById('searchInput').focus()
+        }
+
+        // CTRL + 2 = Finish the sale
+        if (e.which == 50 && e.ctrlKey) {
+          console.log('CTRL + 2')
+          this.completeSale()
+        }
+      })
     }
   },
 
   mounted() {
     this.getCustomers()
+    this.initShortCuts()
   }
 }
 </script>

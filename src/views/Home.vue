@@ -24,7 +24,7 @@
         <div class="card">
           <div class="card-image">
             <figure class="image image-2">
-              <span class="value has-text-white is-size-2 has-text-weight-bold">12</span>
+              <span class="value has-text-white is-size-2 has-text-weight-bold">{{ totalSales }}</span>
             </figure>
           </div>
           <div class="card-content">
@@ -33,7 +33,7 @@
             </div>
           </div>
           <div class="card-footer">
-            <a class="card-footer-item">Ir a ventas</a>
+            <a @click="$router.push('/sales')" class="card-footer-item">Ir a ventas</a>
           </div>
         </div>
       </div>
@@ -82,14 +82,29 @@
 </template>
 
 <script>
-import LineChart from "@/components/charts/LineChart.vue";
-import SalesList from "@/components/sales/SalesList.vue";
-import CustomersList from "@/components/customers/CustomersList.vue";
+import LineChart from '@/components/charts/LineChart.vue'
+import SalesList from '@/components/sales/SalesList.vue'
+import CustomersList from '@/components/customers/CustomersList.vue'
 
 export default {
-  name: "home",
-  components: { LineChart, SalesList, CustomersList }
-};
+  name: 'home',
+  components: { LineChart, SalesList, CustomersList },
+  data() {
+    return {
+      totalSales: 0
+    }
+  },
+
+  methods: {
+    getSales() {
+      Database.sale.count().then(val => (this.totalSales = val))
+    }
+  },
+
+  mounted() {
+    this.getSales()
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -101,13 +116,13 @@ export default {
   justify-content: center;
 
   &.image-1 {
-    background-image: url("/10.jpg");
+    background-image: url('/10.jpg');
   }
   &.image-2 {
-    background-image: url("/11.jpg");
+    background-image: url('/11.jpg');
   }
   &.image-3 {
-    background-image: url("/12.jpg");
+    background-image: url('/12.jpg');
   }
 }
 </style>

@@ -28,7 +28,9 @@
               <small>{{ inventoryProduct.product.brand }} | {{ inventoryProduct.inventory.name }}</small>
             </div>
             <div class="right-info">
-              <b-tag type="is-info">Disp: {{ inventoryProduct.stock }}</b-tag>
+              <b-tag
+                :type="inventoryProduct.stock>0? 'is-success':'is-danger'"
+              >Disp: {{ inventoryProduct.stock }}</b-tag>
             </div>
           </li>
         </ul>
@@ -155,9 +157,29 @@ export default {
      * Emit Inventory Product selection
      */
     selectInventoryProduct(inventoryProduct) {
-      this.$emit('input', inventoryProduct)
+      if (inventoryProduct.stock > 0) {
+        this.$emit('input', inventoryProduct)
+      } else {
+        this.confirmAdd(inventoryProduct)
+      }
       this.searchValue = ''
       this.blurredInput()
+    },
+
+    /** Add with warning */
+    confirmAdd(inventoryProduct) {
+      this.$dialog.confirm({
+        title: `Advertencia`,
+        message:
+          'No quedan existencias en el inventario.',
+        confirmText: 'Continuar agregando',
+        cancelText: 'Cancelar',
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: () => {
+          this.$emit('input', inventoryProduct)
+        }
+      })
     }
   },
 
