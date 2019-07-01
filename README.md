@@ -1,4 +1,5 @@
-# adm2
+# ADM2
+ADM2 Is the best companion for your Pyme
 
 ## Project setup
 ```
@@ -10,30 +11,7 @@ yarn install
 yarn run serve
 ```
 
-### Compiles and minifies for production
+### Compiles and hot-reloads for electron
 ```
-yarn run build
+yarn run electron:serve
 ```
-
-### Run your tests
-```
-yarn run test
-```
-
-### Lints and fixes files
-```
-yarn run lint
-```
-
-### Run your end-to-end tests
-```
-yarn run test:e2e
-```
-
-### Run your unit tests
-```
-yarn run test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
