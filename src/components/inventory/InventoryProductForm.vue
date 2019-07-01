@@ -18,8 +18,15 @@
         v-model="form.product_id"
         :options="products"
         label="name"
-        :reduce="product => product.id"
-      ></v-select>
+        :reduce="product => product.id">
+        <template slot="option" slot-scope="option">
+          {{ option.name }} - {{ option.brand }} | {{ option.content }} {{ option.unit }}
+        </template>
+
+      <template slot="selected-option" slot-scope="option">
+        {{ option.name }} - {{ option.brand }} | {{ option.content }} {{ option.unit }}
+      </template>
+      </v-select>
     </b-field>
 
     <!-- Location -->
