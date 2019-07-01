@@ -1,6 +1,8 @@
 # ADM2
 ADM2 Is the best companion for your Pyme
 
+![screenshot](https://i.ibb.co/Hr10h27/Screenshot-1.png)
+
 ## Project setup
 ```
 yarn install
