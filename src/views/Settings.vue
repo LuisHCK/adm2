@@ -129,7 +129,14 @@ export default {
         product.categories = product.categories.split('&')
         product.subcategories = product.subcategories.split('&')
         // Insert into db (Oh God halp plz)
-        Database.product.add(product).then(() => console.log('success'))
+        Database.product.add(product).then(() => {
+          console.log('success')
+          this.$toast.open({
+            message: 'Success',
+            type: 'is-success',
+            position: 'is-bottom'
+          })
+        })
       })
     }
   },
