@@ -4,16 +4,16 @@ import classes from "./classes"
 const database = new Dexie("adm_2")
 
 database.version(0.1).stores({
-  user: "++id,name,email,username,role",
-  provider: "++id,name,email,phone_number",
-  customer: "++id,name,email,phone_number",
-  product: "++id,name,description,brand,codebar,user_id",
-  product_provider: "++id,product_id,provider_id,active,user_id",
-  inventory: "++id,name,location,user_id",
-  inventory_product: "++id,product_id,inventory_id,price,lot,stock",
-  tax: "++id,name,amount,user_id",
-  coupon: "++id,name,amount",
-  sale: "++id,inventory_product_id,quantity,user_id"
+  user: "++id,name,email,username,role,created_at,updated_at",
+  provider: "++id,name,email,phone_number,created_at,updated_at",
+  customer: "++id,name,email,phone_number,created_at,updated_at",
+  product: "++id,name,description,brand,codebar,user_id,created_at,updated_at",
+  product_provider: "++id,product_id,provider_id,active,user_id,created_at,updated_at",
+  inventory: "++id,name,location,user_id,created_at,updated_at",
+  inventory_product: "++id,product_id,inventory_id,price,lot,stock,created_at,updated_at",
+  tax: "++id,name,amount,user_id,created_at,updated_at",
+  coupon: "++id,name,amount,created_at,updated_at",
+  sale: "++id,inventory_product_id,quantity,user_id,created_at,updated_at"
 })
 
 const User = database.user.defineClass(classes.User)
