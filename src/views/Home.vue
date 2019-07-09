@@ -59,7 +59,7 @@
 
     <div class="columns">
       <div class="column">
-        <line-chart/>
+        <line-chart />
       </div>
     </div>
 
@@ -67,14 +67,14 @@
       <div class="column">
         <div class="panel">
           <div class="is-size-5">Últimas ventas</div>
-          <sales-list/>
+          <sales-list />
         </div>
       </div>
       <!-- Customers -->
       <div class="column">
         <div class="panel">
           <div class="is-size-5">Clientes</div>
-          <customers-list/>
+          <customers-list />
         </div>
       </div>
     </div>
@@ -86,6 +86,8 @@ import LineChart from '@/components/charts/LineChart.vue'
 import SalesList from '@/components/sales/SalesList.vue'
 import CustomersList from '@/components/customers/CustomersList.vue'
 
+const TODAY = new Date()
+
 export default {
   name: 'home',
   components: { LineChart, SalesList, CustomersList },
@@ -95,9 +97,22 @@ export default {
     }
   },
 
+  computed: {
+    today() {
+      return {
+        start: new Date(TODAY.setHours(0, 0, 0, 0)).toISOString(),
+        end: new Date(TODAY.setHours(23, 59, 59, 0)).toISOString()
+      }
+    }
+  },
+
   methods: {
     getSales() {
-      Database.sale.count().then(val => (this.totalSales = val))
+      Database.sale
+        .where('created_at')
+        .between(this.today.start, this.today.end, true, true)
+        .count()
+        .then(val => (this.totalSales = val))
     }
   },
 

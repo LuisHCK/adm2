@@ -3,7 +3,7 @@
   <div id="settings-page">
     <section class="panel">
       <h4 class="is-size-3 has-text-weight-bold">Compañía</h4>
-      <hr>
+      <hr />
       <div class="columns is-mobile is-centered">
         <div class="column is-full-mobile is-half-desktop">
           <form @submit.prevent="submitCompanyForm">
@@ -13,7 +13,7 @@
               :type="{'is-danger': errors.has('name')}"
               :message="errors.first('name')"
             >
-              <b-input v-model="company.name" name="name" v-validate="'required'"/>
+              <b-input v-model="company.name" name="name" v-validate="'required'" />
             </b-field>
             <!-- Address -->
             <b-field label="Dirección">
@@ -46,7 +46,7 @@
         </div>
       </div>
 
-      <hr>
+      <hr />
 
       <div class="columns is-mobile is-centered">
         <div class="column is-full-mobile is-half-desktop">
@@ -131,11 +131,11 @@ export default {
         // Insert into db (Oh God halp plz)
         Database.product.add(product).then(() => {
           console.log('success')
-          this.$toast.open({
-            message: 'Success',
-            type: 'is-success',
-            position: 'is-bottom'
-          })
+        })
+        this.$toast.open({
+          message: 'Success',
+          type: 'is-success',
+          position: 'is-bottom'
         })
       })
     }

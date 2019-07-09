@@ -59,7 +59,11 @@ export default {
     },
 
     saveInventory(data) {
-      console.log(data)
+      // Append timestaps
+      const now = new Date()
+      data.created_at = now.toISOString()
+      data.updated_at = now.toISOString()
+
       Database.inventory
         .add(data)
         .then(res => {

@@ -135,6 +135,11 @@ export default {
      * Handle product submit form
      */
     saveProduct(data) {
+      // Append timestaps
+      const now = new Date()
+      data.created_at = now.toISOString()
+      data.updated_at = now.toISOString()
+
       Database.product
         .add(data)
         .then(product => {
