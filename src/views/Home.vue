@@ -6,7 +6,10 @@
         <div class="card">
           <div class="card-image">
             <figure class="image image-1">
-              <span class="value has-text-white is-size-2 has-text-weight-bold">C$ 150,000</span>
+              <span
+                class="value has-text-white is-size-2 has-text-weight-bold"
+                v-text="`C$${totalMoney}`"
+              ></span>
             </figure>
           </div>
           <div class="card-content">
@@ -67,7 +70,7 @@
       <div class="column">
         <div class="panel">
           <div class="is-size-5">Últimas ventas</div>
-          <sales-list />
+          <sales-list :sales="salesList" />
         </div>
       </div>
       <!-- Customers -->
@@ -85,6 +88,7 @@
 import LineChart from '@/components/charts/LineChart.vue'
 import SalesList from '@/components/sales/SalesList.vue'
 import CustomersList from '@/components/customers/CustomersList.vue'
+import { lastXdays, setHourTo } from '@/lib/datetime'
 
 const TODAY = new Date()
 
@@ -93,7 +97,9 @@ export default {
   components: { LineChart, SalesList, CustomersList },
   data() {
     return {
-      totalSales: 0
+      totalSales: 0,
+      totalMoney: 0,
+      salesList: []
     }
   },
 
@@ -108,16 +114,46 @@ export default {
 
   methods: {
     getSales() {
-      Database.sale
+      const sales = Database.sale
         .where('created_at')
         .between(this.today.start, this.today.end, true, true)
-        .count()
-        .then(val => (this.totalSales = val))
+
+      // Count total sales
+      sales.count().then(val => (this.totalSales = val))
+
+      // Count amount of money
+      sales.each(sale => {
+        this.totalMoney += sale.total
+      })
+
+      // latest 5 sales
+      sales
+        .limit(5)
+        .reverse()
+        .toArray()
+        .then(data => (this.salesList = data))
+    },
+
+    getSalesGraph() {
+      let dates = lastXdays(7)
+      let salesSummaries = []
+
+      dates.map(date => {
+        Database
+        .sale
+        .where('created_at')
+        .between(date.toISOString(), setHourTo(date, 'end').toISOString(), true, true)
+        .toArray()
+        .then(data => {
+          console.log(data)
+        })
+      })
     }
   },
 
   mounted() {
     this.getSales()
+    this.getSalesGraph()
   }
 }
 </script>

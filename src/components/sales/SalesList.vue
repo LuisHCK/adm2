@@ -10,10 +10,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, i) in 5" :key="'rw' + i">
-          <td>C$150</td>
-          <td>Jhon Doe</td>
-          <td>31 May, 8:32 am</td>
+        <tr v-for="(item, i) in sales" :key="'sale_item' + i">
+          <td class="has-text-weight-bold">C${{ item.total }}</td>
+          <td>{{ item.customer.name }}</td>
+          <td>{{ item.created_at | moment("MMM DD YYYY, h:mm a") }}</td>
         </tr>
       </tbody>
     </table>
@@ -21,7 +21,16 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: 'sales-list',
+  
+  props: {
+    sales: {
+      type: Array,
+      default: () => []
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
