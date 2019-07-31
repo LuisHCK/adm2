@@ -47,18 +47,24 @@
           </b-taglist>
         </b-table-column>
         <b-table-column field="product" label="Acciones">
-          <button
-            @click="openUpdateForm(props.row)"
-            class="button is-success is-small is-rounded"
-          >
-            <i class="mdi mdi-pencil"></i>
-          </button>
-          <button
-            @click="openUpdateForm(props.row)"
-            class="button is-danger is-small is-rounded"
-          >
-            <i class="mdi mdi-delete"></i>
-          </button>
+          <div class="field is-grouped">
+            <div class="control">
+              <button
+                @click="openUpdateForm(props.row)"
+                class="button is-success is-small is-rounded"
+              >
+                <i class="mdi mdi-pencil"></i>
+              </button>
+            </div>
+            <div class="control">
+              <button
+                @click="openUpdateForm(props.row)"
+                class="button is-danger is-small is-rounded"
+              >
+                <i class="mdi mdi-delete"></i>
+              </button>
+            </div>
+          </div>
         </b-table-column>
       </template>
 
