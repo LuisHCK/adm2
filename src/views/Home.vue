@@ -145,7 +145,7 @@ export default {
         .between(date.toISOString(), setHourTo(date, 'end').toISOString(), true, true)
         .toArray()
         .then(data => {
-          console.log(data)
+          //console.log(data)
         })
       })
     }

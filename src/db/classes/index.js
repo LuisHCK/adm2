@@ -113,6 +113,7 @@ const Sale = {
   quantity: Number,
   user_id: Number,
   discount: Number,
+  customer_id: Number,
   ...timestamps
 }
 

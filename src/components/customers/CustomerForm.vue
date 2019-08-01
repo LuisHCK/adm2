@@ -32,6 +32,8 @@ export default {
   methods: {
     submit() {
       if (this.form.name) {
+        this.form.created_at = new Date().toISOString()
+        this.form.updated_at = new Date().toISOString()
         Database.customer
           .add(this.form)
           .then(data => {

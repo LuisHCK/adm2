@@ -309,6 +309,7 @@ export default {
           subTotal: this.shoppingCartTotal,
           discounted: this.discounted,
           total: this.finalTotal,
+          customer_id: this.shoppingCartCustomer.id,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         })
