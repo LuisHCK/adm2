@@ -18,8 +18,9 @@
             v-for="(item, i) in items"
             @click="to(item.path)"
             :key="`item-${i}`"
-            class="nav-item"
-            v-text="item.label"/>
+            class="nav-item">
+            <b-icon :icon="item.icon" /> <span class="text-item" v-text="item.label"/>
+          </div>
         </div>
       </div>
       <div class="bottom-items">
@@ -52,11 +53,12 @@ export default {
     return {
       logo: localStorage.getItem("company_logo"),
       items: [
-        { label: "POS", path: "pos" },
-        { label: "Productos", path: "products" },
-        { label: "Inventarios", path: "inventories" },
-        { label: "Ventas", path: "sales" },
-        { label: "Empleados", path: "home" }
+        { label: "Inicio", path: "home", icon: 'view-dashboard' },
+        { label: "POS", path: "pos", icon: 'point-of-sale' },
+        { label: "Productos", path: "products", icon: 'package-variant' },
+        { label: "Inventarios", path: "inventories", icon: 'format-list-checks' },
+        { label: "Ventas", path: "sales", icon: 'cart-arrow-down' },
+        { label: "Empleados", path: "home", icon: 'account-group' }
       ]
     };
   },
@@ -153,6 +155,9 @@ export default {
     cursor: pointer;
     transition: 0.3s;
     border-bottom: 1px solid #f5f5f5;
+    .text-item {
+      padding: 0px 15px;
+    }
     &:hover {
       color: white;
       background-color: #78909c;
