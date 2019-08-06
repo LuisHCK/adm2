@@ -79,6 +79,12 @@ const router = new Router({
       name: 'sales',
       meta: { layout: 'main-layout' },
       component: () => import('./views/Sales.vue')
+    },
+    {
+      path: '/employees',
+      name: 'employees',
+      meta: { layout: 'main-layout' },
+      component: () => import('./views/Employees.vue')
     }
   ]
 })

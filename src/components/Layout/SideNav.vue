@@ -58,7 +58,7 @@ export default {
         { label: "Productos", path: "products", icon: 'package-variant' },
         { label: "Inventarios", path: "inventories", icon: 'format-list-checks' },
         { label: "Ventas", path: "sales", icon: 'cart-arrow-down' },
-        { label: "Empleados", path: "home", icon: 'account-group' }
+        { label: "Empleados", path: "employees", icon: 'account-group' }
       ]
     };
   },
