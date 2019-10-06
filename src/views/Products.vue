@@ -1,12 +1,15 @@
 <template>
   <div id="products-page">
-    <button class="button is-primary is-small is-pulled-right" @click="showForm=!showForm">Nuevo</button>
+    <button class="button is-success is-rounded is-pulled-right" @click="showForm=!showForm">
+      <span>Nuevo</span>
+      <b-icon icon="plus"></b-icon>
+    </button>
     <h4 class="has-text-weight-bold">Productos</h4>
 
-    <hr>
+    <hr />
 
     <form @submit.prevent="searchProduct" class="search-form">
-      <input ref="searchInput" class="input" placeholder="Nombre, marca, codigo" type="text">
+      <input ref="searchInput" class="input" placeholder="Nombre, marca, codigo" type="text" />
     </form>
 
     <b-table
@@ -64,6 +67,11 @@
                 <i class="mdi mdi-delete"></i>
               </button>
             </div>
+            <div class="control">
+              <button @click="showProduct(props.row)" class="button is-info is-small is-rounded">
+                <i class="mdi mdi-eye"></i>
+              </button>
+            </div>
           </div>
         </b-table-column>
       </template>
@@ -87,7 +95,7 @@
           <p class="modal-card-title">Agregar un nuevo producto</p>
         </header>
         <section class="modal-card-body">
-          <product-form :show="showForm" @submit="saveProduct"/>
+          <product-form :show="showForm" @submit="saveProduct" />
         </section>
       </div>
     </b-modal>
@@ -96,10 +104,10 @@
     <b-modal :active.sync="showUpdateForm" has-modal-card>
       <div v-if="selectedProduct" class="modal-card">
         <header class="modal-card-head">
-          <span class="modal-card-title" v-text="selectedProduct.name"/>
+          <span class="modal-card-title" v-text="selectedProduct.name" />
         </header>
         <section class="modal-card-body">
-          <product-form :product-id="selectedProduct.id" @submit="updateProduct"/>
+          <product-form :product-id="selectedProduct.id" @submit="updateProduct" />
         </section>
       </div>
     </b-modal>
@@ -158,7 +166,13 @@ export default {
 
     updateProduct(data) {
       Database.product.update(data.id, data).then(() => {
+        this.showUpdateForm = false
         this.getProducts()
+        this.$buefy.toast.open({
+          message: 'Se actualizó el producto',
+          type: 'is-success',
+          position: 'is-bottom'
+        })
       })
     },
 
@@ -182,6 +196,10 @@ export default {
       } else {
         this.getProducts()
       }
+    },
+
+    showProduct(product) {
+      
     }
   },
 

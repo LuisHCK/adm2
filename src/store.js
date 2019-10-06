@@ -15,7 +15,8 @@ export default new Vuex.Store({
     users: [],
     company: undefined,
     shoppingCart: [],
-    shoppingCartCustomer: {}
+    shoppingCartCustomer: {},
+    chartData: {}
   },
 
   mutations: {
@@ -82,6 +83,11 @@ export default new Vuex.Store({
 
     CLEAR_SHOPPING_CART(state) {
       state.shoppingCart = []
+    },
+
+    // CHART DATA
+    SET_CHART_DATA(state, payload) {
+      state.chartData = payload
     }
   },
 

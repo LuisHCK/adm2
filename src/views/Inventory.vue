@@ -169,7 +169,7 @@ export default {
      * Show a toast
      */
     showToast(message, error = false) {
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: message,
         type: error ? 'is-danger' : 'is-success',
         position: 'is-bottom'
@@ -200,7 +200,7 @@ export default {
         type: 'is-danger',
         hasIcon: true,
         onConfirm: () => {
-          this.$toast.open('Se quitó el producto del inventario')
+          this.$buefy.toast.open('Se quitó el producto del inventario')
           Database.inventory_product.delete(inventoryProduct.id)
           this.getInventoryProducts()
         }

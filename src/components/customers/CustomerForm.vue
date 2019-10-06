@@ -49,7 +49,7 @@ export default {
     },
 
     showToast(message, type = 'is-success') {
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: message,
         type: type,
         position: 'is-bottom'

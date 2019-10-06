@@ -1,18 +1,22 @@
 <template>
   <div>
-    <button class="button is-primary is-small is-pulled-right" @click="showForm=!showForm">Nuevo</button>
+    <button class="button is-success is-rounded is-pulled-right" @click="showForm=!showForm">
+      <span>Nuevo</span>
+      <b-icon icon="plus"></b-icon>
+    </button>
     <h1 class="has-text-weight-bold">Inventarios</h1>
 
-    <hr>
+    <hr />
 
     <div class="columns is-mobile is-multiline">
       <div
         class="column is-half-desktop"
         v-for="inventory in inventories"
         :key="inventory.id"
-        :inventory="inventory">
-          <inventory-card :inventory="inventory" />
-        </div>
+        :inventory="inventory"
+      >
+        <inventory-card :inventory="inventory" />
+      </div>
     </div>
 
     <!-- inventory modal form -->
@@ -22,7 +26,7 @@
           <p class="modal-card-title">Agregar un nuevo producto</p>
         </header>
         <section class="modal-card-body">
-          <inventory-form :show="showForm" @submit="saveInventory"/>
+          <inventory-form :show="showForm" @submit="saveInventory" />
         </section>
       </div>
     </b-modal>
@@ -30,11 +34,11 @@
 </template>
 
 <script>
-import InventoryCard from "@/components/inventory/InventoryCard.vue";
-import InventoryForm from "@/components/inventory/InventoryForm.vue";
+import InventoryCard from '@/components/inventory/InventoryCard.vue'
+import InventoryForm from '@/components/inventory/InventoryForm.vue'
 
 export default {
-  name: "inventories",
+  name: 'inventories',
 
   components: {
     InventoryCard,
@@ -45,7 +49,7 @@ export default {
     return {
       inventories: [],
       showForm: false
-    };
+    }
   },
 
   methods: {
@@ -55,7 +59,7 @@ export default {
         .then(inventories => {
           this.inventories = inventories
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
     },
 
     saveInventory(data) {
@@ -67,17 +71,17 @@ export default {
       Database.inventory
         .add(data)
         .then(res => {
-          this.getInventories();
-          this.showForm = false;
+          this.getInventories()
+          this.showForm = false
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
     }
   },
 
   mounted() {
-    this.getInventories();
+    this.getInventories()
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

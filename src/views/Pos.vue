@@ -255,7 +255,7 @@ export default {
      */
     removeItem(itemIndex) {
       this.$store.commit('REMOVE_ITEM_SHOPPING_CART', itemIndex)
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Se quitó el producto',
         type: 'is-success',
         position: 'is-bottom'
@@ -273,7 +273,7 @@ export default {
       if (quantity > stock) {
         quantity = stock
         event.target.value = stock
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: 'Supera el máximo de existencias',
           type: 'is-warning',
           position: 'is-bottom'
@@ -332,7 +332,7 @@ export default {
     },
 
     showErrorToast(message) {
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: message,
         type: 'is-danger',
         position: 'is-bottom'
@@ -340,7 +340,7 @@ export default {
     },
 
     showToast(message, type = 'is-success') {
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: message,
         type: type,
         position: 'is-bottom'

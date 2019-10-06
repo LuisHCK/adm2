@@ -45,16 +45,16 @@
         <div class="card">
           <div class="card-image">
             <figure class="image image-3">
-              <span class="value has-text-white is-size-2 has-text-weight-bold">12</span>
+              <span class="value has-text-white is-size-2 has-text-weight-bold">{{ totalProviders }}</span>
             </figure>
           </div>
           <div class="card-content">
             <div class="content has-text-centered">
-              <div class="is-size-4">Servicios realizados</div>
+              <div class="is-size-4">Proveedores</div>
             </div>
           </div>
           <div class="card-footer">
-            <a class="card-footer-item">Ir a servicios</a>
+            <a @click="$router.push('/providers')" class="card-footer-item">Ver Proveedores</a>
           </div>
         </div>
       </div>
@@ -62,7 +62,7 @@
 
     <div class="columns">
       <div class="column">
-        <line-chart />
+        <line-chart ref="lineChart" :labels="salesGraph.labels" :datasets="salesGraph.datasets" />
       </div>
     </div>
 
@@ -99,7 +99,9 @@ export default {
     return {
       totalSales: 0,
       totalMoney: 0,
-      salesList: []
+      totalProviders: 0,
+      salesList: [],
+      salesGraph: {}
     }
   },
 
@@ -136,24 +138,50 @@ export default {
 
     getSalesGraph() {
       let dates = lastXdays(7)
-      let salesSummaries = []
 
-      dates.map(date => {
-        Database
-        .sale
-        .where('created_at')
-        .between(date.toISOString(), setHourTo(date, 'end').toISOString(), true, true)
-        .toArray()
-        .then(data => {
-          //console.log(data)
-        })
+      let labels = []
+      let datasets = [
+        {
+          label: 'Ventas',
+          backgroundColor: '#039BE5',
+          data: []
+        }
+      ]
+
+      dates.reverse().map(date => {
+        // Add label
+        labels.push(this.$moment(date).format('ddd D MMM'))
+
+        // add datasets
+        Database.sale
+          .where('created_at')
+          .between(
+            date.toISOString(),
+            setHourTo(date, 'end').toISOString(),
+            true,
+            true
+          )
+          .count(count => {
+            datasets[0].data.push(count)
+            console.log(this.$refs.lineChart.fillData())
+          })
       })
+      // set graph
+      this.salesGraph = {
+        labels,
+        datasets
+      }
+    },
+
+    getTotalProviders() {
+      Database.provider.count().then(count => (this.totalProviders = count))
     }
   },
 
   mounted() {
     this.getSales()
     this.getSalesGraph()
+    this.getTotalProviders()
   }
 }
 </script>

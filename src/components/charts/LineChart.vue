@@ -1,5 +1,5 @@
 <template>
-  <div class="panel chart-container">
+  <div class="panel chart-container" @click="fillData()">
     <div>Rendimiento de ventas</div>
     <line-chart :chart-data="datacollection" :options="options" style="height: 300px;"></line-chart>
   </div>
@@ -17,6 +17,17 @@ export default {
     title: {
       type: String,
       default: ""
+    },
+    labels: {
+      type: Array,
+      default: () => ['label']
+    },
+    datasets: {
+      type: Array,
+      default: () => [{
+        label: 'label',
+        data: [0]
+      }]
     }
   },
 
@@ -29,36 +40,31 @@ export default {
       }
     };
   },
+
   mounted() {
     this.fillData();
   },
+
   methods: {
     fillData() {
       this.datacollection = {
-        labels: [
-          "Lunes",
-          "Martes",
-          "Miercoles",
-          "Jueves",
-          "Viernes",
-          "Sabado",
-          "Domingo"
-        ],
-        datasets: [
-          {
-            label: "Data One",
-            backgroundColor: "#039BE5",
-            data: [
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt()
-            ]
-          }
-        ]
+        labels: this.labels,
+        datasets: this.datasets,
+        // [
+        //   {
+        //     label: "Data One",
+        //     backgroundColor: "#039BE5",
+        //     data: [
+        //       this.getRandomInt(),
+        //       this.getRandomInt(),
+        //       this.getRandomInt(),
+        //       this.getRandomInt(),
+        //       this.getRandomInt(),
+        //       this.getRandomInt(),
+        //       this.getRandomInt()
+        //     ]
+        //   }
+        // ]
       };
     },
     getRandomInt() {

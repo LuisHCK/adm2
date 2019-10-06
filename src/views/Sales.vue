@@ -1,8 +1,11 @@
 <template>
   <div id="sales-page">
-    <button class="button is-primary is-small is-pulled-right" @click="$router.push('/pos')">Nuevo</button>
+    <button class="button is-success is-rounded is-pulled-right" @click="$router.push('/pos')">
+      <span>Nuevo</span>
+      <b-icon icon="plus"></b-icon>
+    </button>
     <h4 class="has-text-weight-bold">Ventas</h4>
-    <hr>
+    <hr />
 
     <!-- sales list -->
     <b-table
@@ -24,15 +27,15 @@
         <b-table-column field="items" label="Productos">{{ props.row.shoppingCart.length }}</b-table-column>
 
         <b-table-column field="sub_total" label="Sub Total">
-          <b-tag type="is-info" v-text="'C$ ' + props.row.subTotal"/>
+          <b-tag type="is-info" v-text="'C$ ' + props.row.subTotal" />
         </b-table-column>
 
         <b-table-column field="discount" label="Descuento">
-          <b-tag v-text="'C$ ' + props.row.discounted"/>
+          <b-tag v-text="'C$ ' + props.row.discounted" />
         </b-table-column>
 
         <b-table-column field="total" label="TOTAL">
-          <b-tag type="is-success" v-text="'C$ ' + props.row.total"/>
+          <b-tag type="is-success" v-text="'C$ ' + props.row.total" />
         </b-table-column>
 
         <b-table-column
@@ -49,7 +52,7 @@
               icon-right="eye"
               size="is-small"
             />
-            <b-button disabled type="is-info" rounded icon-right="printer" size="is-small"/>
+            <b-button disabled type="is-info" rounded icon-right="printer" size="is-small" />
           </div>
         </b-table-column>
       </template>

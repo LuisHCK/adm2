@@ -85,6 +85,12 @@ const router = new Router({
       name: 'employees',
       meta: { layout: 'main-layout' },
       component: () => import('./views/Employees.vue')
+    },
+    {
+      path: '/providers',
+      name: 'providers',
+      meta: { layout: 'main-layout' },
+      component: () => import('./views/Providers.vue')
     }
   ]
 })

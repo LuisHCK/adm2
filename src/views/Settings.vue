@@ -76,7 +76,7 @@ export default {
         if (result) {
           return this.saveCompany()
         }
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: 'No se pudieron guardar los cambios. Revisa el formulario',
           type: 'is-danger',
           position: 'is-bottom'
@@ -92,7 +92,7 @@ export default {
       // Commit on Vuex
       this.$store.commit('setCompany', company)
       // Show toast
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'Se guardaron los cambios',
         type: 'is-success',
         position: 'is-bottom'
@@ -132,7 +132,7 @@ export default {
         Database.product.add(product).then(() => {
           console.log('success')
         })
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: 'Success',
           type: 'is-success',
           position: 'is-bottom'

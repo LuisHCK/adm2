@@ -5,10 +5,10 @@ import store from './store'
 import Buefy from 'buefy'
 import VeeValidate from 'vee-validate'
 import './db'
-import 'buefy/dist/buefy.css'
 import './assets/materialdesignicons.css'
 import moment from 'moment'
 import 'moment/locale/es'
+import '@/buefy.scss'
 
 Vue.use(Buefy)
 

@@ -101,7 +101,7 @@ export default {
     },
 
     notifyError(text) {
-      this.$toast.open({
+      this.$buefy.toast.open({
         duration: 3000,
         message: text,
         position: "is-bottom",
@@ -110,7 +110,7 @@ export default {
     },
 
     notifySuccess(text) {
-      this.$toast.open({
+      this.$buefy.toast.open({
         duration: 3000,
         message: text,
         position: "is-bottom",

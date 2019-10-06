@@ -58,7 +58,7 @@ export default {
         { label: "Productos", path: "products", icon: 'package-variant' },
         { label: "Inventarios", path: "inventories", icon: 'format-list-checks' },
         { label: "Ventas", path: "sales", icon: 'cart-arrow-down' },
-        { label: "Empleados", path: "employees", icon: 'account-group' }
+        { label: "Proveedores", path: "providers", icon: 'account-group' }
       ]
     };
   },
@@ -90,6 +90,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "src/assets/_variables.scss";
+
 .hidden {
   display: none;
 }
@@ -116,7 +118,7 @@ export default {
   }
   .company-cover {
     height: 120px;
-    background: linear-gradient(135deg, #469c5a 0%, #86b4cc 100%);
+    background: linear-gradient(135deg, #1976D2 0%, #91c5e0 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -160,7 +162,7 @@ export default {
     }
     &:hover {
       color: white;
-      background-color: #78909c;
+      background-color: $primary;
       padding: 11px 15px;
     }
   }
