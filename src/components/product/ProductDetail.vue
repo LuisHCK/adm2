@@ -1,7 +1,9 @@
 <template>
-  <b-modal :active.sync="showModal" has-modal-card>
+  <div class="product-container" v-if="product">
+    <h4 class="has-text-weight-bold">{{ product.name }}</h4>
+
     
-  </b-modal>
+  </div>
 </template>
 
 <script>
@@ -10,8 +12,7 @@ export default {
 
   data() {
     return {
-      product: undefined,
-      showModal: false
+      product: undefined
     }
   },
 

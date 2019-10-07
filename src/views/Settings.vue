@@ -132,11 +132,11 @@ export default {
         Database.product.add(product).then(() => {
           console.log('success')
         })
-        this.$buefy.toast.open({
-          message: 'Success',
-          type: 'is-success',
-          position: 'is-bottom'
-        })
+      })
+      this.$buefy.toast.open({
+        message: 'Success',
+        type: 'is-success',
+        position: 'is-bottom'
       })
     }
   },
