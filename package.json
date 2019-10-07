@@ -12,7 +12,6 @@
   },
   "main": "background.js",
   "dependencies": {
-    "@mdi/font": "^3.9.95",
     "bcryptjs": "^2.4.3",
     "buefy": "^0.8.2",
     "chart.js": "^2.8.0",
