@@ -1,9 +1,20 @@
 <template>
   <div id="products-page">
-    <button class="button is-success is-rounded is-pulled-right" @click="showForm=!showForm">
-      <span>Nuevo</span>
-      <b-icon icon="plus"></b-icon>
-    </button>
+    <div class="is-pulled-right buttons">
+      <button
+        class="button is-info is-rounded"
+        :disabled="checkedProducts.length < 1"
+        @click="showInventoryModal = !showInventoryModal"
+      >
+        <span>Agregar a inventario</span>
+        <b-icon icon="package-variant" />
+      </button>
+      <button class="button is-success is-rounded" @click="showForm=!showForm">
+        <span>Nuevo</span>
+        <b-icon icon="plus"></b-icon>
+      </button>
+    </div>
+
     <h4 class="has-text-weight-bold">Productos</h4>
 
     <hr />
@@ -20,6 +31,8 @@
       :striped="true"
       :hoverable="true"
       :loading="loading"
+      :checked-rows.sync="checkedProducts"
+      checkable
     >
       <template slot-scope="props">
         <b-table-column field="id" label="ID" width="40" numeric>{{ props.row.id }}</b-table-column>
@@ -60,16 +73,16 @@
               </button>
             </div>
             <div class="control">
+              <button @click="showProduct(props.row)" class="button is-info is-small is-rounded">
+                <i class="mdi mdi-eye"></i>
+              </button>
+            </div>
+            <div class="control">
               <button
                 @click="openUpdateForm(props.row)"
                 class="button is-danger is-small is-rounded"
               >
                 <i class="mdi mdi-delete"></i>
-              </button>
-            </div>
-            <div class="control">
-              <button @click="showProduct(props.row)" class="button is-info is-small is-rounded">
-                <i class="mdi mdi-eye"></i>
               </button>
             </div>
           </div>
@@ -111,18 +124,64 @@
         </section>
       </div>
     </b-modal>
+
+    <!-- Product detail modal -->
+    <b-modal :active.sync="showDetailModal" has-modal-card>
+      <div class="modal-card" v-if="showDetailModal">
+        <section class="modal-card-body">
+          <product-detail :id="selectedProductId" />
+        </section>
+      </div>
+    </b-modal>
+
+    <!-- Add to inventory -->
+    <b-modal :active.sync="showInventoryModal" has-modal-card>
+      <div class="modal-card">
+        <div class="modal-card-head">
+          <span class="modal-card-title">Agregar productos a inventario</span>
+        </div>
+        <div class="modal-card-body">
+          <b-field label="Inventario">
+            <b-select placeholder="Seleccione un inventario" v-model="selectedInventory">
+              <option
+                v-for="(inventory, index) in inventories"
+                :key="'opt-' + index"
+                :value="inventory.id"
+              >{{ inventory.name }} - {{ inventory.location }}</option>
+            </b-select>
+          </b-field>
+          <p>
+            <b>Agregando:</b>
+            {{ checkedProducts.length }} productos en total.
+          </p>
+          <br />
+          <b-field>
+            <!-- Label left empty for spacing -->
+            <p class="control">
+              <button
+                :disabled="!selectedInventory || checkedProducts.length < 1"
+                class="button is-primary"
+                @click="addProducts"
+              >Agregar productos</button>
+            </p>
+          </b-field>
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import ProductForm from '@/components/product/Form.vue'
+import ProductDetail from '@/components/product/ProductDetail.vue'
 import EventBus from '@/event-bus'
 
 export default {
   name: 'products',
 
   components: {
-    ProductForm
+    ProductForm,
+    ProductDetail
   },
 
   data() {
@@ -132,7 +191,14 @@ export default {
       showForm: false,
       perPage: 50,
       selectedProduct: undefined,
-      showUpdateForm: false
+      selectedProductId: undefined,
+      showUpdateForm: false,
+      showDetailModal: false,
+      checkedProducts: [],
+      // Inventory form
+      inventories: [],
+      showInventoryModal: false,
+      selectedInventory: undefined
     }
   },
 
@@ -199,12 +265,18 @@ export default {
     },
 
     showProduct(product) {
-      
+      this.selectedProductId = product.id
+      this.showDetailModal = true
+    },
+
+    getInventories() {
+      Database.inventory.toArray(data => (this.inventories = data))
     }
   },
 
   mounted() {
     this.getProducts()
+    this.getInventories()
   }
 }
 </script>
