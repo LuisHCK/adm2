@@ -1,7 +1,7 @@
 <template>
-  <div class="home">
-    <div class="columns">
-      <div class="column">
+  <div class="home container">
+    <div class="columns is-mobile is-multiline">
+      <div class="column is-half-mobile">
         <!-- card 1 -->
         <div class="card">
           <div class="card-image">
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="column">
+      <div class="column is-half-mobile">
         <div class="card">
           <div class="card-image">
             <figure class="image image-2">
@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <div class="column">
+      <div class="column is-half-mobile">
         <div class="card">
           <div class="card-image">
             <figure class="image image-3">

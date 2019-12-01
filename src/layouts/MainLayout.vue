@@ -1,13 +1,9 @@
 <template>
   <div class="main-layout">
-    <div class="columns is-mobile is-gapless">
-      <side-nav />
-      <div class="column">
-        <nav-bar />
-        <div class="view-container">
-          <router-view/>
-        </div>
-      </div>
+    <side-nav />
+    <div class="view-container">
+      <nav-bar />
+      <router-view />
     </div>
   </div>
 </template>
@@ -17,17 +13,20 @@ import NavBar from '../components/Layout/NavBar.vue'
 import SideNav from '../components/Layout/SideNav.vue'
 
 export default {
-  name: "main-layout",
+  name: 'main-layout',
 
   components: {
     NavBar,
     SideNav
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
+.main-layout {
+  display: flex;
+}
 .view-container {
-  padding: 10px;
+  width: 100%
 }
 </style>

@@ -16,7 +16,8 @@ export default new Vuex.Store({
     company: undefined,
     shoppingCart: [],
     shoppingCartCustomer: {},
-    chartData: {}
+    chartData: {},
+    sidenavVisible: false
   },
 
   mutations: {
@@ -31,6 +32,10 @@ export default new Vuex.Store({
 
     setCompany(state, company) {
       state.company = company
+    },
+
+    TOGGLE_SIDENAV(state) {
+      state.sidenavVisible = !state.sidenavVisible
     },
 
     /**
