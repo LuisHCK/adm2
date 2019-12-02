@@ -30,7 +30,6 @@ export default {
 <style lang="scss" scoped>
 .navbar {
   width: 100%;
-  position: sticky;
 }
 .navbar-brand {
   display: flex;

@@ -1,5 +1,5 @@
 <template>
-  <div id="products-page">
+  <div class="page-container" id="products-page">
     <div class="is-pulled-right buttons">
       <button
         class="button is-info is-rounded"
@@ -161,7 +161,7 @@
               <button
                 :disabled="!selectedInventory || checkedProducts.length < 1"
                 class="button is-primary"
-                @click="addProducts"
+                @click="addProducts()"
               >Agregar productos</button>
             </p>
           </b-field>
@@ -271,6 +271,10 @@ export default {
 
     getInventories() {
       Database.inventory.toArray(data => (this.inventories = data))
+    },
+    
+    addProducts() {
+
     }
   },
 

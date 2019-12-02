@@ -1,5 +1,5 @@
 <template>
-  <div class="home container">
+  <div class="home page-container">
     <div class="columns is-mobile is-multiline">
       <div class="column is-half-mobile">
         <!-- card 1 -->

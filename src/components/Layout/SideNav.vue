@@ -13,7 +13,12 @@
         </div>
       </div>
       <div class="nav-items">
-        <div v-for="(item, i) in items" @click="to(item.path)" :key="`item-${i}`" class="nav-item">
+        <div
+          v-for="(item, i) in items"
+          @click="to(item.path); toggleSidenav()"
+          :key="`item-${i}`"
+          class="nav-item"
+        >
           <b-icon :icon="item.icon" />
           <span class="text-item" v-text="item.label" />
         </div>
@@ -69,6 +74,10 @@ export default {
 
     updateLogo() {
       this.logo = localStorage.getItem('company_logo')
+    },
+
+    toggleSidenav() {
+      this.$store.commit('TOGGLE_SIDENAV')
     }
   },
 
@@ -90,6 +99,7 @@ export default {
   display: flex;
   flex-direction: column;
   border-right: 1px solid #d6d6d6;
+  position: fixed;
   transition: 0.3s;
   .company-logo {
     padding-bottom: 8px;

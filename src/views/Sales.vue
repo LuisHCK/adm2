@@ -1,5 +1,5 @@
 <template>
-  <div id="sales-page">
+  <div id="sales-page" class="page-container">
     <button class="button is-success is-rounded is-pulled-right" @click="$router.push('/pos')">
       <span>Nuevo</span>
       <b-icon icon="plus"></b-icon>

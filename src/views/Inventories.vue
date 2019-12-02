@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-container">
     <button class="button is-success is-rounded is-pulled-right" @click="showForm=!showForm">
       <span>Nuevo</span>
       <b-icon icon="plus"></b-icon>

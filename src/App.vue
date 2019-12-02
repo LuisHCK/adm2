@@ -57,4 +57,10 @@ body {
   border-radius: 6px;
   border: 1px solid rgb(231, 231, 231);
 }
+
+.page {
+  @media only screen and (max-width: 1023px) {
+    padding: 8px;
+  }
+}
 </style>

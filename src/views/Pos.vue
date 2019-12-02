@@ -1,5 +1,5 @@
 <template>
-  <div class="pos-page">
+  <div class="pos-page page-container">
     <div class="panel">
       <div class="columns">
         <div class="column is-6">

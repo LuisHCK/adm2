@@ -9,6 +9,7 @@ import './assets/materialdesignicons.css'
 import moment from 'moment'
 import 'moment/locale/es'
 import '@/buefy.scss'
+import '@/styles.scss'
 
 Vue.use(Buefy)
 

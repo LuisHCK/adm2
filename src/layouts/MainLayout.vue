@@ -27,6 +27,12 @@ export default {
   display: flex;
 }
 .view-container {
-  width: 100%
+  width: 100%;
+  transition: 0.3s;
+  padding-left: 250px;
+  @media only screen and (max-width: 1023px) {
+    display: block;
+    padding-left: 0px;
+  }
 }
 </style>
