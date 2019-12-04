@@ -1,2 +1,3 @@
 assets/assets/* linguist-vendored
 src/buefy.scss linguist-vendored
+src/assets/materialdesignicons.css linguist-vendored
