@@ -10,6 +10,7 @@ import moment from 'moment'
 import 'moment/locale/es'
 import '@/buefy.scss'
 import '@/styles.scss'
+import './registerServiceWorker'
 
 Vue.use(Buefy)
 
