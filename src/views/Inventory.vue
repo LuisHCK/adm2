@@ -1,6 +1,12 @@
 <template>
-  <div>
-    <button class="button is-primary is-small is-pulled-right" @click="showForm=!showForm">Nuevo</button>
+  <div class="page-container">
+      <div class="is-pulled-right buttons">
+      <button class="button is-success is-rounded" @click="showForm=!showForm">
+        <span>Nuevo</span>
+        <b-icon icon="plus"></b-icon>
+      </button>
+    </div>
+
     <h1 class="has-text-weight-bold" v-text="inventory.name"/>
     <hr>
     <b-table :data="inventoryProducts" :striped="true" :hoverable="true" :loading="loading">
@@ -18,11 +24,11 @@
           <span v-text="getProduct(props.row.product_id).unit"/>
         </b-table-column>
 
-        <b-table-column field="price" label="Precio">
+        <b-table-column field="price" label="Precio Unitario">
           <b-tag type="is-primary">C${{ props.row.price }}</b-tag>
         </b-table-column>
 
-        <b-table-column field="stock" label="Cantidad">{{ props.row.stock }}</b-table-column>
+        <b-table-column field="stock" label="Cantidad en existencia">{{ props.row.stock }}</b-table-column>
 
         <b-table-column field="lot" label="Lote">
           <b-tag v-text="props.row.lot" type="is-info"/>
@@ -190,7 +196,7 @@ export default {
     },
 
     deleteInventoryProduct(inventoryProduct) {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         title: `Quitar ${this.getProductName(inventoryProduct.product_id)}`,
         message:
           '¿Estás seguro de querer <b>quitar</b> este producto del inventario?' +

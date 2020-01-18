@@ -30,7 +30,7 @@
             <div class="right-info">
               <b-tag
                 :type="inventoryProduct.stock>0? 'is-success':'is-danger'"
-              >Disp: {{ inventoryProduct.stock }}</b-tag>
+              >Disp: {{ inventoryProduct.stock || 0 }}</b-tag>
             </div>
           </li>
         </ul>
@@ -168,7 +168,7 @@ export default {
 
     /** Add with warning */
     confirmAdd(inventoryProduct) {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         title: `Advertencia`,
         message:
           'No quedan existencias en el inventario.',

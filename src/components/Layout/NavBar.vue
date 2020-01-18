@@ -1,11 +1,13 @@
 <template>
   <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" @click="$router.push('/')">ADM</a>
-
       <button class="navbar-toggle-menu" @click="toggleSidenav()">
         <b-icon icon="menu"></b-icon>
       </button>
+      <a class="navbar-item" @click="$router.push('/')">
+        <span v-if="company" v-text="company.name"/>
+        <span v-else v-text="'ADM'"/>
+      </a>
     </div>
   </nav>
 </template>
@@ -16,7 +18,7 @@ export default {
   name: 'nav-bar',
 
   computed: {
-    ...mapState(['user'])
+    ...mapState(['user', 'company'])
   },
 
   methods: {

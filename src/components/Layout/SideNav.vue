@@ -25,13 +25,16 @@
       </div>
     </div>
     <div class="bottom-items">
-      <button @click="to('settings')" class="btn settings">
+      <button @click="to('settings'); toggleSidenav()" class="btn settings">
         <b-icon icon="settings" size="is-normal"></b-icon>
       </button>
       <button class="btn logout">
         <b-icon icon="exit-to-app" size="is-normal"></b-icon>
       </button>
     </div>
+
+    <!-- Overlay -->
+    <div @click="toggleSidenav()" class="overlay" :class="sidenavVisible? classes:'hidden'"></div>
   </div>
 </template>
 
@@ -93,6 +96,7 @@ export default {
 <style lang="scss" scoped>
 @import 'src/assets/_variables.scss';
 .side-nav {
+  z-index: 1000;
   padding: 0px;
   width: 250px;
   min-height: 100vh;
@@ -121,6 +125,7 @@ export default {
   }
   .bottom-items {
     display: flex;
+    z-index: 1000;
     .btn {
       border: none;
       width: 100%;
@@ -144,11 +149,25 @@ export default {
   }
   // break points
   @media only screen and (max-width: 1023px) {
-    position: absolute;
-    z-index: 100;
+    position: fixed;
+    z-index: 1000;
     left: 0px;
     &.hidden {
       left: -250px;
+    }
+
+    .overlay {
+      opacity: 1;
+      width: 150vw;
+      height: 100vh;
+      &.hidden {
+        opacity: 0;
+        height: 0px;
+      }
+    }
+
+    .items-container {
+      z-index: 1000;
     }
   }
 }
@@ -167,5 +186,12 @@ export default {
       padding: 11px 15px;
     }
   }
+}
+.overlay {
+  opacity: 0;
+  transition: 0.3s;
+  position: absolute;
+  background-color: #00000073;
+  z-index: 99;
 }
 </style>

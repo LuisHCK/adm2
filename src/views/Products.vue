@@ -272,9 +272,35 @@ export default {
     getInventories() {
       Database.inventory.toArray(data => (this.inventories = data))
     },
-    
-    addProducts() {
 
+    /**
+     * Add Products to selected Inventory
+     */
+    addProducts() {
+      let inventoryProducts = this.checkedProducts.map(product => {
+        return {
+          product_id: product.id,
+          inventory_id: this.selectedInventory
+        }
+      })
+
+      Database.inventory_product
+        .bulkAdd(inventoryProducts)
+        .then(() => {
+          this.showToast(
+            `Se agregaron ${inventoryProducts.length} al inventario`
+          )
+          this.showInventoryModal = false
+        })
+        .catch(err => console.log(err))
+    },
+
+    showToast(message, type = 'is-success') {
+      this.$buefy.toast.open({
+        message: message,
+        type: type,
+        position: 'is-bottom'
+      })
     }
   },
 

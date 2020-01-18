@@ -19,8 +19,6 @@ export default {
   }
 }
 </script>
-100%
-
 <style lang="scss">
 html {
   font-size: 11pt !important;
