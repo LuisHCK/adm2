@@ -8,7 +8,7 @@
           :type="messages.name? 'is-danger':''"
           :message="messages.name"
         >
-          <b-input v-model="form.name"></b-input>
+          <b-input v-model="form.name" placeholder="Nombre y apellido"></b-input>
         </b-field>
 
         <!-- Username -->
@@ -17,12 +17,10 @@
           :type="messages.username? 'is-danger':''"
           :message="messages.username"
         >
-          <b-input v-model="form.username"></b-input>
-        </b-field>
-
-        <!-- Phone -->
-        <b-field label="Teléfono">
-          <b-input v-model="form.phone"></b-input>
+          <b-input
+            v-model="form.username"
+            placeholder="Nombre de usuario para inicio de sesión">
+          </b-input>
         </b-field>
 
         <!-- Password -->
@@ -32,6 +30,17 @@
           :message="messages.phone"
         >
           <b-input type="password" v-model="form.password" password-reveal></b-input>
+        </b-field>
+
+        <b-field
+          label="Empresa"
+          :type="messages.company_name? 'is-danger':''"
+          :message="messages.company_name">
+          <b-input 
+            type="text"
+            v-model="form.company_name"
+            placeholder="Nombre de la empresa o compañía">
+          </b-input>
         </b-field>
 
         <!--  -->
@@ -71,6 +80,9 @@ export default {
       if (!this.form.password)
         this.messages.password = "Por favor escribe una contraseña";
 
+      if (!this.form.company_name)
+        this.messages.company_name = 'Por favor indica el nombre de la empresa'
+
       if (!this.form.password || !this.form.username || !this.form.password)
         return false;
       else return true;
@@ -88,6 +100,8 @@ export default {
             this.notifySuccess("Se guardó el nuevo usuario");
             // Store current user
             this.$store.commit("setUser", user);
+            // Save company.name
+            this.setCompanyName(this.form.company_name)
             // Redirect to path
             this.$router.push("/");
           })
@@ -98,6 +112,10 @@ export default {
       } else {
         this.notifyError("Por favor verifica los datos introducidos");
       }
+    },
+
+    setCompanyName(name) {
+      this.$store.commit('setCompany', { name: name })
     },
 
     notifyError(text) {

@@ -13,7 +13,8 @@ database.version(0.1).stores({
   inventory_product: "++id,product_id,inventory_id,price,lot,stock,created_at,updated_at",
   tax: "++id,name,amount,user_id,created_at,updated_at",
   coupon: "++id,name,amount,created_at,updated_at",
-  sale: "++id,inventory_product_id,quantity,user_id,customer_id,created_at,updated_at"
+  sale: "++id,inventory_product_id,quantity,user_id,customer_id,created_at,updated_at",
+  route: "++id,name,description,phone,created_at,updated_at"
 })
 
 const User = database.user.defineClass(classes.User)

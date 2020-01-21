@@ -57,8 +57,9 @@ export default {
           path: 'inventories',
           icon: 'format-list-checks'
         },
-        { label: 'Ventas', path: 'sales', icon: 'cart-arrow-down' },
-        { label: 'Proveedores', path: 'providers', icon: 'account-group' }
+        { label: 'Registro de Ventas', path: 'sales', icon: 'cart-arrow-down' },
+        { label: 'Proveedores', path: 'providers', icon: 'account-group' },
+        { label: 'Rutas', path: 'routes', icon: 'truck-fast-outline' },
       ]
     }
   },
