@@ -30,7 +30,7 @@
               :type="formErrors.name? 'is-danger':''"
               :message="formErrors.name"
             >
-              <b-input :required="true" v-model="routeForm.nombre" placeholder="Nombre de la ruta"></b-input>
+              <b-input :required="true" v-model="routeForm.name" placeholder="Nombre de la ruta"></b-input>
             </b-field>
 
             <b-field label="Contacto">
@@ -73,17 +73,27 @@ export default {
     getRoutes() {
       Database.route
         .toArray()
-        .then(routes => (this.routes = routes))
-        .then(() => (this.loading = false))
+        .then(routes => {
+          console.log(routes)
+          this.routes = routes
+        })
+        .catch(err => console.error(err))
     },
 
     /**
      * Save Route
      */
     submit() {
-      Database.route.add(this.routeForm).then(data => {
-        this.getRoutes()
-      })
+      Database.route
+        .add(this.routeForm)
+        .then(data => {
+          // Perform post-create action
+          this.showModalForm = false
+          this.routeForm = {}
+          this.formErrors = {}
+          this.getRoutes()
+        })
+        .catch(err => console.error(err))
     }
   },
 

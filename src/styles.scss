@@ -1,3 +1,25 @@
 .page-container {
   padding: 8px;
 }
+
+.card-item {
+  background-color: white;
+  border: 1px solid rgb(224, 224, 224);
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  cursor: pointer;
+  transition: 0.3s;
+  margin: 1px;
+
+  .main {
+    width: 100%;
+  }
+  .counter {
+    width: 35%;
+    text-align: center;
+  }
+  &:hover {
+    background-color: rgb(252, 252, 252);
+  }
+}
