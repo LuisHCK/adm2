@@ -97,6 +97,12 @@ const router = new Router({
       name: 'routes',
       meta:{ layout: 'main-layout' },
       component: () => import('./views/Routes.vue')
+    },
+    {
+      path: '/customers',
+      name: 'customers',
+      meta: { layout: 'main-layout' },
+      component: () => import('./views/Customers.vue')
     }
   ]
 })

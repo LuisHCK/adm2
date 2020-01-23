@@ -52,6 +52,7 @@ export default {
         { label: 'Inicio', path: 'home', icon: 'view-dashboard' },
         { label: 'POS', path: 'pos', icon: 'point-of-sale' },
         { label: 'Productos', path: 'products', icon: 'package-variant' },
+        { label: 'Clientes', path: 'customers', icon: 'account-group' },
         {
           label: 'Inventarios',
           path: 'inventories',
@@ -74,6 +75,7 @@ export default {
   methods: {
     to(path) {
       this.$router.push({ name: path })
+      .catch(err => {})
     },
 
     updateLogo() {

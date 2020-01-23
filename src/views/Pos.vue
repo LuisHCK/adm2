@@ -3,7 +3,7 @@
     <div class="panel">
       <div class="columns">
         <div class="column is-6">
-          <product-search @input="addToShoppingCart"/>
+          <product-search @input="addToShoppingCart" />
         </div>
         <div class="column">
           <button @click="cancelSale" class="button is-danger">Cancelar venta</button>
@@ -30,11 +30,11 @@
               <tr v-for="(item, index) in shoppingCart" :key="'ip-' + index">
                 <td>{{ index + 1 }}</td>
                 <td>
-                  <div v-text="getProductName(item.inventoryProduct.product)"/>
+                  <div v-text="getProductName(item.inventoryProduct.product)" />
                   <small>{{ item.inventoryProduct.inventory.name }}</small>
                 </td>
                 <td>
-                  <span v-text="item.inventoryProduct.stock"/>
+                  <span v-text="item.inventoryProduct.stock" />
                 </td>
                 <td>
                   <input
@@ -48,13 +48,13 @@
                     @input="setInventoryProductBuyQty(index, $event, item.inventoryProduct.stock)"
                     @change="setInventoryProductBuyQty(index, $event, item.inventoryProduct.stock)"
                     @focus="focusSelect"
-                  >
+                  />
                 </td>
                 <td>
-                  <span v-text="`C$${item.inventoryProduct.price}`"/>
+                  <span v-text="`C$${item.inventoryProduct.price}`" />
                 </td>
                 <td>
-                  <span v-text="`C$${item.subTotal}`"/>
+                  <span v-text="`C$${item.subTotal}`" />
                 </td>
                 <td>
                   <b-button type="is-danger" size="is-normal" rounded @click="removeItem(index)">
@@ -74,7 +74,7 @@
               <span>Subtotal</span>
             </div>
             <div class="column is-half has-text-right">
-              <span v-text="`C$${shoppingCartTotal}`"/>
+              <span v-text="`C$${shoppingCartTotal}`" />
             </div>
             <!-- Discounts -->
             <div class="column is-half">
@@ -82,8 +82,8 @@
             </div>
             <div class="column is-half has-text-right">
               <span>
-                <span v-text="`-C$${discounted} `"/>
-                <small v-text="`(${discount}%)`"/>
+                <span v-text="`-C$${discounted} `" />
+                <small v-text="`(${discount}%)`" />
               </span>
             </div>
             <!-- Total -->
@@ -91,11 +91,11 @@
               <span>TOTAL</span>
             </div>
             <div class="column is-half has-text-right">
-              <strong class="is-size-4 has-text-danger" v-text="`C$${finalTotal}`"/>
+              <strong class="is-size-4 has-text-danger" v-text="`C$${finalTotal}`" />
             </div>
           </div>
 
-          <hr>
+          <hr />
 
           <!-- payment section -->
           <div class="columns is-multiline">
@@ -116,11 +116,21 @@
               <span>Vuelto</span>
             </div>
             <div class="column is-half has-text-right">
-              <strong class="hast-text-success" v-text="`C$${exchange}`"/>
+              <strong class="hast-text-success" v-text="`C$${exchange}`" />
+            </div>
+
+            <!-- Type of sale -->
+            <div class="column is-half">
+              <span>Tipo de venta</span>
+            </div>
+            <div class="column is-half has-text-right">
+              <b-switch v-model="saleType">
+                {{ saleType? 'Contado':'Crédito' }}
+              </b-switch>
             </div>
           </div>
 
-          <hr>
+          <hr />
 
           <!-- Customer section -->
           <div class="columns is-multiline">
@@ -162,7 +172,7 @@
           <p class="modal-card-title">Agregar un nuevo Cliente</p>
         </header>
         <section class="modal-card-body">
-          <customer-form v-if="showCustomerForm" @input="getCustomers();showCustomerForm=false"/>
+          <customer-form v-if="showCustomerForm" @input="getCustomers();showCustomerForm=false" />
         </section>
       </div>
     </b-modal>
@@ -216,7 +226,7 @@ export default {
       payWith: undefined,
       customers: [],
       showCustomerForm: false,
-
+      saleType: false
     }
   },
 
@@ -309,6 +319,7 @@ export default {
           subTotal: this.shoppingCartTotal,
           discounted: this.discounted,
           total: this.finalTotal,
+          sale_type: this.saleType? 'cash':'credit',
           customer_id: this.shoppingCartCustomer.id,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
@@ -327,7 +338,9 @@ export default {
     reduceInventoryQuantity() {
       this.shoppingCart.map(item => {
         const totalStock = item.inventoryProduct.stock - item.quantity
-        Database.inventory_product.update(item.inventoryProduct.id, {stock: totalStock})
+        Database.inventory_product.update(item.inventoryProduct.id, {
+          stock: totalStock
+        })
       })
     },
 
