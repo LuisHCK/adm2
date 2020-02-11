@@ -226,7 +226,7 @@ export default {
       payWith: undefined,
       customers: [],
       showCustomerForm: false,
-      saleType: false
+      saleType: true
     }
   },
 

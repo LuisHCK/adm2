@@ -12,6 +12,10 @@
     <b-field label="Email">
       <b-input v-model="form.email" placeholder="Correo electrónico"></b-input>
     </b-field>
+    <!-- address -->
+    <b-field label="Direccion">
+      <b-input v-model="form.address" placeholder="Domicilio del cliente"></b-input>
+    </b-field>
 
     <b-field>
       <button type="submit" class="button is-primary is-fullwidth">Guardar</button>

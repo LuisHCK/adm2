@@ -34,6 +34,13 @@
           <b-tag v-text="'C$ ' + props.row.discounted" />
         </b-table-column>
 
+        <b-table-column field="sale_type" label="Pago">
+          <b-tag
+            v-text="getSaleType(props.row.sale_type).text"
+            :type="getSaleType(props.row.sale_type).color"
+          />
+        </b-table-column>
+
         <b-table-column field="total" label="TOTAL">
           <b-tag type="is-success" v-text="'C$ ' + props.row.total" />
         </b-table-column>
@@ -129,6 +136,26 @@ export default {
         // open the modal
         this.showSaleDetails = true
       }
+    },
+
+    getSaleType(item) {
+      let type = {
+        color: '',
+        text: ''
+      }
+
+      switch (item) {
+        case 'cash':
+          type.color = 'is-success'
+          type.text = 'Contado'
+          break
+        case 'credit':
+          type.color = 'is-warning'
+          type.text = 'Crédito'
+          break
+      }
+
+      return type
     }
   },
 

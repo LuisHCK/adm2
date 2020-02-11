@@ -102,7 +102,13 @@ const router = new Router({
       path: '/customers',
       name: 'customers',
       meta: { layout: 'main-layout' },
-      component: () => import('./views/Customers.vue')
+      component: () => import('./views/Customers.vue'),
+    },
+    {
+      path: '/customers/:id',
+      name: 'customer',
+      meta: { layout: 'main-layout' },
+      component: () => import('./views/Customer.vue')
     }
   ]
 })
