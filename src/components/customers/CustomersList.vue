@@ -7,6 +7,7 @@
           <th>#</th>
           <th>Nombre</th>
           <th>Compras</th>
+          <th align="right">Opciones</th>
         </tr>
       </thead>
       <tbody>
@@ -19,17 +20,22 @@
             <td>
               <strong v-text="customer.purchases"></strong>
             </td>
+            <td align="right">
+              <button @click="$router.push('/customers/' + customer.id)" class="button is-info is-small is-rounded">
+                <i class="mdi mdi-eye"></i>
+              </button>
+            </td>
           </tr>
         </template>
         <template v-else>
           <tr>
-            <th colspan="3">No hay resultados</th>
+            <th colspan="4">No hay resultados</th>
           </tr>
         </template>
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="3">
+          <td colspan="4">
             <router-link :to="{ path: 'customers' }">Todos los clientes</router-link>
           </td>
         </tr>
