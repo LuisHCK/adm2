@@ -67,7 +67,7 @@
         </b-table-column>
 
         <b-table-column
-          label="Saldo"
+          label="Saldo Actual"
           field="balance"
           :numeric="true">
           <b-tag
@@ -180,7 +180,7 @@ export default {
         .toArray(data => {
           // Sum total of records
           let total = data.reduce((prev, cur) => {
-            return prev + cur.amount
+            return prev + Number(cur.amount)
           }, 0)
           // Sum total
           customer.total_payment += total

@@ -61,4 +61,8 @@ body {
     padding: 8px;
   }
 }
+
+.modal {
+  z-index: 1000 !important;
+}
 </style>
