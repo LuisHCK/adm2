@@ -7,7 +7,7 @@ Doesn't require internet connection, everithing is stored on device using [Index
 
 ![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshot-localhost_8080-2020.03.04-08_20_34.jpg)
 ![screenshot](https://github.com/LuisHCK/adm2/blob/master/public/screenshot-localhost_8080-2020.03.04-08_18_46.jpg)
-![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshot-localhost_8080-2020.03.04-08_18_46.jpg)
+![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshot-localhost_8080-2020.03.04-08_20_18.jpg)
 
 ## Project setup
 ```
