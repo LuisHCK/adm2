@@ -54,9 +54,26 @@
       </div>
       <div class="column is-full-mobile">
         <div class="panel">
-          <h4 class="has-text-weight-bold is-size-4">
-            Transacciones del cliente
-          </h4>
+          <div class="is-flex" style="justify-content: space-between">
+            <h4 class="has-text-weight-bold is-size-4">
+              Transacciones del cliente
+            </h4>
+
+            <b-field label="Filtrar por fecha">
+              <b-datepicker
+                placeholder="Click para seleccionar..."
+                range
+                position="is-bottom-left"
+                v-model="dateRange"
+              >
+              </b-datepicker>
+              <b-button
+                @click="filterByDate()"
+                icon-left="magnify"
+                type="is-primary"
+              />
+            </b-field>
+          </div>
 
           <b-table
             :data="sortedTransactions"
@@ -109,6 +126,7 @@
         <div class="modal-card-body">
           <payment-form
             :customer="customer"
+            :totalDebt="totalDebt"
             @submit="savePayment($event)"
           ></payment-form>
         </div>
@@ -133,7 +151,8 @@ export default {
       showFormModal: false,
       sales: [],
       transactions: [],
-      loading: false
+      loading: false,
+      dateRange: undefined
     }
   },
 
@@ -174,21 +193,35 @@ export default {
      */
     getSales() {
       const id = Number(this.$route.params.id)
-      Database.sale
-        .where({ customer_id: id, sale_type: 'credit' })
-        .toArray(data => {
-          const sales = data.map(d => {
-            return {
-              type: 'credit',
-              id: d.id,
-              description: 'Compra al crédito',
-              total: d.total,
-              created_at: d.created_at,
-              updated_at: d.updated_at
-            }
-          })
-          this.transactions.push(...sales)
+      let query = Database.sale.where({ customer_id: id, sale_type: 'credit' })
+
+      // Get date range
+      if (this.dateRange) {
+        // Parse filters
+        const startDate = this.$moment(this.dateRange[0])
+        const finishDate = this.$moment(this.dateRange[1])
+
+        // Update query
+        query = query.and(item => {
+          let paymentDate = this.$moment(item.created_at)
+          // check if between
+          return paymentDate.isBetween(startDate, finishDate)
         })
+      }
+
+      query.toArray(data => {
+        const sales = data.map(d => {
+          return {
+            type: 'credit',
+            id: d.id,
+            description: 'Compra al crédito',
+            total: d.total,
+            created_at: d.created_at,
+            updated_at: d.updated_at
+          }
+        })
+        this.transactions.push(...sales)
+      })
     },
 
     /**
@@ -196,7 +229,23 @@ export default {
      */
     getPayments() {
       const id = Number(this.$route.params.id)
-      Database.customer_payment.where({ customer_id: id }).toArray(data => {
+      let query = Database.customer_payment.where({ customer_id: id })
+
+      // Get date range
+      if (this.dateRange) {
+        // Parse filters
+        const startDate = this.$moment(this.dateRange[0])
+        const finishDate = this.$moment(this.dateRange[1])
+
+        // Update query
+        query = query.and(item => {
+          let paymentDate = this.$moment(item.created_at)
+          // check if between
+          return paymentDate.isBetween(startDate, finishDate)
+        })
+      }
+
+      query.toArray(data => {
         const payments = data.map(p => {
           return {
             type: 'payment',
@@ -213,12 +262,20 @@ export default {
 
     savePayment(payment) {
       this.getData()
+      this.showFormModal = false
     },
 
     getData() {
+      // Clean previous data
+      this.transactions = []
+
       this.getSales()
       this.getPayments()
-    }
+    },
+
+    filterByDate() {
+      this.getData()
+    },
   },
 
   mounted() {

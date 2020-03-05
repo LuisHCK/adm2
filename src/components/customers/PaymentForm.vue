@@ -22,7 +22,7 @@
         placeholder="Click para selecionar fecha"
         icon="calendar-today"
         :month-names="months"
-        :day-names="weekDays"        
+        :day-names="weekDays"
         v-model="form.date"
       >
       </b-datepicker>
@@ -54,6 +54,10 @@ export default {
     customer: {
       type: Object,
       default: () => {}
+    },
+    totalDebt: {
+      type: Number,
+      default: 0
     }
   },
 
@@ -85,6 +89,20 @@ export default {
      */
     submit(event) {
       if (this.form.amount) {
+        // if debth is less than payment, send an alert
+        if (Number(this.form.amount) > this.totalDebt) {
+          return this.$buefy.dialog.confirm({
+            title: 'Confirmar monto a pagar',
+            message: `El monto a pagar es mayor que la deuda actual del cliente\n
+            ¿Aun así desea confirmar el pago?`,
+            cancelText: 'Cancelar',
+            confirmText: 'Si, guardar pago',
+            type: 'is-success',
+            onConfirm: () => {
+              this.savePayment(this.form)
+            }
+          })
+        }
         this.savePayment(this.form)
       } else {
         this.notify(
