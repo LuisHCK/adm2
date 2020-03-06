@@ -28,3 +28,17 @@
 .bold {
   font-weight: bold !important;
 }
+
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.align-center {
+  align-items: center;
+}
+
+// Padding classes
+.padding-vertical-1 {
+  padding: 1em 0em;
+}
