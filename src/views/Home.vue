@@ -27,7 +27,10 @@
         <div class="card">
           <div class="card-image">
             <figure class="image image-2">
-              <span class="value has-text-white is-size-2 has-text-weight-bold">{{ totalSales }}</span>
+              <span
+                class="value has-text-white is-size-2 has-text-weight-bold"
+                >{{ totalSales }}</span
+              >
             </figure>
           </div>
           <div class="card-content">
@@ -36,7 +39,9 @@
             </div>
           </div>
           <div class="card-footer">
-            <a @click="$router.push('/sales')" class="card-footer-item">Ir a ventas</a>
+            <a @click="$router.push('/sales')" class="card-footer-item"
+              >Ir a ventas</a
+            >
           </div>
         </div>
       </div>
@@ -45,7 +50,10 @@
         <div class="card">
           <div class="card-image">
             <figure class="image image-3">
-              <span class="value has-text-white is-size-2 has-text-weight-bold">{{ totalProviders }}</span>
+              <span
+                class="value has-text-white is-size-2 has-text-weight-bold"
+                >{{ totalProviders }}</span
+              >
             </figure>
           </div>
           <div class="card-content">
@@ -54,7 +62,9 @@
             </div>
           </div>
           <div class="card-footer">
-            <a @click="$router.push('/providers')" class="card-footer-item">Ver Proveedores</a>
+            <a @click="$router.push('/providers')" class="card-footer-item"
+              >Ver Proveedores</a
+            >
           </div>
         </div>
       </div>
@@ -62,7 +72,11 @@
 
     <div class="columns">
       <div class="column">
-        <line-chart ref="lineChart" :labels="salesGraph.labels" :datasets="salesGraph.datasets" />
+        <line-chart
+          ref="lineChart"
+          :labels="salesGraph.labels"
+          :datasets="salesGraph.datasets"
+        />
       </div>
     </div>
 
@@ -117,14 +131,12 @@ export default {
   methods: {
     getSales() {
       const sales = Database.sale
-        .where('created_at')
-        .between(this.today.start, this.today.end, true, true)
 
       // Count total sales
       sales.count().then(val => (this.totalSales = val))
 
       // Count amount of money
-      sales.each(sale => {
+      sales.where({ sale_type: 'cash' }).each(sale => {
         this.totalMoney += sale.total
       })
 
