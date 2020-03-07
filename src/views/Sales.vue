@@ -99,9 +99,9 @@
             <b-tag type="is-success" v-text="'C$ ' + props.row.total" />
           </b-table-column>
 
-          <b-table-column field="date_time" label="Fecha de venta">{{
-            props.row.created_at | moment('MMM DD YYYY, h:mm a')
-          }}</b-table-column>
+          <b-table-column field="date_time" label="Fecha de venta">
+            {{ props.row.created_at | moment('MMM DD YYYY, h:mm a') }}
+          </b-table-column>
 
           <b-table-column field="actions" label="Actions">
             <div class="buttons">
@@ -113,7 +113,7 @@
                 size="is-small"
               />
               <b-button
-                disabled
+                @click="openInvoiceModal(props.row)"
                 type="is-info"
                 rounded
                 icon-right="printer"
@@ -150,17 +150,23 @@
         </section>
       </div>
     </b-modal>
+
+    <div v-show="false">
+      <invoice v-if="showInvoiceModal" :sale="selectedSale" @on-close="showInvoiceModal=false"></invoice>
+    </div>
   </div>
 </template>
 
 <script>
 import SaleDetails from '@/components/sales/SaleDetails.vue'
+import Invoice from '@/components/sales/Invoice.vue'
 
 export default {
   name: 'sales-page',
 
   components: {
-    SaleDetails
+    SaleDetails,
+    Invoice
   },
 
   data() {
@@ -168,6 +174,7 @@ export default {
       sales: [],
       perPage: 50,
       loading: false,
+      showInvoiceModal: false,
       showSaleDetails: false,
       selectedSale: undefined,
       dateRange: undefined,
@@ -210,6 +217,11 @@ export default {
     selectSale(sale) {
       this.selectedSale = sale
       this.showSaleDetails = true
+    },
+
+    openInvoiceModal(sale) {
+      this.selectedSale = sale
+      this.showInvoiceModal = true
     },
 
     /** Optinally load a sale */

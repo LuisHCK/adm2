@@ -2,9 +2,6 @@
   <div class="side-nav is-primary" :class="sidenavVisible? classes:'hidden'">
     <div class="items-container">
       <div class="company-logo">
-        <div v-if="logo">
-          <img :src="logo" />
-        </div>
         <div v-if="!company" class="company-cover has-text-centered">
           <span class="has-text-weight-bold has-text-white-bis is-size-4" v-text="'ADM2'" />
         </div>
