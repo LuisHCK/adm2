@@ -141,7 +141,8 @@ export default {
 
 <style lang="scss" scoped>
 #registration-page {
-  background: linear-gradient(135deg, #5efff2 0%, #eb6aaf 100%);
+  background-image: url('/andrew-ridley-jR4Zf-riEjI-unsplash.jpg');
+  background-size: cover;
   min-height: 100vh;
   display: flex;
   align-items: center;

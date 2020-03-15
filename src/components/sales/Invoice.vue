@@ -153,6 +153,7 @@
 </template>
 
 <script>
+import { printContentent } from '@/lib/print'
 import { mapState } from 'vuex'
 export default {
   name: 'sale-invoice',
@@ -191,24 +192,7 @@ export default {
 
     printInvoice() {
       const renderedHTML = document.getElementById('saleInvoice').innerHTML
-      var printWindow = window.open('', `Factura #${this.sale.id}`)
-      printWindow.document.write(
-        `<!DOCTYPE html>
-          <html lang="es">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Document</title>
-          </head>
-          <body style="font-family: sans-serif;">
-          ${renderedHTML}    
-          </body>
-        </html>`
-      )
-      printWindow.document.close()
-      printWindow.focus()
-      printWindow.print()
-      printWindow.close()
+      printContentent(renderedHTML, '', `factura_#${this.sale.id}`)
       this.$emit('on-close')
     }
   },

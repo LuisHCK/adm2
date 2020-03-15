@@ -1,12 +1,24 @@
 <template>
   <div id="sales-page" class="page-container">
-    <button
-      class="button is-success is-rounded is-pulled-right"
-      @click="$router.push('/pos')"
-    >
-      <span>Nuevo</span>
-      <b-icon icon="plus"></b-icon>
-    </button>
+    <div class="field is-grouped" style="justify-content: flex-end">
+      <div class="control">
+        <button class="button is-info is-rounded" @click="printReport()">
+          <span>Imprimir reporte</span>
+          <b-icon icon="printer"></b-icon>
+        </button>
+      </div>
+
+      <div class="control">
+        <button
+          class="button is-success is-rounded is-pulled-right"
+          @click="$router.push('/pos')"
+        >
+          <span>Nuevo</span>
+          <b-icon icon="plus"></b-icon>
+        </button>
+      </div>
+    </div>
+
     <h4 class="has-text-weight-bold">Ventas</h4>
     <hr />
 
@@ -59,6 +71,7 @@
 
       <!-- sales list -->
       <b-table
+        id="salesTable"
         :paginated="true"
         :pagination-simple="true"
         :per-page="perPage"
@@ -123,6 +136,16 @@
           </b-table-column>
         </template>
 
+        <template slot="footer">
+          <th colspan="6" class="has-text-right">
+            <b>TOTAL</b>
+          </th>
+
+          <th colspan="3">
+            C${{ salesTotal }}
+          </th>
+        </template>
+
         <template slot="empty">
           <section class="section">
             <div class="content has-text-grey has-text-centered">
@@ -152,7 +175,11 @@
     </b-modal>
 
     <div v-show="false">
-      <invoice v-if="showInvoiceModal" :sale="selectedSale" @on-close="showInvoiceModal=false"></invoice>
+      <invoice
+        v-if="showInvoiceModal"
+        :sale="selectedSale"
+        @on-close="showInvoiceModal = false"
+      ></invoice>
     </div>
   </div>
 </template>
@@ -160,6 +187,7 @@
 <script>
 import SaleDetails from '@/components/sales/SaleDetails.vue'
 import Invoice from '@/components/sales/Invoice.vue'
+import { printContentent } from '@/lib/print'
 
 export default {
   name: 'sales-page',
@@ -179,6 +207,12 @@ export default {
       selectedSale: undefined,
       dateRange: undefined,
       paymentTypeFilter: undefined
+    }
+  },
+
+  computed: {
+    salesTotal() {
+      return this.sales.reduce((a, b) => a + b.total, 0)
     }
   },
 
@@ -262,6 +296,12 @@ export default {
       this.dateRange = undefined
 
       this.getSales()
+    },
+
+    printReport() {
+      const htmlString = document.getElementById('salesTable').innerHTML
+
+      printContentent(htmlString)
     }
   },
 
