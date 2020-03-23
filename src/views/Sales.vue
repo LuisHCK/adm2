@@ -126,7 +126,7 @@
                 size="is-small"
               />
               <b-button
-                @click="openInvoiceModal(props.row)"
+                @click="openPrintInvoice(props.row)"
                 type="is-info"
                 rounded
                 icon-right="printer"
@@ -141,9 +141,7 @@
             <b>TOTAL</b>
           </th>
 
-          <th colspan="3">
-            C${{ salesTotal }}
-          </th>
+          <th colspan="3">C${{ salesTotal }}</th>
         </template>
 
         <template slot="empty">
@@ -173,14 +171,6 @@
         </section>
       </div>
     </b-modal>
-
-    <div v-show="false">
-      <invoice
-        v-if="showInvoiceModal"
-        :sale="selectedSale"
-        @on-close="showInvoiceModal = false"
-      ></invoice>
-    </div>
   </div>
 </template>
 
@@ -188,6 +178,8 @@
 import SaleDetails from '@/components/sales/SaleDetails.vue'
 import Invoice from '@/components/sales/Invoice.vue'
 import { printContentent } from '@/lib/print'
+import { salesReport } from '@/reports/sales-report'
+import { printInvoice } from '@/reports/invoice'
 
 export default {
   name: 'sales-page',
@@ -253,9 +245,9 @@ export default {
       this.showSaleDetails = true
     },
 
-    openInvoiceModal(sale) {
-      this.selectedSale = sale
-      this.showInvoiceModal = true
+    openPrintInvoice(sale) {
+      const report = printInvoice(sale)
+      printContentent(report, `Factura #${sale.id}`, '')
     },
 
     /** Optinally load a sale */
@@ -299,9 +291,21 @@ export default {
     },
 
     printReport() {
-      const htmlString = document.getElementById('salesTable').innerHTML
+      const tableCss = `
+      table {
+        width: 100%;
+      }
+      .sales-table {
+        border-collapse: collapse;
+        text-align: left;
+      }
+      table.sales-table th, table.sales-table td {
+        border: 1px solid black;
+        padding: 3px 6px;
+      }`
 
-      printContentent(htmlString)
+      let report = salesReport(this.sales, 'Reporte de Ventas', this.dateRange)
+      printContentent(report, 'Reporte de Ventas', tableCss)
     }
   },
 
@@ -311,5 +315,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

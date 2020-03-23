@@ -2,6 +2,10 @@ const electron = require('electron')
 const BrowserWindow = electron.remote.BrowserWindow
 import { onElectron } from './electron-utils'
 
+const globalStyles = `
+  body { font-family: Arial, Helvetica, sans-serif; }
+`
+
 /**
  * Print content in a new window
  * @param {String} htmlString Rendered HTML string
@@ -11,16 +15,14 @@ import { onElectron } from './electron-utils'
  */
 export function printContentent(
   htmlString,
-  styles = '',
   title = '',
+  styles = '',
   callback = () => {}
 ) {
-  const renderedTemplate = renderTemplate(title, styles, htmlString)
-
   if (onElectron) {
-    printElectron(renderedTemplate, title, callback)
+    printElectron(htmlString, title, styles)
   } else {
-    webPrint(renderedTemplate, callback)
+    webPrint(htmlString, callback)
   }
 }
 
@@ -37,10 +39,6 @@ function renderTemplate(title, styles, htmlString) {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>${title}</title>
-
-      <styles>
-        ${styles}
-      </styles>
     </head>
     <body style="font-family: sans-serif;">
     ${htmlString}
@@ -73,21 +71,29 @@ function webPrint(renderedTemplate, callback = null) {
  * @param {String} renderedTemplate Rendered template
  * @param {Function} callback Callback function
  */
-function printElectron(
-  renderedTemplate,
-  title = 'Reporte ADM2',
-  callback = null
-) {
-  let win = new BrowserWindow({ width: 650, height: 900 })
+function printElectron(renderedTemplate, title = 'Reporte ADM2', styles='') {
+  let win = new BrowserWindow({ width: 750, height: 900 })
   const file =
     'data:text/html;charset=UTF-8,' + encodeURIComponent(renderedTemplate)
   win.loadURL(file, { title: title })
 
+  // Merge styles
+  const winStyles = mergeStyles(styles)
+
   // if pdf is loaded start printing.
   win.webContents.on('did-finish-load', () => {
-    win.webContents.print({}, (success) => {
+    win.webContents.insertCSS(winStyles)
+    win.webContents.print({}, success => {
       // close window after print order.
-      win.close()
+      // win.close()
     })
   })
+}
+
+function mergeStyles(customStyles) {
+  if (customStyles) {
+    return `${globalStyles}${customStyles}`
+  } else {
+    return globalStyles
+  }
 }

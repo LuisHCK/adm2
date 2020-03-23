@@ -192,7 +192,7 @@ export default {
 
     printInvoice() {
       const renderedHTML = document.getElementById('saleInvoice').innerHTML
-      printContentent(renderedHTML, '', `factura_#${this.sale.id}`)
+      printContentent(renderedHTML, `factura_#${this.sale.id}`)
       this.$emit('on-close')
     }
   },
