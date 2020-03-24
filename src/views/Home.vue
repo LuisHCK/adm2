@@ -50,10 +50,9 @@
         <div class="card">
           <div class="card-image">
             <figure class="image image-3">
-              <span
-                class="value has-text-white is-size-2 has-text-weight-bold"
-                >{{ totalProviders }}</span
-              >
+              <span class="value has-text-white is-size-2 has-text-weight-bold">
+                {{ totalProviders }}
+              </span>
             </figure>
           </div>
           <div class="card-content">
@@ -76,6 +75,7 @@
           ref="lineChart"
           :labels="salesGraph.labels"
           :datasets="salesGraph.datasets"
+          @onDateChange="onDateChange($event)"
         />
       </div>
     </div>
@@ -102,7 +102,7 @@
 import LineChart from '@/components/charts/LineChart.vue'
 import SalesList from '@/components/sales/SalesList.vue'
 import CustomersList from '@/components/customers/CustomersList.vue'
-import { lastXdays, setHourTo } from '@/lib/datetime'
+import { lastXdays, setHourTo, enumerateDaysBetweenDates } from '@/lib/datetime'
 
 const TODAY = new Date()
 
@@ -115,7 +115,9 @@ export default {
       totalMoney: 0,
       totalProviders: 0,
       salesList: [],
-      salesGraph: {}
+      salesGraph: {},
+      dateRange: [],
+      dates: lastXdays(7)
     }
   },
 
@@ -149,8 +151,6 @@ export default {
     },
 
     getSalesGraph() {
-      let dates = lastXdays(7)
-
       let labels = []
       let datasets = [
         {
@@ -160,7 +160,7 @@ export default {
         }
       ]
 
-      dates.reverse().map(date => {
+      this.dates.reverse().map(date => {
         // Add label
         labels.push(this.$moment(date).format('ddd D MMM'))
 
@@ -178,6 +178,7 @@ export default {
             console.log(this.$refs.lineChart.fillData())
           })
       })
+
       // set graph
       this.salesGraph = {
         labels,
@@ -187,6 +188,13 @@ export default {
 
     getTotalProviders() {
       Database.provider.count().then(count => (this.totalProviders = count))
+    },
+
+    onDateChange(dateRange) {
+      this.dates = enumerateDaysBetweenDates(dateRange[0], dateRange[1])
+      this.getSalesGraph()
+      console.log(this.salesGraph);
+      
     }
   },
 

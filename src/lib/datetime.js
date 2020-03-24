@@ -1,3 +1,5 @@
+import * as moment from 'moment'
+
 /**
  * Get an array with latests N days
  * @param {Number} n N quantity of days
@@ -15,10 +17,21 @@ export function lastXdays(n) {
   return dates
 }
 
-export function setHourTo(date='start', time) {
+export function setHourTo(date = 'start', time) {
   if (time == 'start') {
     return new Date(date.setHours(0, 0, 0, 0))
   } else if (time == 'end') {
     return new Date(date.setHours(23, 59, 59))
   }
+}
+
+export function enumerateDaysBetweenDates(startDate, endDate) {
+  let now = moment(startDate).clone(),
+    dates = []
+
+  while (now.isSameOrBefore(endDate)) {
+    dates.push(now.toDate())
+    now.add(1, 'days')
+  }
+  return dates
 }

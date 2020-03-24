@@ -1,12 +1,33 @@
 <template>
   <div class="panel chart-container" @click="fillData()">
-    <div>Rendimiento de ventas</div>
-    <line-chart :chart-data="datacollection" :options="options" style="height: 300px;"></line-chart>
+    <div class="columns">
+      <div class="column">
+        Rendimiento de ventas
+      </div>
+      <div class="column">
+        <b-field>
+          <b-datepicker
+            placeholder="Filtrar por fecha"
+            range
+            position="is-bottom-left"
+            v-model="dateRange"
+            icon="calendar-today"
+            @input="emitChange()"
+          >
+          </b-datepicker>
+        </b-field>
+      </div>
+    </div>
+    <line-chart
+      :chart-data="datacollection"
+      :options="options"
+      style="height: 300px;"
+    ></line-chart>
   </div>
 </template>
 
 <script>
-import LineChart from "./LineChart.js";
+import LineChart from './LineChart.js'
 
 export default {
   components: {
@@ -16,7 +37,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: ""
+      default: ''
     },
     labels: {
       type: Array,
@@ -24,10 +45,12 @@ export default {
     },
     datasets: {
       type: Array,
-      default: () => [{
-        label: 'label',
-        data: [0]
-      }]
+      default: () => [
+        {
+          label: 'label',
+          data: [0]
+        }
+      ]
     }
   },
 
@@ -37,41 +60,33 @@ export default {
       options: {
         responsive: true,
         maintainAspectRatio: false
-      }
-    };
+      },
+
+      dateRange: []
+    }
   },
 
   mounted() {
-    this.fillData();
+    this.fillData()
   },
 
   methods: {
     fillData() {
       this.datacollection = {
         labels: this.labels,
-        datasets: this.datasets,
-        // [
-        //   {
-        //     label: "Data One",
-        //     backgroundColor: "#039BE5",
-        //     data: [
-        //       this.getRandomInt(),
-        //       this.getRandomInt(),
-        //       this.getRandomInt(),
-        //       this.getRandomInt(),
-        //       this.getRandomInt(),
-        //       this.getRandomInt(),
-        //       this.getRandomInt()
-        //     ]
-        //   }
-        // ]
-      };
+        datasets: this.datasets
+      }
     },
+
     getRandomInt() {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5;
+      return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+    },
+
+    emitChange() {
+      this.$emit('onDateChange', this.dateRange)
     }
   }
-};
+}
 </script>
 
 <style>
