@@ -193,8 +193,6 @@ export default {
     onDateChange(dateRange) {
       this.dates = enumerateDaysBetweenDates(dateRange[0], dateRange[1])
       this.getSalesGraph()
-      console.log(this.salesGraph);
-      
     }
   },
 
