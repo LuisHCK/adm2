@@ -181,9 +181,7 @@ export default {
       padding: 0px 15px;
     }
     &:hover {
-      color: white;
-      background-color: $primary;
-      padding: 11px 15px;
+      background-color: #f5f5f5;
     }
   }
 }
