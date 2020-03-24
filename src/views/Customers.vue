@@ -133,7 +133,7 @@ export default {
     return {
       customers: [],
       showCustomerForm: false,
-      colums: [
+      columns: [
         {
           field: 'name',
           label: 'Nombre'
