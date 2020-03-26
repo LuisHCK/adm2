@@ -2,7 +2,7 @@
   <div class="page-container">
     <div class="field is-grouped" style="justify-content: flex-end">
       <div class="control">
-        <button class="button is-info is-rounded">
+        <button class="button is-info is-rounded" @click="printCustomersReport()">
           <span>Imprimir reporte</span>
           <b-icon icon="printer"></b-icon>
         </button>
@@ -57,7 +57,9 @@
             label="Crédito total"
             :numeric="true"
           >
-            <b-tag rounded type="is-info"> C${{ props.row.total_credit }} </b-tag>
+            <b-tag rounded type="is-info">
+              C${{ props.row.total_credit }}
+            </b-tag>
           </b-table-column>
 
           <b-table-column field="total_payment" :numeric="true" label="Abono">
@@ -123,6 +125,7 @@
 
 <script>
 import CustomerForm from '@/components/customers/CustomerForm.vue'
+import { customerReport } from '@/reports/customers-report'
 
 export default {
   components: {
@@ -181,7 +184,7 @@ export default {
             this.getCustomerPayments(c)
           })
 
-          // Displat data
+          // Display data
           this.customers = customers
         })
         .catch(err => console.error(err))
@@ -225,6 +228,10 @@ export default {
           // Sum total
           customer.total_payment += total
         })
+    },
+
+    printCustomersReport() {
+      customerReport(this.customers)
     }
   },
 
@@ -234,5 +241,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>

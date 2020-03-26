@@ -3,7 +3,14 @@ const BrowserWindow = electron.remote.BrowserWindow
 import { onElectron } from './electron-utils'
 
 const globalStyles = `
-  body { font-family: Arial, Helvetica, sans-serif; }
+  body { font-family: Arial, Helvetica, sans-serif; },
+  table.bordered-table {
+    border-collapse: collapse !important;
+  }
+  table.bordered-table td, table.bordered-table th {
+    padding: 6px;
+    border: 1px solid black;
+  }
 `
 
 /**
