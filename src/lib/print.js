@@ -3,13 +3,17 @@ const BrowserWindow = electron.remote.BrowserWindow
 import { onElectron } from './electron-utils'
 
 const globalStyles = `
-  body { font-family: Arial, Helvetica, sans-serif; },
+  body { font-family: Arial, Helvetica, sans-serif; };
   table.bordered-table {
     border-collapse: collapse !important;
   }
   table.bordered-table td, table.bordered-table th {
     padding: 6px;
     border: 1px solid black;
+  }
+
+  mt-1 {
+    margin-top: 1em;
   }
 `
 
@@ -84,11 +88,11 @@ function printElectron(renderedTemplate, title = 'Reporte ADM2', styles='') {
     'data:text/html;charset=UTF-8,' + encodeURIComponent(renderedTemplate)
   win.loadURL(file, { title: title })
 
-  // Merge styles
-  const winStyles = mergeStyles(styles)
-
+  
   // if pdf is loaded start printing.
   win.webContents.on('did-finish-load', () => {
+    // Merge styles
+    const winStyles = mergeStyles(styles)
     win.webContents.insertCSS(winStyles)
     win.webContents.print({}, success => {
       // close window after print order.

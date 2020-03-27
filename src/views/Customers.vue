@@ -125,7 +125,7 @@
 
 <script>
 import CustomerForm from '@/components/customers/CustomerForm.vue'
-import { customerReport } from '@/reports/customers-report'
+import { customersReport } from '@/reports/customers-report'
 
 export default {
   components: {
@@ -231,7 +231,7 @@ export default {
     },
 
     printCustomersReport() {
-      customerReport(this.customers)
+      customersReport(this.customers)
     }
   },
 

@@ -1,13 +1,22 @@
 <template>
   <div class="page-container">
-    <b-button
-      class="is-pulled-right"
-      type="is-success"
-      icon-left="plus"
-      rounded
-      @click="showFormModal = !showFormModal"
-      >Registrar pago</b-button
-    >
+    <div class="has-text-right">
+      <b-button
+        style="margin-right: 8px;"
+        type="is-success"
+        icon-left="plus"
+        rounded
+        @click="showFormModal = !showFormModal"
+        >Registrar pago</b-button
+      >
+      <b-button
+        type="is-info"
+        icon-left="printer"
+        rounded
+        @click="printCustomerReport()"
+        >Imprimir Reporte</b-button
+      >
+    </div>
 
     <h4 class="has-text-weight-bold">Detalles de cliente</h4>
 
@@ -137,6 +146,7 @@
 
 <script>
 import PaymentForm from '@/components/customers/PaymentForm.vue'
+import { customerDetailReport } from '@/reports/customers-report'
 
 export default {
   name: 'customer',
@@ -276,6 +286,15 @@ export default {
     filterByDate() {
       this.getData()
     },
+
+    printCustomerReport() {      
+      customerDetailReport({
+        customer: this.customer,
+        transactions: this.transactions,
+        totalDebt: this.totalDebt,
+        dateRange: this.dateRange
+      })
+    }
   },
 
   mounted() {
