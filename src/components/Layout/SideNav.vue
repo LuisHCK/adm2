@@ -1,20 +1,27 @@
 <template>
-  <div class="side-nav is-primary" :class="sidenavVisible? classes:'hidden'">
+  <div class="side-nav is-primary" :class="sidenavVisible ? classes : 'hidden'">
     <div class="items-container">
       <div class="company-logo">
         <div v-if="!company" class="company-cover has-text-centered">
-          <span class="has-text-weight-bold has-text-white-bis is-size-4" v-text="'ADM2'" />
+          <span
+            class="has-text-weight-bold has-text-white-bis is-size-4"
+            v-text="'ADM2'"
+          />
         </div>
         <div v-else class="company-cover has-text-centered">
-          <span class="has-text-weight-bold has-text-white-bis is-size-4" v-text="company.name" />
+          <span
+            class="has-text-weight-bold has-text-white-bis is-size-4"
+            v-text="company.name"
+          />
         </div>
       </div>
       <div class="nav-items">
         <div
           v-for="(item, i) in items"
-          @click="to(item.path); toggleSidenav()"
+          @click="setRoute(item)"
           :key="`item-${i}`"
           class="nav-item"
+          :class="{ active: item.path == currentPath }"
         >
           <b-icon :icon="item.icon" />
           <span class="text-item" v-text="item.label" />
@@ -22,7 +29,13 @@
       </div>
     </div>
     <div class="bottom-items">
-      <button @click="to('settings'); toggleSidenav()" class="btn settings">
+      <button
+        @click="
+          to('settings')
+          toggleSidenav()
+        "
+        class="btn settings"
+      >
         <b-icon icon="settings" size="is-normal"></b-icon>
       </button>
       <button class="btn logout">
@@ -31,7 +44,11 @@
     </div>
 
     <!-- Overlay -->
-    <div @click="toggleSidenav()" class="overlay" :class="sidenavVisible? classes:'hidden'"></div>
+    <div
+      @click="toggleSidenav()"
+      class="overlay"
+      :class="sidenavVisible ? classes : 'hidden'"
+    ></div>
   </div>
 </template>
 
@@ -45,20 +62,7 @@ export default {
   data() {
     return {
       logo: localStorage.getItem('company_logo'),
-      items: [
-        { label: 'Inicio', path: 'home', icon: 'view-dashboard' },
-        { label: 'POS', path: 'pos', icon: 'point-of-sale' },
-        { label: 'Productos', path: 'products', icon: 'package-variant' },
-        { label: 'Clientes', path: 'customers', icon: 'account-group' },
-        {
-          label: 'Inventarios',
-          path: 'inventories',
-          icon: 'format-list-checks'
-        },
-        { label: 'Registro de Ventas', path: 'sales', icon: 'cart-arrow-down' },
-        { label: 'Proveedores', path: 'providers', icon: 'account-group' },
-        { label: 'Rutas', path: 'routes', icon: 'truck-fast-outline' },
-      ]
+      currentPath: 'home',
     }
   },
 
@@ -66,13 +70,29 @@ export default {
     ...mapState(['company', 'sidenavVisible']),
     classes() {
       return 'is-2-desktop ' + 'is-2-mobile' + ' is-2-tablet'
-    }
+    },
+
+    items() {
+      return [
+        { label: 'Inicio', path: 'home', icon: 'view-dashboard' },
+        { label: 'POS', path: 'pos', icon: 'point-of-sale' },
+        { label: 'Productos', path: 'products', icon: 'package-variant' },
+        { label: 'Clientes', path: 'customers', icon: 'account-group' },
+        {
+          label: 'Inventarios',
+          path: 'inventories',
+          icon: 'format-list-checks',
+        },
+        { label: 'Registro de Ventas', path: 'sales', icon: 'cart-arrow-down' },
+        { label: 'Proveedores', path: 'providers', icon: 'account-group' },
+        // { label: 'Rutas', path: 'routes', icon: 'truck-fast-outline' },
+      ]
+    },
   },
 
   methods: {
     to(path) {
-      this.$router.push({ name: path })
-      .catch(err => {})
+      this.$router.push({ name: path }).catch((err) => {})
     },
 
     updateLogo() {
@@ -81,7 +101,13 @@ export default {
 
     toggleSidenav() {
       this.$store.commit('TOGGLE_SIDENAV')
-    }
+    },
+
+    setRoute(item) {
+      this.to(item.path)
+      this.toggleSidenav()
+      this.currentPath = item.path
+    },
   },
 
   mounted() {
@@ -89,7 +115,7 @@ export default {
     EventBus.$on('UPDATE_LOGO', () => {
       this.updateLogo()
     })
-  }
+  },
 }
 </script>
 
@@ -180,8 +206,13 @@ export default {
     .text-item {
       padding: 0px 15px;
     }
+
+    &.active {
+      background-color: #cfe4fc;
+    }
+
     &:hover {
-      background-color: #f5f5f5;
+      background-color: #daeafc;
     }
   }
 }

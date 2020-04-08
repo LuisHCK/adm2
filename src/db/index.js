@@ -1,4 +1,5 @@
 import Dexie from "dexie"
+import "dexie-export-import";
 import classes from "./classes"
 
 const database = new Dexie("adm_2")
@@ -36,5 +37,18 @@ const Sale = database.sale.defineClass(classes.Sale)
 database.open()
 
 window.Database = database
+
+// Database export
+window.ExportDatabase = function() {
+  const blob = database.export({ progressCallback })
+}
+
+/**
+ * Print progress
+ * @param {Object} options
+ */
+function progressCallback ({totalRows, completedRows}) {
+  console.log(`Progress: ${completedRows} of ${totalRows} rows completed`);
+}
 
 export default database
