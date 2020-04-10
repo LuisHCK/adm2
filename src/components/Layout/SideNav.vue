@@ -2,15 +2,10 @@
   <div class="side-nav is-primary" :class="sidenavVisible ? classes : 'hidden'">
     <div class="items-container">
       <div class="company-logo">
-        <div v-if="!company" class="company-cover has-text-centered">
+        <div class="company-cover has-text-centered">
+          <img :src="logo || require('@/assets/logo.png')" alt="" class="logo">
           <span
-            class="has-text-weight-bold has-text-white-bis is-size-4"
-            v-text="'ADM2'"
-          />
-        </div>
-        <div v-else class="company-cover has-text-centered">
-          <span
-            class="has-text-weight-bold has-text-white-bis is-size-4"
+            class="has-text-weight-bold is-size-4 is-margin-top-1"
             v-text="company.name"
           />
         </div>
@@ -142,11 +137,16 @@ export default {
     }
   }
   .company-cover {
-    height: 120px;
-    background: linear-gradient(135deg, #1976d2 0%, #91c5e0 100%);
+    height: 220px;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+
+    img.logo {
+      height: 120px;
+      width: auto;
+    }
   }
   .items-container {
     flex-grow: 1;
