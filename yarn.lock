@@ -3243,10 +3243,10 @@ dev-null@^0.1.1:
   resolved "https://registry.yarnpkg.com/dev-null/-/dev-null-0.1.1.tgz#5a205ce3c2b2ef77b6238d6ba179eb74c6a0e818"
   integrity sha1-WiBc48Ky73e2I41roXnrdMag6Bg=
 
-dexie-export-import@^1.0.0-rc.1:
-  version "1.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/dexie-export-import/-/dexie-export-import-1.0.0-rc.1.tgz#0f9d787e2b857fa8aeead4ab4484154d0bfb5443"
-  integrity sha512-3P/x6C8iW3rQ0/tgEPpEDzX6yQn7aW94myM4eEpLcbN4yufJkc/P5bE+kbfkb+KUTpnHkJwCo7QEy0icFFC0jA==
+dexie-export-import@^1.0.0-rc.2:
+  version "1.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/dexie-export-import/-/dexie-export-import-1.0.0-rc.2.tgz#65267ecae6fe78c4122687fd978341010c6f367a"
+  integrity sha512-TRQ/I5oh2IyAWaRMSZ6vOsympgBANuryd/bKQGeXDf26stKHGkD3NoEmBgNnCBSWA1kcUeZkQurDNjJPoGVS2g==
   dependencies:
     dexie "^3.0.0-alpha.5 || ^2.0.4"
 

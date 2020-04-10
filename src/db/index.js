@@ -1,22 +1,25 @@
-import Dexie from "dexie"
-import "dexie-export-import";
-import classes from "./classes"
+import Dexie from 'dexie'
+import { importDB, exportDB, importInto } from 'dexie-export-import'
+import classes from './classes'
 
-const database = new Dexie("adm_2")
+const database = new Dexie('adm_2')
 
 database.version(0.1).stores({
-  user: "++id,name,email,username,role,created_at,updated_at",
-  provider: "++id,name,email,phone_number,created_at,updated_at",
-  customer: "++id,name,email,phone_number,created_at,updated_at",
-  product: "++id,name,description,brand,codebar,user_id,created_at,updated_at",
-  product_provider: "++id,product_id,provider_id,active,user_id,created_at,updated_at",
-  inventory: "++id,name,location,user_id,created_at,updated_at",
-  inventory_product: "++id,product_id,inventory_id,price,lot,stock,created_at,updated_at",
-  tax: "++id,name,amount,user_id,created_at,updated_at",
-  coupon: "++id,name,amount,created_at,updated_at",
-  sale: "++id,inventory_product_id,quantity,user_id,customer_id,sale_type,[customer_id+sale_type],created_at,updated_at",
-  route: "++id,name,description,phone,created_at,updated_at",
-  customer_payment: "++id,amount,balance,customer_id,created_at,updated_at"
+  user: '++id,name,email,username,role,created_at,updated_at',
+  provider: '++id,name,email,phone_number,created_at,updated_at',
+  customer: '++id,name,email,phone_number,created_at,updated_at',
+  product: '++id,name,description,brand,codebar,user_id,created_at,updated_at',
+  product_provider:
+    '++id,product_id,provider_id,active,user_id,created_at,updated_at',
+  inventory: '++id,name,location,user_id,created_at,updated_at',
+  inventory_product:
+    '++id,product_id,inventory_id,price,lot,stock,created_at,updated_at',
+  tax: '++id,name,amount,user_id,created_at,updated_at',
+  coupon: '++id,name,amount,created_at,updated_at',
+  sale:
+    '++id,inventory_product_id,quantity,user_id,customer_id,sale_type,[customer_id+sale_type],created_at,updated_at',
+  route: '++id,name,description,phone,created_at,updated_at',
+  customer_payment: '++id,amount,balance,customer_id,created_at,updated_at'
 })
 
 const User = database.user.defineClass(classes.User)
@@ -39,16 +42,17 @@ database.open()
 window.Database = database
 
 // Database export
-window.ExportDatabase = function() {
-  const blob = database.export({ progressCallback })
+window.ExportDatabase = async function() {
+  const blob = await exportDB(database, { progressCallback })
+  console.log(blob);
 }
 
 /**
  * Print progress
  * @param {Object} options
  */
-function progressCallback ({totalRows, completedRows}) {
-  console.log(`Progress: ${completedRows} of ${totalRows} rows completed`);
+function progressCallback({ totalRows, completedRows }) {
+  console.log(`Progress: ${completedRows} of ${totalRows} rows completed`)
 }
 
 export default database
