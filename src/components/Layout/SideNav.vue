@@ -23,8 +23,11 @@
           class="nav-item"
           :class="{ active: item.path == currentPath }"
         >
-          <b-icon :icon="item.icon" />
-          <span class="text-item" v-text="item.label" />
+          <div class="item-details">
+            <b-icon :icon="item.icon" />
+            <span class="text-item" v-text="item.label" />
+          </div>
+          <b-icon v-if="item.path == currentPath" icon="chevron-left" />
         </div>
       </div>
     </div>
@@ -62,7 +65,7 @@ export default {
   data() {
     return {
       logo: localStorage.getItem('company_logo'),
-      currentPath: 'home',
+      currentPath: 'home'
     }
   },
 
@@ -81,18 +84,18 @@ export default {
         {
           label: 'Inventarios',
           path: 'inventories',
-          icon: 'format-list-checks',
+          icon: 'format-list-checks'
         },
         { label: 'Registro de Ventas', path: 'sales', icon: 'cart-arrow-down' },
-        { label: 'Proveedores', path: 'providers', icon: 'account-group' },
+        { label: 'Proveedores', path: 'providers', icon: 'account-group' }
         // { label: 'Rutas', path: 'routes', icon: 'truck-fast-outline' },
       ]
-    },
+    }
   },
 
   methods: {
     to(path) {
-      this.$router.push({ name: path }).catch((err) => {})
+      this.$router.push({ name: path }).catch(err => {})
     },
 
     updateLogo() {
@@ -107,7 +110,7 @@ export default {
       this.to(item.path)
       this.toggleSidenav()
       this.currentPath = item.path
-    },
+    }
   },
 
   mounted() {
@@ -115,7 +118,7 @@ export default {
     EventBus.$on('UPDATE_LOGO', () => {
       this.updateLogo()
     })
-  },
+  }
 }
 </script>
 
@@ -124,11 +127,11 @@ export default {
 .side-nav {
   z-index: 1000;
   padding: 0px;
-  width: 250px;
+  width: 280px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #d6d6d6;
+  border-right: 1px solid #f1f1f1;
   position: fixed;
   transition: 0.3s;
   .company-logo {
@@ -179,7 +182,7 @@ export default {
     z-index: 1000;
     left: 0px;
     &.hidden {
-      left: -250px;
+      left: -280px;
     }
 
     .overlay {
@@ -199,12 +202,19 @@ export default {
 }
 .nav-items {
   .nav-item {
-    padding: 11px 10px;
+    padding: 18px 30px;
     cursor: pointer;
     transition: 0.3s;
-    border-bottom: 1px solid #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    // border-bottom: 1px solid #f1f1f1;
     .text-item {
       padding: 0px 15px;
+    }
+
+    i.mdi {
+      color: whitesmoke !important;
     }
 
     &.active {

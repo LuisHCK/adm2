@@ -29,7 +29,7 @@ export default {
 .view-container {
   width: 100%;
   transition: 0.3s;
-  padding-left: 250px;
+  padding-left: 280px;
   @media only screen and (max-width: 1023px) {
     display: block;
     padding-left: 0px;

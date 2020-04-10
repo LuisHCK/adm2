@@ -13,7 +13,8 @@ const router = new Router({
       path: '/',
       name: 'home',
       meta: {
-        layout: 'main-layout'
+        layout: 'main-layout',
+        title: 'Inicio'
       },
       component: Home
     },
@@ -21,7 +22,8 @@ const router = new Router({
       path: '/about',
       name: 'about',
       meta: {
-        layout: 'main-layout'
+        layout: 'main-layout',
+        title: 'Sobre ADM2'
       },
       component: () =>
         import(/* webpackChunkName: "about" */ './views/About.vue')
@@ -47,67 +49,67 @@ const router = new Router({
     {
       path: '/products',
       name: 'products',
-      meta: { layout: 'main-layout' },
+      meta: { layout: 'main-layout', title: 'Productos' },
       component: () => import('./views/Products.vue')
     },
     {
       path: '/inventories',
       name: 'inventories',
-      meta: { layout: 'main-layout' },
+      meta: { layout: 'main-layout', title: 'Inventarios' },
       component: () => import('./views/Inventories.vue')
     },
     {
       path: '/inventories/:id',
       name: 'inventory',
-      meta: { layout: 'main-layout' },
+      meta: { layout: 'main-layout', title: 'Inventario' },
       component: () => import('./views/Inventory.vue')
     },
     {
       path: '/settings',
       name: 'settings',
-      meta: { layout: 'main-layout' },
+      meta: { layout: 'main-layout', title: 'Ajustes' },
       component: () => import('./views/Settings.vue')
     },
     {
       path: '/pos',
       name: 'pos',
-      meta: { layout: 'main-layout' },
+      meta: { layout: 'main-layout', title: 'Punto de Venta' },
       component: () => import('./views/Pos.vue')
     },
     {
       path: '/sales',
       name: 'sales',
-      meta: { layout: 'main-layout' },
+      meta: { layout: 'main-layout', title: 'Ventas' },
       component: () => import('./views/Sales.vue')
     },
     {
       path: '/employees',
       name: 'employees',
-      meta: { layout: 'main-layout' },
+      meta: { layout: 'main-layout', title: 'Empleados' },
       component: () => import('./views/Employees.vue')
     },
     {
       path: '/providers',
       name: 'providers',
-      meta: { layout: 'main-layout' },
+      meta: { layout: 'main-layout', title: 'Proveedores' },
       component: () => import('./views/Providers.vue')
     },
     {
       path: '/routes',
       name: 'routes',
-      meta:{ layout: 'main-layout' },
+      meta: { layout: 'main-layout', title: 'Rutas' },
       component: () => import('./views/Routes.vue')
     },
     {
       path: '/customers',
       name: 'customers',
-      meta: { layout: 'main-layout' },
-      component: () => import('./views/Customers.vue'),
+      meta: { layout: 'main-layout', title: 'Clientes' },
+      component: () => import('./views/Customers.vue')
     },
     {
       path: '/customers/:id',
       name: 'customer',
-      meta: { layout: 'main-layout' },
+      meta: { layout: 'main-layout', title: 'Cliente' },
       component: () => import('./views/Customer.vue')
     }
   ]
@@ -125,6 +127,9 @@ router.beforeEach((to, from, next) => {
       }
     })
   }
+
+  // Clean Actio button state
+  store.commit('SET_ACTION_BUTTONS', [])
 })
 
 export default router

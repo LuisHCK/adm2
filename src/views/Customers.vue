@@ -1,27 +1,5 @@
 <template>
   <div class="page-container">
-    <div class="field is-grouped" style="justify-content: flex-end">
-      <div class="control">
-        <button class="button is-info is-rounded" @click="printCustomersReport()">
-          <span>Imprimir reporte</span>
-          <b-icon icon="printer"></b-icon>
-        </button>
-      </div>
-
-      <div class="control">
-        <button
-          class="button is-success is-rounded"
-          @click="showCustomerForm = !showCustomerForm"
-        >
-          <span>Nuevo</span>
-          <b-icon icon="plus"></b-icon>
-        </button>
-      </div>
-    </div>
-
-    <h4 class="has-text-weight-bold">Clientes</h4>
-    <hr />
-
     <div class="panel">
       <b-table :data="customers" :columns="columns">
         <template slot="empty">
@@ -232,11 +210,34 @@ export default {
 
     printCustomersReport() {
       customersReport(this.customers)
+    },
+
+    setActionButtons() {
+      const printReport = {
+        type: 'is-primary',
+        icon: 'printer',
+        label: 'Imprimir Reporte',
+        action: () => {
+          this.printCustomersReport()
+        }
+      }
+
+      const addCustomer = {
+        type: 'is-success',
+        icon: 'plus',
+        label: 'Nuevo Cliente',
+        action: () => {
+          this.showCustomerForm = true
+        }
+      }
+
+      this.$store.commit('SET_ACTION_BUTTONS', [printReport, addCustomer])
     }
   },
 
   mounted() {
     this.getCustomers()
+    this.setActionButtons()
   }
 }
 </script>

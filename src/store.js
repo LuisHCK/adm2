@@ -17,7 +17,8 @@ export default new Vuex.Store({
     shoppingCart: [],
     shoppingCartCustomer: {},
     chartData: {},
-    sidenavVisible: false
+    sidenavVisible: false,
+    actionButtons: []
   },
 
   mutations: {
@@ -93,6 +94,10 @@ export default new Vuex.Store({
     // CHART DATA
     SET_CHART_DATA(state, payload) {
       state.chartData = payload
+    },
+
+    SET_ACTION_BUTTONS(state, payload) {
+      state.actionButtons = payload
     }
   },
 

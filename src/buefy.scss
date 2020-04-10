@@ -2,6 +2,8 @@
 @import "~bulma/sass/utilities/_all";
 @import "src/assets/_variables";
 
+$success: #2ebb60;
+
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')
 $colors: (
     "white": ($white, $black),
@@ -24,3 +26,8 @@ $link-focus-border: $primary;
 // Import Bulma and Buefy styles
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
+
+/** SPECIFIC OVERRIDES */
+.card-footer {
+    border-top: 1px solid #f1f1f1;
+}

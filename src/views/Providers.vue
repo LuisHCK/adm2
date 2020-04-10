@@ -1,15 +1,5 @@
 <template>
   <div class="page-container">
-    <button
-      class="button is-success is-pulled-right is-rounded"
-      @click="showForm = !showForm"
-    >
-      <span>Nuevo</span>
-      <b-icon icon="plus"></b-icon>
-    </button>
-    <h1 class="has-text-weight-bold" v-text="'Proveedores'" />
-    <hr />
-
     <div class="panel">
       <b-table
         :paginated="true"
@@ -116,14 +106,26 @@ export default {
     editProvider(provider) {
       this.selectedProvider = provider
       this.showForm = true
+    },
+
+    setActionButtons() {
+      const addProvider = {
+        type: 'is-success',
+        icon: 'plus',
+        label: 'Nuevo Proveedor',
+        action: () => {
+          this.showForm = true
+        }
+      }
+      this.$store.commit('SET_ACTION_BUTTONS', [addProvider])
     }
   },
 
   mounted() {
     this.getProviders()
+    this.setActionButtons()
   }
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

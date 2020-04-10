@@ -3,7 +3,7 @@
     <div class="columns is-mobile is-multiline">
       <div class="column is-half-mobile">
         <!-- card 1 -->
-        <div class="card">
+        <div class="panel">
           <div class="card-image">
             <figure class="image image-1">
               <span
@@ -24,7 +24,7 @@
       </div>
 
       <div class="column is-half-mobile">
-        <div class="card">
+        <div class="panel">
           <div class="card-image">
             <figure class="image image-2">
               <span
@@ -47,7 +47,7 @@
       </div>
 
       <div class="column is-half-mobile">
-        <div class="card">
+        <div class="panel">
           <div class="card-image">
             <figure class="image image-3">
               <span class="value has-text-white is-size-2 has-text-weight-bold">

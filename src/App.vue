@@ -53,7 +53,7 @@ body {
   background-color: white;
   padding: 8px;
   border-radius: 6px;
-  border: 1px solid rgb(231, 231, 231);
+  border: 1px solid rgb(241, 241, 241);
 }
 
 .page {

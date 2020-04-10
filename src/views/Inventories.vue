@@ -1,13 +1,5 @@
 <template>
   <div class="page-container">
-    <button class="button is-success is-rounded is-pulled-right" @click="showForm=!showForm">
-      <span>Nuevo</span>
-      <b-icon icon="plus"></b-icon>
-    </button>
-    <h1 class="has-text-weight-bold">Inventarios</h1>
-
-    <hr />
-
     <div class="columns is-mobile is-multiline">
       <div
         class="column is-half-desktop"
@@ -75,11 +67,24 @@ export default {
           this.showForm = false
         })
         .catch(err => console.log(err))
+    },
+
+    setActionButtons() {
+      const addInventory = {
+        type: 'is-success',
+        icon: 'plus',
+        label: 'Nuevo Inventario',
+        action: () => {
+          this.showForm = true
+        }
+      }
+      this.$store.commit('SET_ACTION_BUTTONS', [addInventory])
     }
   },
 
   mounted() {
     this.getInventories()
+    this.setActionButtons()
   }
 }
 </script>

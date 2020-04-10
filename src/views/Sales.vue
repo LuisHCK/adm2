@@ -1,27 +1,5 @@
 <template>
   <div id="sales-page" class="page-container">
-    <div class="field is-grouped" style="justify-content: flex-end">
-      <div class="control">
-        <button class="button is-info is-rounded" @click="printReport()">
-          <span>Imprimir reporte</span>
-          <b-icon icon="printer"></b-icon>
-        </button>
-      </div>
-
-      <div class="control">
-        <button
-          class="button is-success is-rounded is-pulled-right"
-          @click="$router.push('/pos')"
-        >
-          <span>Nuevo</span>
-          <b-icon icon="plus"></b-icon>
-        </button>
-      </div>
-    </div>
-
-    <h4 class="has-text-weight-bold">Ventas</h4>
-    <hr />
-
     <div class="panel">
       <div class="is-flex justify-end padding-vertical-1">
         <b-field grouped>
@@ -306,11 +284,33 @@ export default {
 
       let report = salesReport(this.sales, 'Reporte de Ventas', this.dateRange)
       printContentent(report, 'Reporte de Ventas', tableCss)
+    },
+
+    setActionButtons() {
+      const printReport = {
+        type: 'is-primary',
+        icon: 'printer',
+        label: 'Imprimir Reporte',
+        action: () => {
+          this.printReport()
+        }
+      }
+
+      const goToPOS = {
+        type: 'is-success',
+        icon: 'plus',
+        label: 'Nueva Venta',
+        action: () => {
+          this.$router.push('/pos')
+        }
+      }
+      this.$store.commit('SET_ACTION_BUTTONS', [printReport, goToPOS])
     }
   },
 
   mounted() {
     this.getSales()
+    this.setActionButtons()
   }
 }
 </script>

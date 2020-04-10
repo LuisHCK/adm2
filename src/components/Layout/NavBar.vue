@@ -1,13 +1,29 @@
 <template>
-  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+  <nav
+    class="navbar is-transparent"
+    role="navigation"
+    aria-label="main navigation"
+  >
     <div class="navbar-brand">
       <button class="navbar-toggle-menu" @click="toggleSidenav()">
         <b-icon icon="menu"></b-icon>
       </button>
       <a class="navbar-item" @click="$router.push('/')">
-        <span v-if="company" v-text="company.name"/>
-        <span v-else v-text="'ADM'"/>
+        <span class="strong is-size-2" v-text="$route.meta.title" />
       </a>
+      <div class="action-buttons">
+        <b-button
+          v-for="(actionBtn, index) in actionButtons"
+          :class="actionBtn.class"
+          :key="index"
+          :type="actionBtn.type"
+          :icon-left="actionBtn.icon"
+          :disabled="actionBtn.disabled"
+          rounded
+          @click="actionBtn.action">
+          {{ actionBtn.label }}
+        </b-button>
+      </div>
     </div>
   </nav>
 </template>
@@ -18,20 +34,33 @@ export default {
   name: 'nav-bar',
 
   computed: {
-    ...mapState(['user', 'company'])
+    ...mapState(['user', 'company', 'actionButtons'])
   },
 
   methods: {
     toggleSidenav() {
       this.$store.commit('TOGGLE_SIDENAV')
     }
-  }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 .navbar {
   width: 100%;
+
+  .action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    button {
+      margin-right: 6px;
+    }
+    button:last-of-type {
+      margin-right: 12px;
+    }
+  }
 }
 .navbar-brand {
   display: flex;
@@ -41,7 +70,7 @@ export default {
 .navbar-toggle-menu {
   display: none;
   width: 48px;
-  color: white;
+  color: rgb(73, 73, 73);
   background-color: transparent;
   border: none;
   cursor: pointer;

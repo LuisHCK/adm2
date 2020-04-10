@@ -1,26 +1,12 @@
 <template>
   <div class="page-container" id="products-page">
-    <div class="is-pulled-right buttons">
-      <button
-        class="button is-info is-rounded"
-        :disabled="checkedProducts.length < 1"
-        @click="showInventoryModal = !showInventoryModal"
-      >
-        <span>Agregar a inventario</span>
-        <b-icon icon="package-variant" />
-      </button>
-      <button class="button is-success is-rounded" @click="showForm=!showForm">
-        <span>Nuevo</span>
-        <b-icon icon="plus"></b-icon>
-      </button>
-    </div>
-
-    <h4 class="has-text-weight-bold">Productos</h4>
-
-    <hr />
-
     <form @submit.prevent="searchProduct" class="search-form">
-      <input ref="searchInput" class="input" placeholder="Nombre, marca, codigo" type="text" />
+      <input
+        ref="searchInput"
+        class="input"
+        placeholder="Nombre, marca, codigo"
+        type="text"
+      />
     </form>
 
     <b-table
@@ -33,15 +19,20 @@
       :loading="loading"
       :checked-rows.sync="checkedProducts"
       checkable
+      @check="setActionButtons()"
     >
       <template slot-scope="props">
-        <b-table-column field="id" label="ID" width="40" numeric>{{ props.row.id }}</b-table-column>
+        <b-table-column field="id" label="ID" width="40" numeric>{{
+          props.row.id
+        }}</b-table-column>
 
         <b-table-column field="name" label="Nombre">
           <strong>{{ props.row.name }}</strong>
         </b-table-column>
 
-        <b-table-column field="brand" label="Marca">{{ props.row.brand }}</b-table-column>
+        <b-table-column field="brand" label="Marca">{{
+          props.row.brand
+        }}</b-table-column>
 
         <b-table-column field="unit" label="Presentación">
           <b-tag type="is-primary">
@@ -50,7 +41,9 @@
           </b-tag>
         </b-table-column>
 
-        <b-table-column field="codebar" label="Código">{{ props.row.codebar }}</b-table-column>
+        <b-table-column field="codebar" label="Código">{{
+          props.row.codebar
+        }}</b-table-column>
 
         <b-table-column field="categories" label="Categorías">
           <b-taglist>
@@ -73,7 +66,10 @@
               </button>
             </div>
             <div class="control">
-              <button @click="showProduct(props.row)" class="button is-info is-small is-rounded">
+              <button
+                @click="showProduct(props.row)"
+                class="button is-info is-small is-rounded"
+              >
                 <i class="mdi mdi-eye"></i>
               </button>
             </div>
@@ -120,7 +116,10 @@
           <span class="modal-card-title" v-text="selectedProduct.name" />
         </header>
         <section class="modal-card-body">
-          <product-form :product-id="selectedProduct.id" @submit="updateProduct" />
+          <product-form
+            :product-id="selectedProduct.id"
+            @submit="updateProduct"
+          />
         </section>
       </div>
     </b-modal>
@@ -142,12 +141,16 @@
         </div>
         <div class="modal-card-body">
           <b-field label="Inventario">
-            <b-select placeholder="Seleccione un inventario" v-model="selectedInventory">
+            <b-select
+              placeholder="Seleccione un inventario"
+              v-model="selectedInventory"
+            >
               <option
                 v-for="(inventory, index) in inventories"
                 :key="'opt-' + index"
                 :value="inventory.id"
-              >{{ inventory.name }} - {{ inventory.location }}</option>
+                >{{ inventory.name }} - {{ inventory.location }}</option
+              >
             </b-select>
           </b-field>
           <p>
@@ -162,7 +165,9 @@
                 :disabled="!selectedInventory || checkedProducts.length < 1"
                 class="button is-primary"
                 @click="addProducts()"
-              >Agregar productos</button>
+              >
+                Agregar productos
+              </button>
             </p>
           </b-field>
         </div>
@@ -201,6 +206,8 @@ export default {
       selectedInventory: undefined
     }
   },
+
+  computed: {},
 
   methods: {
     // Get all products
@@ -301,12 +308,55 @@ export default {
         type: type,
         position: 'is-bottom'
       })
+    },
+
+    removeActionButtions() {
+      this.$store.commit('SET_ACTION_BUTTONS', [])
+    },
+
+    setActionButtons() {
+      const addInventoryBtn = {
+        type: 'is-info',
+        icon: 'package-variant',
+        label: 'Agregar al inventario',
+        action: () => {
+          if (this.checkedProducts) {
+            return this.$buefy.dialog.alert({
+              title: 'Advertencia',
+              message: `Primero debes seleccionar uno o más productos.`,
+              type: 'is-warning',
+              hasIcon: true,
+              iconPack: 'mdi',
+              icon: 'alert',
+              ariaRole: 'alertdialog',
+              ariaModal: true
+            })
+          }
+          this.showInventoryModal = !this.showInventoryModal
+        }
+      }
+
+      const addProductBtn = {
+        type: 'is-success',
+        icon: 'plus',
+        label: 'Nuevo',
+        action: () => {
+          this.showForm = true
+        }
+      }
+
+      this.$store.commit('SET_ACTION_BUTTONS', [addInventoryBtn, addProductBtn])
     }
   },
 
   mounted() {
+    this.setActionButtons()
     this.getProducts()
     this.getInventories()
+  },
+
+  beforeDestroy() {
+    this.removeActionButtions()
   }
 }
 </script>
