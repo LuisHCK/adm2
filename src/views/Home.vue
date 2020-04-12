@@ -175,7 +175,6 @@ export default {
           )
           .count(count => {
             datasets[0].data.push(count)
-            console.log(this.$refs.lineChart.fillData())
           })
       })
 

@@ -1,71 +1,76 @@
 <template>
   <div class="page-container">
-      <div class="is-pulled-right buttons">
-      <button class="button is-success is-rounded" @click="showForm=!showForm">
-        <span>Nuevo</span>
-        <b-icon icon="plus"></b-icon>
-      </button>
+    <div class="panel">
+      <h3 class="is-size-4 has-text-weight-bold">{{ inventory.name }}</h3>
+      <b-table
+        :data="inventoryProducts"
+        :striped="true"
+        :hoverable="true"
+        :loading="loading"
+        class="is-margin-top-1"
+      >
+        <template slot-scope="props">
+          <b-table-column field="id" label="ID" width="40" numeric>{{
+            props.row.id
+          }}</b-table-column>
+
+          <b-table-column field="product_id" label="Nombre">
+            <strong v-text="getProduct(props.row.product_id).name" />
+            <br />
+            <small v-text="getProduct(props.row.product_id).brand" />
+          </b-table-column>
+
+          <b-table-column field="product" label="Presentación">
+            <span v-text="getProduct(props.row.product_id).content" />
+            <span v-text="getProduct(props.row.product_id).unit" />
+          </b-table-column>
+
+          <b-table-column field="price" label="Precio Unitario">
+            <b-tag type="is-primary">C${{ props.row.price }}</b-tag>
+          </b-table-column>
+
+          <b-table-column field="stock" label="Cantidad en existencia">{{
+            props.row.stock
+          }}</b-table-column>
+
+          <b-table-column field="lot" label="Lote">
+            <b-tag v-text="props.row.lot" type="is-info" />
+          </b-table-column>
+
+          <b-table-column field="actions" label="Acciones">
+            <div class="field is-grouped">
+              <div class="control">
+                <button
+                  @click="openUpdateForm(props.row.id)"
+                  class="button is-info is-small is-rounded"
+                >
+                  <i class="mdi mdi-pencil"></i>
+                </button>
+              </div>
+              <div class="control">
+                <button
+                  @click="deleteInventoryProduct(props.row)"
+                  class="button is-danger is-small is-rounded"
+                >
+                  <i class="mdi mdi-delete"></i>
+                </button>
+              </div>
+            </div>
+          </b-table-column>
+        </template>
+
+        <template slot="empty">
+          <section class="section">
+            <div class="content has-text-grey has-text-centered">
+              <p>
+                <b-icon icon="package-variant" size="is-large"></b-icon>
+              </p>
+              <p>No hay productos para mostrar.</p>
+            </div>
+          </section>
+        </template>
+      </b-table>
     </div>
-
-    <h1 class="has-text-weight-bold" v-text="inventory.name"/>
-    <hr>
-    <b-table :data="inventoryProducts" :striped="true" :hoverable="true" :loading="loading">
-      <template slot-scope="props">
-        <b-table-column field="id" label="ID" width="40" numeric>{{ props.row.id }}</b-table-column>
-
-        <b-table-column field="product_id" label="Nombre">
-          <strong v-text="getProduct(props.row.product_id).name"/>
-          <br>
-          <small v-text="getProduct(props.row.product_id).brand"/>
-        </b-table-column>
-
-        <b-table-column field="product" label="Presentación">
-          <span v-text="getProduct(props.row.product_id).content"/>
-          <span v-text="getProduct(props.row.product_id).unit"/>
-        </b-table-column>
-
-        <b-table-column field="price" label="Precio Unitario">
-          <b-tag type="is-primary">C${{ props.row.price }}</b-tag>
-        </b-table-column>
-
-        <b-table-column field="stock" label="Cantidad en existencia">{{ props.row.stock }}</b-table-column>
-
-        <b-table-column field="lot" label="Lote">
-          <b-tag v-text="props.row.lot" type="is-info"/>
-        </b-table-column>
-
-        <b-table-column field="actions" label="Acciones">
-          <div class="field is-grouped">
-            <div class="control">
-              <button
-                @click="openUpdateForm(props.row.id)"
-                class="button is-info is-small is-rounded"
-              >
-                <i class="mdi mdi-pencil"></i>
-              </button>
-            </div>
-            <div class="control">
-              <button
-                @click="deleteInventoryProduct(props.row)"
-                class="button is-danger is-small is-rounded">
-                <i class="mdi mdi-delete"></i>
-              </button>
-            </div>
-          </div>
-        </b-table-column>
-      </template>
-
-      <template slot="empty">
-        <section class="section">
-          <div class="content has-text-grey has-text-centered">
-            <p>
-              <b-icon icon="package-variant" size="is-large"></b-icon>
-            </p>
-            <p>No hay productos para mostrar.</p>
-          </div>
-        </section>
-      </template>
-    </b-table>
 
     <!-- Product modal form -->
     <b-modal :active.sync="showForm" has-modal-card>
@@ -216,14 +221,26 @@ export default {
     openUpdateForm(inventoryProductId) {
       this.selectedInventoryProduct = inventoryProductId
       this.showUpdateForm = true
+    },
+
+    setActionButtons() {
+      const addInventory = {
+        type: 'is-success',
+        icon: 'plus',
+        label: 'Importar producto',
+        action: () => {
+          this.showForm = true
+        }
+      }
+      this.$store.commit('SET_ACTION_BUTTONS', [addInventory])
     }
   },
 
   mounted() {
     this.getInventory()
+    this.setActionButtons()
   }
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

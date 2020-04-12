@@ -1,27 +1,5 @@
 <template>
   <div class="page-container">
-    <div class="has-text-right">
-      <b-button
-        style="margin-right: 8px;"
-        type="is-success"
-        icon-left="plus"
-        rounded
-        @click="showFormModal = !showFormModal"
-        >Registrar pago</b-button
-      >
-      <b-button
-        type="is-info"
-        icon-left="printer"
-        rounded
-        @click="printCustomerReport()"
-        >Imprimir Reporte</b-button
-      >
-    </div>
-
-    <h4 class="has-text-weight-bold">Detalles de cliente</h4>
-
-    <br />
-
     <div class="columns">
       <div class="column is-full-mobile is-one-third-tablet customer-details">
         <h2 class="has-text-weight-bold is-size-3">
@@ -287,17 +265,39 @@ export default {
       this.getData()
     },
 
-    printCustomerReport() {      
+    printCustomerReport() {
       customerDetailReport({
         customer: this.customer,
         transactions: this.transactions,
         totalDebt: this.totalDebt,
         dateRange: this.dateRange
       })
+    },
+
+    setActionButtons() {
+      const printReport = {
+        type: 'is-primary',
+        icon: 'printer',
+        label: 'Imprimir Reporte',
+        action: () => {
+          this.printCustomerReport()
+        }
+      }
+
+      const registerPayment = {
+        type: 'is-success',
+        icon: 'plus',
+        label: 'Registrar Pago',
+        action: () => {
+          this.showFormModal = true
+        }
+      }
+      this.$store.commit('SET_ACTION_BUTTONS', [printReport, registerPayment])
     }
   },
 
   mounted() {
+    this.setActionButtons()
     this.getCustomer()
     this.getData()
   }
