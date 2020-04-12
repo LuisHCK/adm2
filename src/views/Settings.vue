@@ -1,4 +1,3 @@
-
 <template>
   <div id="settings-page">
     <section class="panel">
@@ -10,10 +9,14 @@
             <!-- Name -->
             <b-field
               label="Nombre"
-              :type="{'is-danger': errors.has('name')}"
+              :type="{ 'is-danger': errors.has('name') }"
               :message="errors.first('name')"
             >
-              <b-input v-model="company.name" name="name" v-validate="'required'" />
+              <b-input
+                v-model="company.name"
+                name="name"
+                v-validate="'required'"
+              />
             </b-field>
             <!-- Address -->
             <b-field label="Dirección">
@@ -25,19 +28,19 @@
             </b-field>
             <!-- Logo -->
             <b-field label="Logo">
-              <b-upload v-model="company.file">
+              <b-upload v-model="company.file" @input="storeLogo()">
                 <a class="button is-primary">
                   <b-icon icon="upload"></b-icon>
                   <span>Click para seleccionar</span>
                 </a>
               </b-upload>
-              <span class="file-name" v-if="company.file">{{ company.file.name }}</span>
+              <span class="file-name" v-if="company.file">
+                {{ company.file.name }}
+              </span>
             </b-field>
-            <div class="field">
-              <b-checkbox v-model="removeLogo">Quitar logo</b-checkbox>
-            </div>
+
             <b-field>
-              <button type="submit" class="button is-success">
+              <button type="submit" class="button is-success is-fullwidth">
                 <b-icon icon="content-save-outline"></b-icon>
                 <span>Guardar</span>
               </button>
@@ -50,7 +53,39 @@
 
       <div class="columns is-mobile is-centered">
         <div class="column is-full-mobile is-half-desktop">
-          <button @click="seedProducts" class="button is-info">Seed products</button>
+          <div class="has-text-weight-semibold">
+            Base de datos
+          </div>
+          <div class="is-margin-top-1">
+            <b-button
+              icon-left="cloud-download"
+              class="is-margin-top-1"
+              type="is-success"
+              @click="executeBackup()"
+              :loading="exporting"
+            >
+              Exportar copida de seguridad
+            </b-button>
+            <b-button
+              v-if="exporting"
+              type="is-link"
+              class="is-margin-top-1"
+              v-text="progress"
+            />
+          </div>
+          <div class="is-margin-top-1">
+            <b-upload @input="importDatabase($event)">
+              <a class="button is-warning">
+                <b-icon icon="upload"></b-icon>
+                <span>Importar copia de seguridad</span>
+              </a>
+            </b-upload>
+          </div>
+          <div class="is-margin-top-1">
+            <b-button @click="seedProducts" type="is-info" icon-left="sprout">
+              Seed products
+            </b-button>
+          </div>
         </div>
       </div>
     </section>
@@ -59,6 +94,7 @@
 
 <script>
 import EventBus from '@/event-bus'
+import { backupDatabase, restoreDatabase } from '@/db/backup'
 
 export default {
   name: 'settings',
@@ -66,7 +102,9 @@ export default {
   data() {
     return {
       removeLogo: false,
-      company: {}
+      company: {},
+      exporting: false,
+      progress: 0
     }
   },
 
@@ -138,11 +176,29 @@ export default {
         type: 'is-success',
         position: 'is-bottom'
       })
+    },
+
+    executeBackup() {
+      backupDatabase(Database)
+    },
+
+    importDatabase(file) {
+      restoreDatabase(Database, file)
     }
   },
 
   mounted() {
     this.company = Object.assign({}, this.$store.getters.company)
+
+    EventBus.$on('EXPORTING_DB', progress => {
+      this.exporting = true
+      this.progress = progress
+    })
+
+    EventBus.$on('EXPORT_FINISH', () => {
+      this.exporting = false
+      this.progress = 0
+    })
   }
 }
 </script>

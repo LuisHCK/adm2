@@ -3,10 +3,14 @@
     <div class="items-container">
       <div class="company-logo">
         <div class="company-cover has-text-centered">
-          <img :src="logo || require('@/assets/logo.png')" alt="" class="logo">
+          <img
+            :src="logo || require('@/assets/logo.png')"
+            alt=""
+            class="logo"
+          />
           <span
             class="has-text-weight-bold is-size-4 is-margin-top-1"
-            v-text="company.name"
+            v-text="company ? company.name : ''"
           />
         </div>
       </div>

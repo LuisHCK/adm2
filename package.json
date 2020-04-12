@@ -20,6 +20,7 @@
     "dexie": "^2.0.4",
     "dexie-export-import": "^1.0.0-rc.2",
     "ejs": "^3.0.1",
+    "file-saver": "^2.0.2",
     "register-service-worker": "^1.6.2",
     "vee-validate": "^2.2.8",
     "vue": "^2.6.10",
