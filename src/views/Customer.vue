@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <div class="columns">
-      <div class="column is-full-mobile is-one-third-tablet customer-details">
+      <!-- <div class="column is-full-mobile is-one-third-tablet customer-details"> -->
         <h2 class="has-text-weight-bold is-size-3">
           {{ customer.name }}
           {{ customer.last_name }}
