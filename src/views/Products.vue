@@ -320,7 +320,7 @@ export default {
         icon: 'package-variant',
         label: 'Agregar al inventario',
         action: () => {
-          if (this.checkedProducts) {
+          if (!this.checkedProducts || !this.checkedProducts.length) {
             return this.$buefy.dialog.alert({
               title: 'Advertencia',
               message: `Primero debes seleccionar uno o más productos.`,
