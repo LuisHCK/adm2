@@ -28,9 +28,15 @@
           </div>
           <b-icon v-if="item.path == currentPath" icon="chevron-left" />
         </div>
+        <div class="nav-item" @click="logOut()">
+          <div class="item-details has-text-danger">
+            <b-icon icon="exit-to-app" />
+            <span class="text-item" v-text="'Cerrar sesión'" />
+          </div>
+        </div>
       </div>
     </div>
-    <div class="bottom-items">
+    <!-- <div class="bottom-items">
       <button
         @click="
           to('settings')
@@ -43,7 +49,7 @@
       <button class="btn logout">
         <b-icon icon="exit-to-app" size="is-normal"></b-icon>
       </button>
-    </div>
+    </div> -->
 
     <!-- Overlay -->
     <div
@@ -86,7 +92,8 @@ export default {
           icon: 'format-list-checks'
         },
         { label: 'Registro de Ventas', path: 'sales', icon: 'cart-arrow-down' },
-        { label: 'Proveedores', path: 'providers', icon: 'account-group' }
+        { label: 'Proveedores', path: 'providers', icon: 'account-group' },
+        { label: 'Ajustes', path: 'settings', icon: 'settings' }
         // { label: 'Rutas', path: 'routes', icon: 'truck-fast-outline' },
       ]
     }
@@ -109,6 +116,19 @@ export default {
       this.to(item.path)
       this.toggleSidenav()
       this.currentPath = item.path
+    },
+    logOut() {
+      this.$buefy.dialog.confirm({
+        title: 'Cerrar sesión',
+        message: 'Su sesión actual será cerrada.',
+        cancelText: 'Cancelar',
+        confirmText: 'Confirmar',
+        type: 'is-info',
+        onConfirm: () => {
+          this.$store.dispatch('LOGOUT')
+          this.$router.push('/login')
+        }
+      })
     }
   },
 
@@ -215,6 +235,10 @@ export default {
     // border-bottom: 1px solid #f1f1f1;
     .text-item {
       padding: 0px 15px;
+    }
+    .item-details {
+      display: flex;
+      align-items: center;
     }
 
     i.mdi {

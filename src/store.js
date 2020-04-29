@@ -101,7 +101,11 @@ export default new Vuex.Store({
     }
   },
 
-  actions: {},
+  actions: {
+    LOGOUT(context) {
+      context.commit('setUser', undefined)
+    }
+  },
 
   getters: {
     userCount() {

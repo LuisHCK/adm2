@@ -2,105 +2,100 @@
   <div class="page-container">
     <div class="columns">
       <!-- <div class="column is-full-mobile is-one-third-tablet customer-details"> -->
-        <h2 class="has-text-weight-bold is-size-3">
-          {{ customer.name }}
-          {{ customer.last_name }}
-        </h2>
+      <h2 class="has-text-weight-bold is-size-3">
+        {{ customer.name }}
+        {{ customer.last_name }}
+      </h2>
 
-        <hr />
+      <hr />
 
-        <!-- phone -->
-        <div class="has-text-weight-semibold">Telefono</div>
-        <div>{{ customer.phone }}</div>
+      <!-- phone -->
+      <div class="has-text-weight-semibold">Telefono</div>
+      <div>{{ customer.phone }}</div>
 
-        <hr />
+      <hr />
 
-        <!-- email -->
-        <div class="has-text-weight-semibold">Email</div>
-        <div>{{ customer.email }}</div>
+      <!-- email -->
+      <div class="has-text-weight-semibold">Email</div>
+      <div>{{ customer.email }}</div>
 
-        <hr />
+      <hr />
 
-        <!-- Address -->
-        <div class="has-text-weight-semibold">Direccion</div>
-        <div>{{ customer.address || '---' }}</div>
+      <!-- Address -->
+      <div class="has-text-weight-semibold">Direccion</div>
+      <div>{{ customer.address || '---' }}</div>
 
-        <hr />
+      <hr />
 
-        <!-- Total due -->
-        <div class="has-text-weight-semibold">Deduda total</div>
-        <div>
-          <b-tag
-            :type="totalDebt > 0 ? 'is-danger' : 'is-success'"
-            class="strong is-size-5"
-            rounded
-          >
-            ${{ totalDebt }}
-          </b-tag>
-        </div>
+      <!-- Total due -->
+      <div class="has-text-weight-semibold">Deduda total</div>
+      <div>
+        <b-tag
+          :type="totalDebt > 0 ? 'is-danger' : 'is-success'"
+          class="strong is-size-5"
+          rounded
+        >
+          ${{ totalDebt }}
+        </b-tag>
       </div>
-      <div class="column is-full-mobile">
-        <div class="panel">
-          <div class="is-flex" style="justify-content: space-between">
-            <h4 class="has-text-weight-bold is-size-4">
-              Transacciones del cliente
-            </h4>
+    </div>
+    <div class="column is-full-mobile">
+      <div class="panel">
+        <div class="is-flex" style="justify-content: space-between">
+          <h4 class="has-text-weight-bold is-size-4">
+            Transacciones del cliente
+          </h4>
 
-            <b-field label="Filtrar por fecha">
-              <b-datepicker
-                placeholder="Click para seleccionar..."
-                range
-                position="is-bottom-left"
-                v-model="dateRange"
-              >
-              </b-datepicker>
-              <b-button
-                @click="filterByDate()"
-                icon-left="magnify"
-                type="is-primary"
-              />
-            </b-field>
-          </div>
-
-          <b-table
-            :data="sortedTransactions"
-            :striped="true"
-            :hoverable="true"
-            :loading="loading"
-          >
-            <template slot-scope="props">
-              <b-table-column field="type" label="Tipo">
-                <b-tag
-                  rounded
-                  :type="
-                    props.row.type == 'credit' ? 'is-danger' : 'is-success'
-                  "
-                  class="strong"
-                  >{{ props.row.type == 'credit' ? 'Crédito' : 'Pago' }}</b-tag
-                >
-              </b-table-column>
-
-              <b-table-column field="description" label="Descripción">
-                {{ props.row.description }}
-              </b-table-column>
-
-              <b-table-column field="created_at" label="Fecha">{{
-                props.row.created_at | moment('MMM DD YYYY, h:mma')
-              }}</b-table-column>
-
-              <b-table-column field="total" label="Total">
-                <b-tag
-                  rounded
-                  :type="
-                    props.row.type == 'credit' ? 'is-danger' : 'is-success'
-                  "
-                  class="strong"
-                  >C${{ props.row.total }}</b-tag
-                >
-              </b-table-column>
-            </template>
-          </b-table>
+          <b-field label="Filtrar por fecha">
+            <b-datepicker
+              placeholder="Click para seleccionar..."
+              range
+              position="is-bottom-left"
+              v-model="dateRange"
+            >
+            </b-datepicker>
+            <b-button
+              @click="filterByDate()"
+              icon-left="magnify"
+              type="is-primary"
+            />
+          </b-field>
         </div>
+
+        <b-table
+          :data="sortedTransactions"
+          :striped="true"
+          :hoverable="true"
+          :loading="loading"
+        >
+          <template slot-scope="props">
+            <b-table-column field="type" label="Tipo">
+              <b-tag
+                rounded
+                :type="props.row.type == 'credit' ? 'is-danger' : 'is-success'"
+                class="strong"
+                >{{ props.row.type == 'credit' ? 'Crédito' : 'Pago' }}</b-tag
+              >
+            </b-table-column>
+
+            <b-table-column field="description" label="Descripción">
+              {{ props.row.description }}
+            </b-table-column>
+
+            <b-table-column field="created_at" label="Fecha">{{
+              props.row.created_at | moment('MMM DD YYYY, h:mma')
+            }}</b-table-column>
+
+            <b-table-column field="total" label="Total">
+              <b-tag
+                rounded
+                :type="props.row.type == 'credit' ? 'is-danger' : 'is-success'"
+                class="strong"
+                >C${{ props.row.total }}</b-tag
+              >
+            </b-table-column>
+          </template>
+        </b-table>
       </div>
     </div>
 
