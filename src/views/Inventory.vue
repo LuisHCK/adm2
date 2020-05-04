@@ -103,16 +103,30 @@
         </section>
       </div>
     </b-modal>
+
+    <!-- Show bulk import modal -->
+    <b-modal :active.sync="showBulkImportModal" has-modal-card :width="1024">
+      <div class="modal-card is-full-width">
+        <header class="modal-card-head">
+          <span class="modal-card-title">Importar multiples products</span>
+        </header>
+        <section class="modal-card-body" style="overflow: hidden">
+          <import-products :products="products"></import-products>
+        </section>
+      </div>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import InventoryProductForm from '@/components/inventory/InventoryProductForm.vue'
+import ImportProducts from '@/components/inventory/ImportProducts.vue'
 import EventBus from '@/event-bus'
 
 export default {
   components: {
-    InventoryProductForm
+    InventoryProductForm,
+    ImportProducts
   },
 
   data() {
@@ -123,7 +137,8 @@ export default {
       showForm: false,
       showUpdateForm: false,
       selectedInventoryProduct: undefined,
-      loading: false
+      loading: false,
+      showBulkImportModal: false
     }
   },
 
@@ -133,11 +148,11 @@ export default {
         .where({ inventory_id: this.inventory.id })
         .toArray(data => {
           this.inventoryProducts = data
-          this.getProducts()
+          this.getProductDetails()
         })
     },
 
-    getProducts() {
+    getProductDetails() {
       this.inventoryProducts.map(element => {
         Database.product.get(element.product_id).then(product => {
           EventBus.$emit('RESET_INVENTORY_PRODUCT_FORM')
@@ -227,9 +242,9 @@ export default {
       const addInventory = {
         type: 'is-success',
         icon: 'plus',
-        label: 'Importar producto',
+        label: 'Importar productos',
         action: () => {
-          this.showForm = true
+          this.showBulkImportModal = true
         }
       }
       this.$store.commit('SET_ACTION_BUTTONS', [addInventory])

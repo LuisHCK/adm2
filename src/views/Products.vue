@@ -18,6 +18,8 @@
       :hoverable="true"
       :loading="loading"
       :checked-rows.sync="checkedProducts"
+      :sticky-header="true"
+      height="75vh"
       checkable
       @check="setActionButtons()"
     >
