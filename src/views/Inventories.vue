@@ -11,6 +11,15 @@
       </div>
     </div>
 
+    <section class="section" v-if="!inventories.length">
+      <div class="content has-text-grey has-text-centered">
+        <p>
+          <b-icon icon="package-variant" size="is-large"></b-icon>
+        </p>
+        <p>No hay inventarios para mostrar.</p>
+      </div>
+    </section>
+
     <!-- inventory modal form -->
     <b-modal :active.sync="showForm" has-modal-card>
       <div class="modal-card">
