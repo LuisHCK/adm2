@@ -1,101 +1,140 @@
 <template>
   <div class="page-container">
     <div class="columns">
-      <!-- <div class="column is-full-mobile is-one-third-tablet customer-details"> -->
-      <h2 class="has-text-weight-bold is-size-3">
-        {{ customer.name }}
-        {{ customer.last_name }}
-      </h2>
+      <div class="column is-full-mobile is-one-third-tablet customer-details">
+        <div class="panel">
+          <h2 class="has-text-weight-bold is-size-3">
+            {{ customer.name }}
+            {{ customer.last_name }}
+          </h2>
 
-      <hr />
+          <hr />
 
-      <!-- phone -->
-      <div class="has-text-weight-semibold">Telefono</div>
-      <div>{{ customer.phone }}</div>
+          <!-- phone -->
+          <div class="has-text-weight-semibold">Telefono</div>
+          <div>{{ customer.phone }}</div>
 
-      <hr />
+          <hr />
 
-      <!-- email -->
-      <div class="has-text-weight-semibold">Email</div>
-      <div>{{ customer.email }}</div>
+          <!-- email -->
+          <div class="has-text-weight-semibold">Email</div>
+          <div>{{ customer.email }}</div>
 
-      <hr />
+          <hr />
 
-      <!-- Address -->
-      <div class="has-text-weight-semibold">Direccion</div>
-      <div>{{ customer.address || '---' }}</div>
+          <!-- Address -->
+          <div class="has-text-weight-semibold">Direccion</div>
+          <div>{{ customer.address || '---' }}</div>
 
-      <hr />
+          <hr />
 
-      <!-- Total due -->
-      <div class="has-text-weight-semibold">Deduda total</div>
-      <div>
-        <b-tag
-          :type="totalDebt > 0 ? 'is-danger' : 'is-success'"
-          class="strong is-size-5"
-          rounded
-        >
-          ${{ totalDebt }}
-        </b-tag>
-      </div>
-    </div>
-    <div class="column is-full-mobile">
-      <div class="panel">
-        <div class="is-flex" style="justify-content: space-between">
-          <h4 class="has-text-weight-bold is-size-4">
-            Transacciones del cliente
-          </h4>
-
-          <b-field label="Filtrar por fecha">
-            <b-datepicker
-              placeholder="Click para seleccionar..."
-              range
-              position="is-bottom-left"
-              v-model="dateRange"
+          <!-- Total due -->
+          <div class="has-text-weight-semibold">Deduda total</div>
+          <div>
+            <b-tag
+              :type="totalDebt > 0 ? 'is-danger' : 'is-success'"
+              class="strong is-size-5"
+              rounded
             >
-            </b-datepicker>
-            <b-button
-              @click="filterByDate()"
-              icon-left="magnify"
-              type="is-primary"
-            />
-          </b-field>
+              ${{ totalDebt }}
+            </b-tag>
+          </div>
         </div>
+      </div>
+      <div class="column is-full-mobile">
+        <div class="panel">
+          <div class="columns is-multiline is-mobile">
+            <div class="column is-full">
+              <h4 class="has-text-weight-bold is-size-5">
+                Transacciones del cliente
+              </h4>
+            </div>
+            <div class="column is-full-mobile is-one-third-tablet">
+              <!-- Date picker -->
+              <b-field label="Filtrar por fecha">
+                <b-datepicker
+                  placeholder="Filtrar por fecha"
+                  position="is-bottom-left"
+                  icon="calendar-today"
+                  v-model="dateRange"
+                  :month-names="months"
+                  :day-names="daysAbr"
+                  range
+                  rounded
+                >
+                </b-datepicker>
+              </b-field>
+            </div>
 
-        <b-table
-          :data="sortedTransactions"
-          :striped="true"
-          :hoverable="true"
-          :loading="loading"
-        >
-          <template slot-scope="props">
-            <b-table-column field="type" label="Tipo">
-              <b-tag
+            <!-- Payment type -->
+            <div class="column is-full-mobile is-one-third-tablet">
+              <b-field label="Tipo de venta">
+                <b-select
+                  v-model="selectedSaleType"
+                  placeholder="Seleccione un tipo de venta"
+                  rounded
+                  expanded
+                >
+                  <option :value="undefined">Todos</option>
+                  <option value="credit">Crédito</option>
+                  <option value="cash">Contado</option>
+                </b-select>
+              </b-field>
+            </div>
+
+            <div
+              class="column is-full-mobile is-one-third-tablet is-flex align-items-end"
+            >
+              <b-button
+                type="is-primary"
+                icon-left="account-search"
                 rounded
-                :type="props.row.type == 'credit' ? 'is-danger' : 'is-success'"
-                class="strong"
-                >{{ props.row.type == 'credit' ? 'Crédito' : 'Pago' }}</b-tag
+                @click="filterByDate()"
               >
-            </b-table-column>
+                Filtrar
+              </b-button>
+            </div>
+          </div>
 
-            <b-table-column field="description" label="Descripción">
-              {{ props.row.description }}
-            </b-table-column>
+          <b-table
+            :data="sortedTransactions"
+            :striped="true"
+            :hoverable="true"
+            :loading="loading"
+          >
+            <template slot-scope="props">
+              <b-table-column field="type" label="Tipo">
+                <b-tag
+                  rounded
+                  :type="
+                    props.row.type == 'credit' ? 'is-danger' : 'is-success'
+                  "
+                  class="strong"
+                  >{{ props.row.type == 'credit' ? 'Crédito' : 'Pago' }}</b-tag
+                >
+              </b-table-column>
 
-            <b-table-column field="created_at" label="Fecha">{{
-              props.row.created_at | moment('MMM DD YYYY, h:mma')
-            }}</b-table-column>
+              <b-table-column field="description" label="Descripción">
+                {{ props.row.description }}
+              </b-table-column>
 
-            <b-table-column field="total" label="Total">
-              <b-tag
-                rounded
-                :type="props.row.type == 'credit' ? 'is-danger' : 'is-success'"
-                class="strong"
-                >C${{ props.row.total }}</b-tag
-              >
-            </b-table-column>
-          </template>
-        </b-table>
+              <b-table-column field="created_at" label="Fecha">{{
+                props.row.created_at | moment('MMM DD YYYY, h:mma')
+              }}</b-table-column>
+
+              <b-table-column field="total" label="Total">
+                <b-tag
+                  rounded
+                  :type="
+                    props.row.type == 'credit' ? 'is-danger' : 'is-success'
+                  "
+                  class="strong"
+                  >C${{ props.row.total }}</b-tag
+                >
+              </b-table-column>
+            </template>
+          </b-table>
+        </div>
       </div>
     </div>
 
@@ -120,6 +159,7 @@
 <script>
 import PaymentForm from '@/components/customers/PaymentForm.vue'
 import { customerDetailReport } from '@/reports/customers-report'
+import { months, daysAbr } from '@/lib/locale'
 
 export default {
   name: 'customer',
@@ -135,14 +175,17 @@ export default {
       sales: [],
       transactions: [],
       loading: false,
-      dateRange: undefined
+      dateRange: undefined,
+      selectedSaleType: undefined
     }
   },
 
   computed: {
     totalDebt() {
       if (this.transactions && this.transactions.length) {
-        return this.transactions.reduce((a, b) => a + b.total, 0)
+        return this.transactions
+          .filter(t => t.type == 'credit')
+          .reduce((a, b) => a + b.total, 0)
       }
       return 0
     },
@@ -158,6 +201,14 @@ export default {
       }
 
       return []
+    },
+
+    months() {
+      return months
+    },
+
+    daysAbr() {
+      return daysAbr
     }
   },
 
@@ -175,8 +226,17 @@ export default {
      * Get all purchases by Customer
      */
     getSales() {
-      const id = Number(this.$route.params.id)
-      let query = Database.sale.where({ customer_id: id, sale_type: 'credit' })
+      const customer_id = Number(this.$route.params.id)
+
+      // Define filters
+      const filters = { customer_id }
+      // Filter by sale type if selected
+      if (this.selectedSaleType) {
+        filters.sale_type = this.selectedSaleType
+      }
+
+      // Filter by selected Customer Id
+      let query = Database.sale.where(filters)
 
       // Get date range
       if (this.dateRange) {
@@ -195,9 +255,12 @@ export default {
       query.toArray(data => {
         const sales = data.map(d => {
           return {
-            type: 'credit',
+            type: d.sale_type,
             id: d.id,
-            description: 'Compra al crédito',
+            description:
+              d.sale_type == 'credit'
+                ? 'Compra al crédito'
+                : 'Compra de contado',
             total: d.total,
             created_at: d.created_at,
             updated_at: d.updated_at
