@@ -1,6 +1,7 @@
 // Import Bulma's core
 @import "~bulma/sass/utilities/_all";
 @import "src/assets/_variables";
+@import "src/assets/_spacing";
 
 $success: #2ebb60;
 
@@ -30,4 +31,12 @@ $link-focus-border: $primary;
 /** SPECIFIC OVERRIDES */
 .card-footer {
     border-top: 1px solid #f1f1f1;
+}
+
+// Flex alignment
+.align-items-end {
+    align-items: flex-end;
+}
+.justify-content-end {
+    justify-content: flex-end;
 }
