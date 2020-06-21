@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <div class="panel">
-      <b-table :data="customers" :columns="columns">
+      <b-table :data="customers">
         <template slot="empty">
           <section class="section">
             <div class="content has-text-grey has-text-centered">
@@ -30,15 +30,6 @@
             {{ props.row.address }}
           </b-table-column>
 
-          <b-table-column
-            field="total_credit"
-            label="Crédito total"
-            :numeric="true"
-          >
-            <b-tag rounded type="is-info">
-              C${{ props.row.total_credit }}
-            </b-tag>
-          </b-table-column>
 
           <b-table-column field="total_payment" :numeric="true" label="Abono">
             <b-tag rounded type="is-primary">
