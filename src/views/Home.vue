@@ -134,8 +134,20 @@ export default {
     getSales() {
       const sales = Database.sale
 
+      // Set date filters
+      const start_date = this.$moment()
+        .startOf('day')
+        .toISOString()
+      const finish_date = this.$moment()
+        .endOf('day')
+        .toISOString()
+
       // Count total sales
-      sales.count().then(val => (this.totalSales = val))
+      sales
+        .where('created_at')
+        .between(start_date, finish_date, true, true)
+        .count()
+        .then(val => (this.totalSales = val))
 
       // Count amount of money
       sales.where({ sale_type: 'cash' }).each(sale => {
