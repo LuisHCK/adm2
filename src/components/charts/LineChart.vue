@@ -8,11 +8,14 @@
         <b-field>
           <b-datepicker
             placeholder="Filtrar por fecha"
-            range
             position="is-bottom-left"
             v-model="dateRange"
             icon="calendar-today"
             @input="emitChange()"
+            :month-names="months"
+            :day-names="daysAbr"
+            range
+            rounded
           >
           </b-datepicker>
         </b-field>
@@ -28,10 +31,16 @@
 
 <script>
 import LineChart from './LineChart.js'
+import { months, daysAbr } from '@/lib/locale'
 
 export default {
   components: {
     LineChart
+  },
+
+  computed: {
+    months: () => months,
+    daysAbr: () => daysAbr
   },
 
   props: {

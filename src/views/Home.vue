@@ -195,6 +195,11 @@ export default {
         labels,
         datasets
       }
+
+      // Update chart
+      setTimeout(() => {
+        this.$refs.lineChart.fillData()
+      }, 500)
     },
 
     getTotalProviders() {
