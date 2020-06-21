@@ -14,7 +14,7 @@
   "main": "background.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "buefy": "^0.8.17",
+    "buefy": "^0.8.20",
     "chart.js": "^2.8.0",
     "core-js": "^2.6.5",
     "dexie": "^2.0.4",
