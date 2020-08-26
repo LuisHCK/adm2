@@ -225,6 +225,9 @@ export default {
   }
 }
 .nav-items {
+    height: calc(100vh - 228px);
+    overflow-y: auto;
+
   .nav-item {
     padding: 18px 30px;
     cursor: pointer;

@@ -79,3 +79,17 @@
   margin-bottom: 2.5em;
 }
 
+/* Scroll Bar*/
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 15px;
+}
+*::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #f8f8f8;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #bebebe;
+  border-radius: 10px;
+  box-shadow: #0000001f 0 3px 6px 1px;
+}
