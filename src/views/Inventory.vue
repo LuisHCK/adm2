@@ -108,7 +108,7 @@
     <b-modal :active.sync="showBulkImportModal" has-modal-card :width="1024">
       <div class="modal-card is-full-width">
         <header class="modal-card-head">
-          <span class="modal-card-title">Importar multiples products</span>
+          <span class="modal-card-title">Importar multiples productos</span>
         </header>
         <section class="modal-card-body" style="overflow: hidden">
           <import-products :products="products"></import-products>

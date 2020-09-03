@@ -136,43 +136,14 @@
     </b-modal>
 
     <!-- Add to inventory -->
-    <b-modal :active.sync="showInventoryModal" has-modal-card>
-      <div class="modal-card">
-        <div class="modal-card-head">
-          <span class="modal-card-title">Agregar productos a inventario</span>
-        </div>
-        <div class="modal-card-body">
-          <b-field label="Inventario">
-            <b-select
-              placeholder="Seleccione un inventario"
-              v-model="selectedInventory"
-            >
-              <option
-                v-for="(inventory, index) in inventories"
-                :key="'opt-' + index"
-                :value="inventory.id"
-                >{{ inventory.name }} - {{ inventory.location }}</option
-              >
-            </b-select>
-          </b-field>
-          <p>
-            <b>Agregando:</b>
-            {{ checkedProducts.length }} productos en total.
-          </p>
-          <br />
-          <b-field>
-            <!-- Label left empty for spacing -->
-            <p class="control">
-              <button
-                :disabled="!selectedInventory || checkedProducts.length < 1"
-                class="button is-primary"
-                @click="addProducts()"
-              >
-                Agregar productos
-              </button>
-            </p>
-          </b-field>
-        </div>
+    <b-modal :active.sync="showInventoryModal" has-modal-card :width="1024">
+      <div class="modal-card is-full-width">
+        <header class="modal-card-head">
+          <span class="modal-card-title">Importar multiples productos</span>
+        </header>
+        <section class="modal-card-body" style="overflow: hidden">
+          <ImportProducts :products="checkedProducts" />
+        </section>
       </div>
     </b-modal>
   </div>
@@ -182,13 +153,15 @@
 import ProductForm from '@/components/product/Form.vue'
 import ProductDetail from '@/components/product/ProductDetail.vue'
 import EventBus from '@/event-bus'
+import ImportProducts from '@/components/inventory/ImportProducts.vue'
 
 export default {
   name: 'products',
 
   components: {
     ProductForm,
-    ProductDetail
+    ProductDetail,
+    ImportProducts
   },
 
   data() {
@@ -364,9 +337,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.modal-card {
-  width: 450px;
-}
 .tag {
   margin-right: 2px;
 }

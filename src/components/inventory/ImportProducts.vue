@@ -49,6 +49,7 @@
             <b-numberinput
               type="is-info"
               :min="0"
+              :step="0.1"
               controls-position="compact"
             ></b-numberinput>
           </b-field>
@@ -72,6 +73,18 @@
         </section>
       </template>
     </b-table>
+
+    <!-- Submit -->
+
+    <div class="buttons">
+      <b-button type="is-primary" icon-left="content-save">
+        Guardar
+      </b-button>
+
+      <b-button>
+        Cancelar
+      </b-button>
+    </div>
   </div>
 </template>
 
@@ -79,27 +92,18 @@
 export default {
   name: 'ImportProducts',
 
+  props: {
+    products: {
+      type: Array,
+      default: () => []
+    }
+  },
+
   data() {
     return {
       loading: false,
-      perPage: 100,
-      products: []
+      perPage: 100
     }
-  },
-
-  methods: {
-    getProducts() {
-      Database.product
-        .toArray()
-        .then(products => {
-          this.products = products
-        })
-        .then(() => (this.loading = false))
-    }
-  },
-
-  mounted() {
-    this.getProducts()
   }
 }
 </script>
