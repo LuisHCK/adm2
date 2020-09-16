@@ -312,20 +312,29 @@ export default {
                 }
             })
 
-            Database.inventory_product
-                .bulkPut(inventoryProducts)
-                .then(() => {
-                    this.showToast(
-                        `Se agregaron ${inventoryProducts.length} al inventario: ${this.selectedInventory.name}`
-                    )
-                    this.showInventoryModal = false
+            inventoryProducts.forEach(async item => {
+                let existent = await Database.inventory_product
+                    .filter(i => i.product_id === item.product_id)
+                    .and(i => i.inventory_id === item.inventory_id)
+                    .first()
 
-                    // Cleanup
-                    this.selectedInventory = undefined
-                    this.checkedProducts = []
-                    this.showInventoryModal = false
-                })
-                .catch(err => console.log(err))
+                // Update or create
+                if (existent) {
+                    await Database.inventory_product.update(existent.id, item)
+                } else {
+                    await Database.inventory_product.add(item)
+                }
+            })
+
+            this.showToast(
+                `Se agregaron ${inventoryProducts.length} al inventario: ${this.selectedInventory.name}`
+            )
+
+            // Import cleanup
+            this.checkedProducts = []
+            this.showInventoryModal = false
+            this.selectedInventory = undefined
+            this.showInventorySelect = false
         },
 
         showToast(message, type = 'is-success') {
@@ -392,6 +401,8 @@ export default {
         handleInventorySelect(inventory) {
             this.selectedInventory = inventory
             this.showInventorySelect = false
+
+            this.handleSave()
         },
 
         /**
