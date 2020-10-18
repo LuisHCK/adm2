@@ -14,7 +14,7 @@
   "main": "background.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "buefy": "^0.8.20",
+    "buefy": "^0.9.3",
     "chart.js": "^2.8.0",
     "core-js": "^2.6.5",
     "dexie": "^2.0.4",
@@ -38,9 +38,10 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "electron": "^5.0.0",
+    "electron-devtools-installer": "^3.1.1",
     "sass": "^1.18.0",
     "sass-loader": "^7.1.0",
-    "vue-cli-plugin-electron-builder": "~1.4.5",
+    "vue-cli-plugin-electron-builder": "^2.0.0-rc.4",
     "vue-template-compiler": "^2.6.10"
   }
 }

@@ -29,19 +29,25 @@
       </v-select>
     </b-field>
 
-    <!-- Location -->
-    <b-field label="Precio*">
-      <b-numberinput v-model="form.price" min="1"></b-numberinput>
-    </b-field>
+    <div class="columns">
+      <div class="column">
+       <!-- Price -->
+        <b-field label="Precio*">
+          <b-numberinput v-model="form.price" min="1" :controls="false" />
+        </b-field>
+      </div>
 
-    <!-- Description -->
-    <b-field label="Existencias*">
-      <b-numberinput v-model="form.stock" min="0"></b-numberinput>
-    </b-field>
+      <div class="column">
+        <!-- Stock -->
+        <b-field label="Existencias*">
+          <b-numberinput v-model="form.stock" min="0" :controls="false" />
+        </b-field>
+      </div>
+    </div>
 
     <!-- Lote -->
     <b-field label="Lote">
-      <b-input v-model="form.lot"></b-input>
+      <b-input v-model="form.lot" />
     </b-field>
     <hr>
     <div>
@@ -78,7 +84,9 @@ export default {
       form: {},
       messages: {},
       products: [],
-      inventoryProduct: undefined
+      inventoryProduct: {
+        product: {}
+      }
     }
   },
 
@@ -132,6 +140,7 @@ export default {
     },
 
     getProductName(product) {
+      if (product)
       return `${product.name} - ${product.content} ${product.unit}`
     }
   },

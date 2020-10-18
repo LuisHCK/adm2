@@ -7,7 +7,7 @@ database.version(0.1).stores({
   user: '++id,name,email,username,role,created_at,updated_at',
   provider: '++id,name,email,phone_number,created_at,updated_at',
   customer: '++id,name,email,phone_number,created_at,updated_at',
-  product: '++id,name,description,brand,codebar,user_id,created_at,updated_at',
+  product: '++id,name,description,brand,&codebar,user_id,created_at,updated_at',
   product_provider:
     '++id,product_id,provider_id,active,user_id,created_at,updated_at',
   inventory: '++id,name,location,user_id,created_at,updated_at',

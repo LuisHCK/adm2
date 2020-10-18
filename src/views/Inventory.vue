@@ -140,11 +140,13 @@
 
 <script>
 import ImportProducts from '@/components/inventory/ImportProducts.vue'
+import InventoryProductForm from '@/components/inventory/InventoryProductForm.vue'
 import EventBus from '@/event-bus'
 
 export default {
     components: {
-        ImportProducts
+        ImportProducts,
+        InventoryProductForm
     },
 
     data() {

@@ -24,7 +24,7 @@
     <b-modal :active.sync="showForm" has-modal-card>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Agregar un nuevo producto</p>
+          <p class="modal-card-title">Nuevo inventario</p>
         </header>
         <section class="modal-card-body">
           <inventory-form :show="showForm" @submit="saveInventory" />

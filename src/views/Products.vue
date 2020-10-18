@@ -237,19 +237,59 @@ export default {
                     this.getProducts()
                     this.showForm = false
                 })
-                .catch(err => console.log(err))
+                .catch(err => this.handleSaveError(err))
+        },
+
+        handleSaveError(err) {
+            let messageText = ''
+
+            switch (err.name) {
+                case 'ConstraintError':
+                    messageText =
+                        'El código de barras que indicó ya está siendo usando en otro producto'
+                    break
+
+                default:
+                    messageText = 'Ha ocurrido un error al guardar el producto.'
+                    break
+            }
+
+            this.errorAlert(messageText)
+            console.error(err)
+        },
+
+        /** Display an error message */
+        errorAlert(message) {
+            this.$buefy.dialog.alert({
+                title: 'Error al guardar',
+                message,
+                type: 'is-danger',
+                hasIcon: true,
+                icon: 'alert-circle-outline'
+            })
         },
 
         updateProduct(data) {
-            Database.product.update(data.id, data).then(() => {
-                this.showUpdateForm = false
-                this.getProducts()
-                this.$buefy.toast.open({
-                    message: 'Se actualizó el producto',
-                    type: 'is-success',
-                    position: 'is-bottom'
+            Database.product
+                .update(data.id, data)
+                .then(updated => {
+                    console.log(updated)
+
+                    this.showUpdateForm = false
+                    this.getProducts()
+                    this.$buefy.toast.open({
+                        message: 'Se actualizó el producto',
+                        type: 'is-success',
+                        position: 'is-bottom'
+                    })
                 })
-            })
+                .catch(err => {
+                    const error = err.failures[0]
+
+                    if (error) this.handleSaveError(error)
+
+                    return console.log(err)
+                })
         },
 
         openUpdateForm(product) {
