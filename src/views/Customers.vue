@@ -13,31 +13,31 @@
           </section>
         </template>
 
-        <template slot-scope="props">
-          <b-table-column label="Nombre" field="name">
+        <template>
+          <b-table-column v-slot="props" label="Nombre" field="name">
             {{ props.row.name }}
           </b-table-column>
 
-          <b-table-column label="Email" field="email">
+          <b-table-column v-slot="props" label="Email" field="email">
             {{ props.row.email }}
           </b-table-column>
 
-          <b-table-column label="Teléfono" field="phone">
+          <b-table-column v-slot="props" label="Teléfono" field="phone">
             {{ props.row.phone }}
           </b-table-column>
 
-          <b-table-column label="Direccion" field="address">
+          <b-table-column v-slot="props" label="Direccion" field="address">
             {{ props.row.address }}
           </b-table-column>
 
 
-          <b-table-column field="total_payment" :numeric="true" label="Abono">
+          <b-table-column v-slot="props" field="total_payment" :numeric="true" label="Abono">
             <b-tag rounded type="is-primary">
               C${{ props.row.total_payment }}
             </b-tag>
           </b-table-column>
 
-          <b-table-column label="Saldo Actual" field="balance" :numeric="true">
+          <b-table-column v-slot="props" label="Saldo Actual" field="balance" :numeric="true">
             <b-tag
               rounded
               :type="
@@ -50,7 +50,7 @@
             </b-tag>
           </b-table-column>
 
-          <b-table-column
+          <b-table-column v-slot="props"
             label="Opciones"
             field="options"
             width="100"

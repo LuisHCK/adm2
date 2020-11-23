@@ -61,18 +61,18 @@ const htmlTemplate = `
               <table style="width: 100%;">
                 <tbody>
                   <tr>
-                    <td style="text-align: left;">
+                    <td style="text-align: left; white-space: nowrap;">
                       <b>Factura #:</b>
                     </td>
-                    <td style="text-align: left;">
+                    <td style="text-align: left; white-space: nowrap;">
                       <%= sale.id %>
                     </td>
                   </tr>
                   <tr>
-                    <td style="text-align: left;">
+                    <td style="text-align: left; white-space: nowrap;">
                       <b>Fecha:</b>
                     </td>
-                    <td style="text-align: left;">
+                    <td style="text-align: left; white-space: nowrap;">
                       <%= moment(sale.created_at).format('DD/MM/YYYY, h:mm a') %>
                     </td>
                   </tr>

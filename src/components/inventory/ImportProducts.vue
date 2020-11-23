@@ -11,31 +11,44 @@
             :sticky-header="true"
             height="350px"
         >
-            <template slot-scope="props">
-                <b-table-column field="id" label="ID" width="40" numeric>{{
-                    props.row.id
-                }}</b-table-column>
+            <template>
+                <b-table-column
+                    v-slot="props"
+                    field="id"
+                    label="ID"
+                    width="40"
+                    numeric
+                    >{{ props.row.id }}</b-table-column
+                >
 
-                <b-table-column field="name" label="Nombre">
+                <b-table-column v-slot="props" field="name" label="Nombre">
                     <strong>{{ props.row.name }}</strong>
                 </b-table-column>
 
-                <b-table-column field="brand" label="Marca">{{
+                <b-table-column v-slot="props" field="brand" label="Marca">{{
                     props.row.brand
                 }}</b-table-column>
 
-                <b-table-column field="unit" label="Presentación">
+                <b-table-column
+                    v-slot="props"
+                    field="unit"
+                    label="Presentación"
+                >
                     <b-tag type="is-primary">
                         {{ props.row.content }}
                         {{ props.row.unit }}
                     </b-tag>
                 </b-table-column>
 
-                <b-table-column field="codebar" label="Código">{{
+                <b-table-column v-slot="props" field="codebar" label="Código">{{
                     props.row.codebar
                 }}</b-table-column>
 
-                <b-table-column field="stock" label="Existencias">
+                <b-table-column
+                    v-slot="props"
+                    field="stock"
+                    label="Existencias"
+                >
                     <b-field>
                         <b-numberinput
                             :controls="false"
@@ -48,7 +61,7 @@
                         />
                     </b-field>
                 </b-table-column>
-                <b-table-column field="price" label="Precio">
+                <b-table-column v-slot="props" field="price" label="Precio">
                     <b-field>
                         <b-numberinput
                             :controls="false"
@@ -83,11 +96,11 @@
         <div class="options">
             <div class="buttons">
                 <b-button
-                    :type="selectedInventory? 'is-success':'is-primary'"
+                    :type="selectedInventory ? 'is-success' : 'is-primary'"
                     icon-left="content-save"
                     @click="$emit('save')"
                 >
-                    {{selectedInventory? 'Guardar':'Continuar'}}
+                    {{ selectedInventory ? 'Guardar' : 'Continuar' }}
                 </b-button>
 
                 <b-button @click="$emit('close')">

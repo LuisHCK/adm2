@@ -93,7 +93,7 @@ export default {
         },
         { label: 'Registro de Ventas', path: 'sales', icon: 'cart-arrow-down' },
         { label: 'Proveedores', path: 'providers', icon: 'account-group' },
-        { label: 'Ajustes', path: 'settings', icon: 'settings' }
+        { label: 'Ajustes', path: 'settings', icon: 'cog' }
         // { label: 'Rutas', path: 'routes', icon: 'truck-fast-outline' },
       ]
     }

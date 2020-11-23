@@ -151,7 +151,6 @@ export default {
     }
 
     if (this.inventoryProductId) {
-      console.log(this.inventoryProductId)
       this.getInventoryProduct()
     }
   }

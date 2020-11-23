@@ -10,24 +10,24 @@
         :hoverable="true"
         :loading="loading"
       >
-        <template slot-scope="props">
-          <b-table-column field="id" label="ID" width="40" numeric>{{
+        <template>
+          <b-table-column v-slot="props" field="id" label="ID" width="40" numeric>{{
             props.row.id
           }}</b-table-column>
 
-          <b-table-column field="name" label="Nombre">
+          <b-table-column v-slot="props" field="name" label="Nombre">
             <strong>{{ props.row.name }}</strong>
           </b-table-column>
 
-          <b-table-column field="phone" label="Teléfono">{{
+          <b-table-column v-slot="props" field="phone" label="Teléfono">{{
             props.row.phone || '--'
           }}</b-table-column>
 
-          <b-table-column field="email" label="Email">{{
+          <b-table-column v-slot="props" field="email" label="Email">{{
             props.row.email || '--'
           }}</b-table-column>
 
-          <b-table-column width="120" label="Opciones">
+          <b-table-column v-slot="props" width="120" label="Opciones">
             <div class="field is-grouped">
               <div class="control">
                 <button

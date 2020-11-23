@@ -1,106 +1,109 @@
 <template>
     <div class="page-container" id="products-page">
-        <form @submit.prevent="searchProduct" class="search-form">
-            <input
-                ref="searchInput"
-                class="input"
-                placeholder="Nombre, marca, codigo"
-                type="text"
-            />
-        </form>
+        <div class="panel">
+            <form @submit.prevent="searchProduct" class="search-form">
+                <input
+                    ref="searchInput"
+                    class="input"
+                    placeholder="Nombre, marca, codigo"
+                    type="text"
+                />
+            </form>
 
-        <b-table
-            :paginated="true"
-            :pagination-simple="true"
-            :per-page="perPage"
-            :data="products"
-            :striped="true"
-            :hoverable="true"
-            :loading="loading"
-            :checked-rows.sync="checkedProducts"
-            :sticky-header="true"
-            height="75vh"
-            checkable
-            @check="setActionButtons()"
-        >
-            <template slot-scope="props">
-                <b-table-column field="id" label="ID" width="40" numeric>{{
-                    props.row.id
-                }}</b-table-column>
+            <b-table
+                :paginated="true"
+                :pagination-simple="true"
+                :per-page="perPage"
+                :data="products"
+                :striped="true"
+                :hoverable="true"
+                :loading="loading"
+                :checked-rows.sync="checkedProducts"
+                :sticky-header="true"
+                height="75vh"
+                checkable
+                @check="setActionButtons()"
+            >
+                <template>
+                    <b-table-column v-slot="props" field="id" label="ID" width="40" numeric>{{
+                        props.row.id
+                    }}</b-table-column>
 
-                <b-table-column field="name" label="Nombre">
-                    <strong>{{ props.row.name }}</strong>
-                </b-table-column>
+                    <b-table-column v-slot="props" field="name" label="Nombre">
+                        <strong>{{ props.row.name }}</strong>
+                    </b-table-column>
 
-                <b-table-column field="brand" label="Marca">{{
-                    props.row.brand
-                }}</b-table-column>
+                    <b-table-column v-slot="props" field="brand" label="Marca">{{
+                        props.row.brand
+                    }}</b-table-column>
 
-                <b-table-column field="unit" label="Presentación">
-                    <b-tag type="is-primary">
-                        {{ props.row.content }}
-                        {{ props.row.unit }}
-                    </b-tag>
-                </b-table-column>
+                    <b-table-column v-slot="props" field="unit" label="Presentación">
+                        <b-tag type="is-primary">
+                            {{ props.row.content }}
+                            {{ props.row.unit }}
+                        </b-tag>
+                    </b-table-column>
 
-                <b-table-column field="codebar" label="Código">{{
-                    props.row.codebar
-                }}</b-table-column>
+                    <b-table-column v-slot="props" field="codebar" label="Código">{{
+                        props.row.codebar
+                    }}</b-table-column>
 
-                <b-table-column field="categories" label="Categorías">
-                    <b-taglist>
-                        <b-tag
-                            v-for="(cat, i) in props.row.categories"
-                            :key="`catg-${i}`"
-                            v-text="cat"
-                            type="is-info"
-                        />
-                    </b-taglist>
-                </b-table-column>
-                <b-table-column field="product" label="Acciones">
-                    <div class="field is-grouped">
-                        <div class="control">
-                            <button
-                                @click="openUpdateForm(props.row)"
-                                class="button is-success is-small is-rounded"
-                            >
-                                <i class="mdi mdi-pencil"></i>
-                            </button>
+                    <b-table-column v-slot="props" field="categories" label="Categorías">
+                        <b-taglist>
+                            <b-tag
+                                v-for="(cat, i) in props.row.categories"
+                                :key="`catg-${i}`"
+                                v-text="cat"
+                                type="is-info"
+                            />
+                        </b-taglist>
+                    </b-table-column>
+                    <b-table-column v-slot="props" field="product" label="Acciones">
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button
+                                    @click="openUpdateForm(props.row)"
+                                    class="button is-success is-small is-rounded"
+                                >
+                                    <i class="mdi mdi-pencil"></i>
+                                </button>
+                            </div>
+                            <div class="control">
+                                <button
+                                    @click="showProduct(props.row)"
+                                    class="button is-info is-small is-rounded"
+                                >
+                                    <i class="mdi mdi-eye"></i>
+                                </button>
+                            </div>
+                            <div class="control">
+                                <button
+                                    @click="openUpdateForm(props.row)"
+                                    class="button is-danger is-small is-rounded"
+                                >
+                                    <i class="mdi mdi-delete"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="control">
-                            <button
-                                @click="showProduct(props.row)"
-                                class="button is-info is-small is-rounded"
-                            >
-                                <i class="mdi mdi-eye"></i>
-                            </button>
-                        </div>
-                        <div class="control">
-                            <button
-                                @click="openUpdateForm(props.row)"
-                                class="button is-danger is-small is-rounded"
-                            >
-                                <i class="mdi mdi-delete"></i>
-                            </button>
-                        </div>
-                    </div>
-                </b-table-column>
-            </template>
+                    </b-table-column>
+                </template>
 
-            <template slot="empty">
-                <section class="section">
-                    <div class="content has-text-grey has-text-centered">
-                        <p>
-                            <b-icon
-                                icon="package-variant"
-                                size="is-large"
-                            ></b-icon>
-                        </p>
-                        <p>No hay productos para mostrar.</p>
-                    </div>
-                </section>
-            </template>
-        </b-table>
+                <template slot="empty">
+                    <section class="section">
+                        <div class="content has-text-grey has-text-centered">
+                            <p>
+                                <b-icon
+                                    icon="package-variant"
+                                    size="is-large"
+                                ></b-icon>
+                            </p>
+                            <p>No hay productos para mostrar.</p>
+                        </div>
+                    </section>
+                </template>
+            </b-table>
+            
+        </div>
 
         <!-- Product modal form -->
         <b-modal :active.sync="showForm" has-modal-card>

@@ -9,12 +9,12 @@
                 :loading="loading"
                 class="is-margin-top-1"
             >
-                <template slot-scope="props">
-                    <b-table-column field="id" label="ID" width="40" numeric>{{
+                <template>
+                    <b-table-column v-slot="props" field="id" label="ID" width="40" numeric>{{
                         props.row.id
                     }}</b-table-column>
 
-                    <b-table-column field="product_id" label="Nombre">
+                    <b-table-column v-slot="props" field="product_id" label="Nombre">
                         <strong
                             v-text="getProduct(props.row.product_id).name"
                         />
@@ -24,28 +24,28 @@
                         />
                     </b-table-column>
 
-                    <b-table-column field="product" label="Presentación">
+                    <b-table-column v-slot="props" field="product" label="Presentación">
                         <span
                             v-text="getProduct(props.row.product_id).content"
                         />
                         <span v-text="getProduct(props.row.product_id).unit" />
                     </b-table-column>
 
-                    <b-table-column field="price" label="Precio Unitario">
+                    <b-table-column v-slot="props" field="price" label="Precio Unitario">
                         <b-tag type="is-primary">C${{ props.row.price }}</b-tag>
                     </b-table-column>
 
-                    <b-table-column
+                    <b-table-column v-slot="props"
                         field="stock"
                         label="Cantidad en existencia"
                         >{{ props.row.stock }}</b-table-column
                     >
 
-                    <b-table-column field="lot" label="Lote">
+                    <b-table-column v-slot="props" field="lot" label="Lote">
                         <b-tag v-text="props.row.lot" type="is-info" />
                     </b-table-column>
 
-                    <b-table-column field="actions" label="Acciones">
+                    <b-table-column v-slot="props" field="actions" label="Acciones">
                         <div class="field is-grouped">
                             <div class="control">
                                 <button
