@@ -79,9 +79,9 @@
                     <b-table-column
                         v-slot="props"
                         field="items"
-                        label="Productos"
-                        >{{ props.row.shoppingCart.length }}</b-table-column
-                    >
+                        label="Productos">
+                        {{ props.row.shoppingCart.length }}
+                    </b-table-column>
 
                     <b-table-column
                         v-slot="props"

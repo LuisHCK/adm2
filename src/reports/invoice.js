@@ -123,6 +123,8 @@ const htmlTemplate = `
             <td style="padding: 6px;">
               <%= item.inventoryProduct.product.name %>
               -
+              <%= item.inventoryProduct.product.brand %>
+              -
               <%= item.inventoryProduct.product.content %>
               <%= item.inventoryProduct.product.unit %>
             </td>

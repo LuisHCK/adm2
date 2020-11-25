@@ -84,7 +84,7 @@ export default {
   methods: {
     getProductName(inventoryProduct) {
       const prod = inventoryProduct.product
-      return `${prod.name}-${prod.content}${prod.unit}`
+      return `${prod.name} - ${prod.brand} - ${prod.content}${prod.unit}`
     }
   }
 }
