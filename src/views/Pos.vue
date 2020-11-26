@@ -16,92 +16,11 @@
         <div class="columns">
             <div class="column">
                 <div class="panel">
-                    <table class="table is-fullwidth">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Producto</th>
-                                <th>Existencias</th>
-                                <th>Cantidad</th>
-                                <th>Precio</th>
-                                <th>Sub total</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="(item, index) in shoppingCart"
-                                :key="'ip-' + index"
-                            >
-                                <td>{{ index + 1 }}</td>
-                                <td>
-                                    <div
-                                        v-text="
-                                            getProductName(
-                                                item.inventoryProduct.product
-                                            )
-                                        "
-                                    />
-                                    <small>{{
-                                        item.inventoryProduct.inventory.name
-                                    }}</small>
-                                </td>
-                                <td>
-                                    <span
-                                        v-text="item.inventoryProduct.stock"
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        :id="
-                                            `qtyInput-${item.inventoryProduct.id}`
-                                        "
-                                        :ref="`qty-input-${index}`"
-                                        class="quantity-input input"
-                                        type="number"
-                                        min="1"
-                                        :value="item.quantity || 1"
-                                        :max="item.inventoryProduct.stock"
-                                        @input="
-                                            setInventoryProductBuyQty(
-                                                index,
-                                                $event,
-                                                item.inventoryProduct.stock
-                                            )
-                                        "
-                                        @change="
-                                            setInventoryProductBuyQty(
-                                                index,
-                                                $event,
-                                                item.inventoryProduct.stock
-                                            )
-                                        "
-                                        @focus="focusSelect"
-                                    />
-                                </td>
-                                <td>
-                                    <span
-                                        v-text="
-                                            `C$${item.inventoryProduct.price}`
-                                        "
-                                    />
-                                </td>
-                                <td>
-                                    <span v-text="`C$${item.subTotal}`" />
-                                </td>
-                                <td>
-                                    <b-button
-                                        type="is-danger"
-                                        size="is-normal"
-                                        rounded
-                                        @click="removeItem(index)"
-                                    >
-                                        <i class="mdi mdi-delete"></i>
-                                    </b-button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <ProductsTable
+                        :shoppingCart="shoppingCart"
+                        @onQuantityChange="setInventoryProductBuyQty"
+                        @onRemoveItem="removeItem"
+                    />
                 </div>
             </div>
             <div class="column is-4-desktop is-4-tablet">
@@ -251,6 +170,29 @@
                 </section>
             </div>
         </b-modal>
+
+        <!-- Successful sale invoice -->
+        <b-modal
+            :active.sync="showSaleInvoice"
+            @close="saleInvoice = undefined"
+            has-modal-card
+        >
+            <div v-if="showSaleInvoice" class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Venta #{{ saleInvoice.id }}</p>
+                    <b-button
+                        icon-left="printer-pos"
+                        type="is-primary"
+                        @click="openPrintInvoice"
+                    >
+                        Imprimir
+                    </b-button>
+                </header>
+                <section class="modal-card-body">
+                    <SaleDetails :sale="saleInvoice" />
+                </section>
+            </div>
+        </b-modal>
     </div>
 </template>
 
@@ -258,15 +200,21 @@
 import 'vue-select/dist/vue-select.css'
 import ProductSearch from '@/components/pos/ProductSearch.vue'
 import CustomerForm from '@/components/customers/CustomerForm.vue'
+import ProductsTable from '@/components/pos/ProductsTable.vue'
+import SaleDetails from '@/components/sales/SaleDetails.vue'
 import vSelect from 'vue-select'
 import { mapState, mapGetters } from 'vuex'
 import Maths from '@/lib/maths'
+import { printContentent } from '@/lib/print'
+import { printInvoice } from '@/reports/invoice'
 
 export default {
     components: {
         ProductSearch,
         vSelect,
-        CustomerForm
+        CustomerForm,
+        ProductsTable,
+        SaleDetails
     },
 
     computed: {
@@ -301,7 +249,9 @@ export default {
             payWith: undefined,
             customers: [],
             showCustomerForm: false,
-            saleType: 1
+            saleType: 1,
+            saleInvoice: {},
+            showSaleInvoice: false
         }
     },
 
@@ -389,29 +339,29 @@ export default {
         /**
          * Finalice shopping cart and store the info in db
          */
-        completeSale() {
-            Database.sale
-                .add({
-                    shoppingCart: this.shoppingCart,
-                    discount: this.discount,
-                    customer: this.shoppingCartCustomer,
-                    subTotal: this.shoppingCartTotal,
-                    discounted: this.discounted,
-                    total: this.finalTotal,
-                    sale_type: this.saleType ? 'cash' : 'credit',
-                    customer_id: this.shoppingCartCustomer.id,
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
-                })
-                .then(sale => {
-                    // Reduce inventory stock
-                    this.reduceInventoryQuantity()
-                    // Clear the sale form
-                    this.cancelSale()
-                    // Open detail retult
-                    this.$router.push(`/sales?saleId=${sale}`)
-                })
+        async completeSale() {
+            const saleId = await Database.sale.add({
+                shoppingCart: this.shoppingCart,
+                discount: this.discount,
+                customer: this.shoppingCartCustomer,
+                subTotal: this.shoppingCartTotal,
+                discounted: this.discounted,
+                total: this.finalTotal,
+                sale_type: this.saleType ? 'cash' : 'credit',
+                customer_id: this.shoppingCartCustomer.id,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            })
+
+            this.saleInvoice = await Database.sale.get(saleId)
+
             this.showToast('Se completó la venta')
+            // Reduce inventory stock
+            this.reduceInventoryQuantity()
+            // Clear the sale form
+            this.cancelSale()
+            // Open detail retult
+            this.showSaleInvoice = true
         },
 
         reduceInventoryQuantity() {
@@ -447,10 +397,6 @@ export default {
             Database.customer.toArray().then(data => (this.customers = data))
         },
 
-        getProductName(product) {
-            return `${product.name} - ${product.content} ${product.unit}`
-        },
-
         initShortCuts() {
             window.addEventListener('keydown', e => {
                 // CTRL + 1 = Focus on search
@@ -465,6 +411,11 @@ export default {
                     this.completeSale()
                 }
             })
+        },
+
+        openPrintInvoice() {
+            const report = printInvoice(this.saleInvoice)
+            printContentent(report, `Factura #${this.saleInvoice}`, '')
         }
     },
 

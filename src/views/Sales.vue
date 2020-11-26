@@ -79,7 +79,8 @@
                     <b-table-column
                         v-slot="props"
                         field="items"
-                        label="Productos">
+                        label="Productos"
+                    >
                         {{ props.row.shoppingCart.length }}
                     </b-table-column>
 
@@ -91,6 +92,7 @@
                         <b-tag
                             type="is-info"
                             v-text="'C$ ' + props.row.subTotal"
+                            rounded
                         />
                     </b-table-column>
 
@@ -99,7 +101,7 @@
                         field="discount"
                         label="Descuento"
                     >
-                        <b-tag v-text="'C$ ' + props.row.discounted" />
+                        <b-tag v-text="'C$ ' + props.row.discounted" rounded />
                     </b-table-column>
 
                     <b-table-column
@@ -110,6 +112,7 @@
                         <b-tag
                             v-text="getSaleType(props.row.sale_type).text"
                             :type="getSaleType(props.row.sale_type).color"
+                            rounded
                         />
                     </b-table-column>
 
@@ -117,6 +120,7 @@
                         <b-tag
                             type="is-success"
                             v-text="'C$ ' + props.row.total"
+                            rounded
                         />
                     </b-table-column>
 
@@ -135,22 +139,53 @@
                         field="actions"
                         label="Actions"
                     >
-                        <div class="buttons">
-                            <b-button
-                                @click="selectSale(props.row)"
-                                type="is-primary"
-                                rounded
-                                icon-right="eye"
-                                size="is-small"
-                            />
-                            <b-button
-                                @click="openPrintInvoice(props.row)"
-                                type="is-info"
-                                rounded
-                                icon-right="printer"
-                                size="is-small"
-                            />
-                        </div>
+                        <b-field>
+                            <p class="control">
+                                <b-tooltip
+                                    label="Ver detalles"
+                                    type="is-dark"
+                                    delay="100"
+                                >
+                                    <b-button
+                                        @click="selectSale(props.row)"
+                                        type="is-primary"
+                                        icon-right="eye"
+                                        size="is-small"
+                                        rounded
+                                    />
+                                </b-tooltip>
+                            </p>
+                            <p class="control">
+                                <b-tooltip
+                                    label="Imprimir factura"
+                                    type="is-dark"
+                                    delay="100"
+                                >
+                                    <b-button
+                                        @click="openPrintInvoice(props.row)"
+                                        type="is-info"
+                                        icon-right="printer"
+                                        size="is-small"
+                                        rounded
+                                    />
+                                </b-tooltip>
+                            </p>
+                            <p class="control">
+                                <b-tooltip
+                                    label="Realizar reembolso o devolución"
+                                    type="is-dark"
+                                    position="is-left"
+                                    delay="100"
+                                >
+                                    <b-button
+                                        type="is-danger"
+                                        icon-right="cash-refund"
+                                        size="is-small"
+                                        rounded
+                                    />
+                                </b-tooltip>
+                            </p>
+                        </b-field>
                     </b-table-column>
                 </template>
 
@@ -255,12 +290,15 @@ export default {
                 })
             }
 
-            query.toArray().then(sales => {
-                this.sales = sales
-                this.loading = false
-                // Load sale if params is set
-                this.showDetailsByParam()
-            })
+            query
+                .reverse()
+                .toArray()
+                .then(sales => {
+                    this.sales = sales
+                    this.loading = false
+                    // Load sale if params is set
+                    this.showDetailsByParam()
+                })
         },
 
         selectSale(sale) {

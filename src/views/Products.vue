@@ -1,14 +1,15 @@
 <template>
     <div class="page-container" id="products-page">
         <div class="panel">
-            <form @submit.prevent="searchProduct" class="search-form">
+            <div class="search-form">
                 <input
                     ref="searchInput"
                     class="input"
                     placeholder="Nombre, marca, codigo"
                     type="text"
+                    @input="handleSearch"
                 />
-            </form>
+            </div>
 
             <b-table
                 :paginated="true"
@@ -25,66 +26,112 @@
                 @check="setActionButtons()"
             >
                 <template>
-                    <b-table-column v-slot="props" field="id" label="ID" width="40" numeric>{{
-                        props.row.id
-                    }}</b-table-column>
+                    <b-table-column
+                        v-slot="props"
+                        field="id"
+                        label="ID"
+                        width="40"
+                        numeric
+                        >{{ props.row.id }}</b-table-column
+                    >
 
                     <b-table-column v-slot="props" field="name" label="Nombre">
                         <strong>{{ props.row.name }}</strong>
                     </b-table-column>
 
-                    <b-table-column v-slot="props" field="brand" label="Marca">{{
-                        props.row.brand
-                    }}</b-table-column>
+                    <b-table-column
+                        v-slot="props"
+                        field="brand"
+                        label="Marca"
+                        >{{ props.row.brand }}</b-table-column
+                    >
 
-                    <b-table-column v-slot="props" field="unit" label="Presentación">
-                        <b-tag type="is-primary">
+                    <b-table-column
+                        v-slot="props"
+                        field="unit"
+                        label="Presentación"
+                    >
+                        <b-tag type="is-primary" rounded>
                             {{ props.row.content }}
                             {{ props.row.unit }}
                         </b-tag>
                     </b-table-column>
 
-                    <b-table-column v-slot="props" field="codebar" label="Código">{{
-                        props.row.codebar
-                    }}</b-table-column>
+                    <b-table-column
+                        v-slot="props"
+                        field="codebar"
+                        label="Código"
+                        >{{ props.row.codebar }}</b-table-column
+                    >
 
-                    <b-table-column v-slot="props" field="categories" label="Categorías">
+                    <b-table-column
+                        v-slot="props"
+                        field="categories"
+                        label="Categorías"
+                    >
                         <b-taglist>
                             <b-tag
                                 v-for="(cat, i) in props.row.categories"
                                 :key="`catg-${i}`"
                                 v-text="cat"
                                 type="is-info"
+                                rounded
                             />
                         </b-taglist>
                     </b-table-column>
-                    <b-table-column v-slot="props" field="product" label="Acciones">
-                        <div class="field is-grouped">
+                    <b-table-column
+                        v-slot="props"
+                        field="product"
+                        label="Acciones"
+                    >
+                        <b-field>
                             <div class="control">
-                                <button
-                                    @click="openUpdateForm(props.row)"
-                                    class="button is-success is-small is-rounded"
+                                <b-tooltip
+                                    label="Editar producto"
+                                    type="is-dark"
+                                    delay="100"
                                 >
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
+                                    <b-button
+                                        @click="openUpdateForm(props.row)"
+                                        type="is-primary"
+                                        icon-right="pencil"
+                                        size="is-small"
+                                        rounded
+                                    />
+                                </b-tooltip>
                             </div>
                             <div class="control">
-                                <button
-                                    @click="showProduct(props.row)"
-                                    class="button is-info is-small is-rounded"
+                                <b-tooltip
+                                    label="Ver detalles"
+                                    type="is-dark"
+                                    delay="100"
                                 >
-                                    <i class="mdi mdi-eye"></i>
-                                </button>
+                                    <b-button
+                                        @click="showProduct(props.row)"
+                                        type="is-info"
+                                        icon-right="eye"
+                                        size="is-small"
+                                        rounded
+                                    />
+                                </b-tooltip>
                             </div>
                             <div class="control">
-                                <button
-                                    @click="openUpdateForm(props.row)"
-                                    class="button is-danger is-small is-rounded"
+                                <b-tooltip
+                                    label="Eliminar producto"
+                                    type="is-dark"
+                                    delay="100"
+                                    position="is-left"
                                 >
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
+                                    <b-button
+                                        @click="openUpdateForm(props.row)"
+                                        type="is-danger"
+                                        icon-right="delete"
+                                        size="is-small"
+                                        rounded
+                                    />
+                                </b-tooltip>
                             </div>
-                        </div>
+                        </b-field>
                     </b-table-column>
                 </template>
 
@@ -102,7 +149,6 @@
                     </section>
                 </template>
             </b-table>
-            
         </div>
 
         <!-- Product modal form -->
@@ -209,7 +255,8 @@ export default {
             inventories: [],
             showInventoryModal: false,
             selectedInventory: undefined,
-            showInventorySelect: false
+            showInventorySelect: false,
+            searchTimeout: undefined
         }
     },
 
@@ -301,8 +348,15 @@ export default {
             EventBus.$emit('SELECT_PROJECT_UPDATE')
         },
 
-        searchProduct() {
-            const value = this.$refs.searchInput.value
+        handleSearch(event) {
+            clearTimeout(this.searchTimeout)
+
+            this.searchTimeout = setTimeout(() => {
+                this.searchProduct(event.target.value)
+            }, 300)
+        },
+
+        searchProduct(value) {
             if (value.length) {
                 Database.product
                     .where('name')
