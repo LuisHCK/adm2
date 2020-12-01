@@ -237,7 +237,7 @@
         </b-modal>
 
         <!-- Refund confirm modal -->
-        <RefundConfirm
+        <refund-modal
             v-model="refundModalIsOpen"
             :sale="selectedSale"
             @close="selectedSale = undefined"
@@ -248,10 +248,11 @@
 <script>
 import SaleDetails from '@/components/sales/SaleDetails.vue'
 import Invoice from '@/components/sales/Invoice.vue'
-import RefundConfirm from '@/components/sales/RefundConfirm.vue'
+import RefundModal from '@/components/sales/RefundModal.vue'
 import { printContentent } from '@/lib/print'
 import { salesReport } from '@/reports/sales-report'
 import { printInvoice } from '@/reports/invoice'
+import RefundModal from '../components/sales/RefundModal.vue'
 
 export default {
     name: 'sales-page',
@@ -259,7 +260,8 @@ export default {
     components: {
         SaleDetails,
         Invoice,
-        RefundConfirm
+        RefundModal
+        RefundModal
     },
 
     data() {

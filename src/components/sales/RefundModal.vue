@@ -90,7 +90,7 @@
 
 <script>
 export default {
-    name: 'RefundConfirm',
+    name: 'refund-modal',
 
     props: {
         value: {
