@@ -90,8 +90,9 @@
                         label="Sub Total"
                     >
                         <b-tag
-                            type="is-info"
                             v-text="'C$ ' + props.row.subTotal"
+                            class="has-text-weight-bold"
+                            type="is-info"
                             rounded
                         />
                     </b-table-column>
@@ -101,7 +102,11 @@
                         field="discount"
                         label="Descuento"
                     >
-                        <b-tag v-text="'C$ ' + props.row.discounted" rounded />
+                        <b-tag
+                            v-text="'C$ ' + props.row.discounted"
+                            class="has-text-weight-bold"
+                            rounded
+                        />
                     </b-table-column>
 
                     <b-table-column
@@ -112,6 +117,7 @@
                         <b-tag
                             v-text="getSaleType(props.row.sale_type).text"
                             :type="getSaleType(props.row.sale_type).color"
+                            class="has-text-weight-bold"
                             rounded
                         />
                     </b-table-column>
@@ -120,6 +126,7 @@
                         <b-tag
                             type="is-success"
                             v-text="'C$ ' + props.row.total"
+                            class="has-text-weight-bold"
                             rounded
                         />
                     </b-table-column>

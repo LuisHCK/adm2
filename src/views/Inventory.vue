@@ -49,22 +49,44 @@
                         field="price"
                         label="Precio Unitario"
                     >
-                        <b-tag type="is-primary">C${{ props.row.price }}</b-tag>
+                        <b-tag
+                            type="is-info"
+                            class="has-text-weight-bold"
+                            rounded
+                        >
+                            C${{ props.row.price }}
+                        </b-tag>
                     </b-table-column>
 
                     <b-table-column
                         v-slot="props"
                         field="stock"
                         label="Cantidad en existencia"
-                        >{{ props.row.stock }}</b-table-column
                     >
-
-                    <b-table-column v-slot="props" field="lot" label="Lote">
-                        <b-tag v-text="props.row.lot" type="is-info" />
+                        <b-tag
+                            type="is-primary"
+                            class="has-text-weight-bold"
+                            rounded
+                        >
+                            {{ props.row.stock }}
+                        </b-tag>
                     </b-table-column>
 
-                    <b-table-column v-slot="props" field="codebar" label="Código">
-                        {{getProduct(props.row.product_id).codebar}}
+                    <b-table-column v-slot="props" field="lot" label="Lote">
+                        <b-tag
+                            v-text="props.row.lot || '---'"
+                            type="is-info"
+                            class="has-text-weight-bold"
+                            rounded
+                        />
+                    </b-table-column>
+
+                    <b-table-column
+                        v-slot="props"
+                        field="codebar"
+                        label="Código"
+                    >
+                        {{ getProduct(props.row.product_id).codebar }}
                     </b-table-column>
 
                     <b-table-column
@@ -72,24 +94,26 @@
                         field="actions"
                         label="Acciones"
                     >
-                        <div class="field is-grouped">
+                        <b-field>
                             <div class="control">
-                                <button
+                                <b-button
                                     @click="openUpdateForm(props.row.id)"
-                                    class="button is-info is-small is-rounded"
-                                >
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
+                                    icon-left="pencil"
+                                    type="is-primary"
+                                    size="is-small"
+                                    rounded
+                                />
                             </div>
                             <div class="control">
-                                <button
+                                <b-button
                                     @click="deleteInventoryProduct(props.row)"
-                                    class="button is-danger is-small is-rounded"
-                                >
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
+                                    icon-left="delete"
+                                    type="is-danger"
+                                    size="is-small"
+                                    rounded
+                                />
                             </div>
-                        </div>
+                        </b-field>
                     </b-table-column>
                 </template>
 
@@ -267,8 +291,8 @@ export default {
                     inventoryProduct.product_id
                 )}`,
                 message:
-                    '¿Estás seguro de querer <b>quitar</b> este producto del inventario?' +
-                    'Esta acción no puede deshacerse.',
+                    '¿Estás seguro que quieres <b>quitar</b> este producto del inventario?' +
+                    ' Esta acción no puede deshacerse.',
                 confirmText: 'Si, quitar',
                 cancelText: 'Cancelar',
                 type: 'is-danger',

@@ -51,7 +51,11 @@
                         field="unit"
                         label="Presentación"
                     >
-                        <b-tag type="is-primary" rounded>
+                        <b-tag
+                            type="is-primary"
+                            class="has-text-weight-bold"
+                            rounded
+                        >
                             {{ props.row.content }}
                             {{ props.row.unit }}
                         </b-tag>
@@ -72,6 +76,7 @@
                         <b-taglist>
                             <b-tag
                                 v-for="(cat, i) in props.row.categories"
+                                class="has-text-weight-bold"
                                 :key="`catg-${i}`"
                                 v-text="cat"
                                 type="is-info"
