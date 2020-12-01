@@ -89,7 +89,7 @@
                                 <b-tooltip
                                     label="Editar producto"
                                     type="is-dark"
-                                    delay="100"
+                                    :delay="100"
                                 >
                                     <b-button
                                         @click="openUpdateForm(props.row)"
@@ -104,7 +104,7 @@
                                 <b-tooltip
                                     label="Ver detalles"
                                     type="is-dark"
-                                    delay="100"
+                                    :delay="100"
                                 >
                                     <b-button
                                         @click="showProduct(props.row)"
@@ -119,7 +119,7 @@
                                 <b-tooltip
                                     label="Eliminar producto"
                                     type="is-dark"
-                                    delay="100"
+                                    :delay="100"
                                     position="is-left"
                                 >
                                     <b-button

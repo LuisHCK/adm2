@@ -144,7 +144,7 @@
                                 <b-tooltip
                                     label="Ver detalles"
                                     type="is-dark"
-                                    delay="100"
+                                    :delay="100"
                                 >
                                     <b-button
                                         @click="selectSale(props.row)"
@@ -159,7 +159,7 @@
                                 <b-tooltip
                                     label="Imprimir factura"
                                     type="is-dark"
-                                    delay="100"
+                                    :delay="100"
                                 >
                                     <b-button
                                         @click="openPrintInvoice(props.row)"
@@ -175,12 +175,13 @@
                                     label="Realizar reembolso o devolución"
                                     type="is-dark"
                                     position="is-left"
-                                    delay="100"
+                                    :delay="100"
                                 >
                                     <b-button
                                         type="is-danger"
                                         icon-right="cash-refund"
                                         size="is-small"
+                                        @click="confirmRefund(props.row)"
                                         rounded
                                     />
                                 </b-tooltip>
@@ -218,7 +219,7 @@
                 <header class="modal-card-head">
                     <span
                         class="modal-card-title"
-                        v-if="selectedSale"
+                        v-if="selectedSale && showSaleDetails"
                         v-text="`Venta #${selectedSale.id}`"
                     ></span>
                 </header>
@@ -227,12 +228,20 @@
                 </section>
             </div>
         </b-modal>
+
+        <!-- Refund confirm modal -->
+        <RefundConfirm
+            v-model="refundModalIsOpen"
+            :sale="selectedSale"
+            @close="selectedSale = undefined"
+        />
     </div>
 </template>
 
 <script>
 import SaleDetails from '@/components/sales/SaleDetails.vue'
 import Invoice from '@/components/sales/Invoice.vue'
+import RefundConfirm from '@/components/sales/RefundConfirm.vue'
 import { printContentent } from '@/lib/print'
 import { salesReport } from '@/reports/sales-report'
 import { printInvoice } from '@/reports/invoice'
@@ -242,7 +251,8 @@ export default {
 
     components: {
         SaleDetails,
-        Invoice
+        Invoice,
+        RefundConfirm
     },
 
     data() {
@@ -254,7 +264,8 @@ export default {
             showSaleDetails: false,
             selectedSale: undefined,
             dateRange: undefined,
-            paymentTypeFilter: undefined
+            paymentTypeFilter: undefined,
+            refundModalIsOpen: false
         }
     },
 
@@ -392,6 +403,11 @@ export default {
                 }
             }
             this.$store.commit('SET_ACTION_BUTTONS', [printReport, goToPOS])
+        },
+
+        confirmRefund(sale) {
+            this.selectedSale = sale
+            this.refundModalIsOpen = true
         }
     },
 
