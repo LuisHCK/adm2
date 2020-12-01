@@ -58,7 +58,7 @@
                 <b-field label="Filtrar por fecha">
                   <b-datepicker
                     placeholder="Filtrar por fecha"
-                    position="is-bottom-left"
+                    position="is-bottom-right"
                     icon="calendar-today"
                     v-model="dateRange"
                     :month-names="months"
@@ -111,7 +111,7 @@
                   <b-tag
                     rounded
                     :type="
-                      props.row.type == 'credit' ? 'is-danger' : 'is-success'
+                      props.row.type == 'credit' ? 'is-danger' : 'is-primary'
                     "
                     class="strong"
                     >{{ props.row.type == 'credit' ? 'Crédito' : 'Pago' }}</b-tag
