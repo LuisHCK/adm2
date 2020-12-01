@@ -141,6 +141,35 @@
                         }}
                     </b-table-column>
 
+                    <b-table-column v-slot="props" label="Devolución">
+                        <b-tag
+                            v-if="!props.row.refund_type"
+                            class="has-text-weight-bold"
+                            type="is-light"
+                            rounded
+                        >
+                            Ninguna
+                        </b-tag>
+
+                        <b-tag
+                            v-else-if="props.row.refund_type === 'total'"
+                            class="has-text-weight-bold"
+                            type="is-danger"
+                            rounded
+                        >
+                            Completa
+                        </b-tag>
+
+                        <b-tag
+                            v-else-if="props.row.refund_type === 'partial'"
+                            class="has-text-weight-bold"
+                            type="is-warning"
+                            rounded
+                        >
+                            Parcial
+                        </b-tag>
+                    </b-table-column>
+
                     <b-table-column
                         v-slot="props"
                         field="actions"
@@ -229,6 +258,11 @@
                         v-if="selectedSale && showSaleDetails"
                         v-text="`Venta #${selectedSale.id}`"
                     ></span>
+                    <button
+                        type="button"
+                        class="delete"
+                        @click="showSaleDetails = false"
+                    />
                 </header>
                 <section class="modal-card-body">
                     <sale-details :sale="selectedSale"></sale-details>
@@ -241,6 +275,7 @@
             v-model="refundModalIsOpen"
             :sale="selectedSale"
             @close="selectedSale = undefined"
+            @success="getSales"
         />
     </div>
 </template>
@@ -248,7 +283,6 @@
 <script>
 import SaleDetails from '@/components/sales/SaleDetails.vue'
 import Invoice from '@/components/sales/Invoice.vue'
-import RefundModal from '@/components/sales/RefundModal.vue'
 import { printContentent } from '@/lib/print'
 import { salesReport } from '@/reports/sales-report'
 import { printInvoice } from '@/reports/invoice'
@@ -260,7 +294,6 @@ export default {
     components: {
         SaleDetails,
         Invoice,
-        RefundModal
         RefundModal
     },
 

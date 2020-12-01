@@ -16,7 +16,7 @@ database.version(0.1).stores({
   tax: '++id,name,amount,user_id,created_at,updated_at',
   coupon: '++id,name,amount,created_at,updated_at',
   sale:
-    '++id,inventory_product_id,quantity,user_id,customer_id,sale_type,[customer_id+sale_type],created_at,updated_at',
+    '++id,inventory_product_id,quantity,user_id,customer_id,sale_type,[customer_id+sale_type],refund_type,created_at,updated_at',
   route: '++id,name,description,phone,created_at,updated_at',
   customer_payment: '++id,amount,balance,customer_id,created_at,updated_at'
 })

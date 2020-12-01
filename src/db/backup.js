@@ -10,7 +10,7 @@ function backupDatabase(database) {
   // Notify progress
   EventBus.$emit('EXPORTING_DB', progress)
 
-  exportDB(database, { progressCallback })
+  return exportDB(database, { progressCallback })
     .then(blob => {
       FileSaver.saveAs(blob, `${getFilename()}.json`)
     })
