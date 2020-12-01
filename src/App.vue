@@ -20,6 +20,8 @@ export default {
 }
 </script>
 <style lang="scss">
+@import url('./assets/_fonts.scss');
+
 html {
     font-size: 11pt !important;
 }
