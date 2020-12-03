@@ -31,7 +31,7 @@
                             <span>Subtotal</span>
                         </div>
                         <div class="column is-half has-text-right">
-                            <span v-text="`C$${shoppingCartTotal}`" />
+                            <span v-text="`${currency}${shoppingCartTotal}`" />
                         </div>
                         <!-- Discounts -->
                         <div class="column is-half">
@@ -39,7 +39,7 @@
                         </div>
                         <div class="column is-half has-text-right">
                             <span>
-                                <span v-text="`-C$${discounted} `" />
+                                <span v-text="`-${currency}${discounted} `" />
                                 <small v-text="`(${discount}%)`" />
                             </span>
                         </div>
@@ -50,7 +50,7 @@
                         <div class="column is-half has-text-right">
                             <strong
                                 class="is-size-4 has-text-danger"
-                                v-text="`C$${finalTotal}`"
+                                v-text="`${currency}${finalTotal}`"
                             />
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                         <div class="column is-half has-text-right">
                             <strong
                                 class="hast-text-success"
-                                v-text="`C$${exchange}`"
+                                v-text="`${currency}${exchange}`"
                             />
                         </div>
 
@@ -219,7 +219,7 @@ export default {
 
     computed: {
         ...mapState(['shoppingCart', 'shoppingCartCustomer']),
-        ...mapGetters(['shoppingCartTotal']),
+        ...mapGetters(['shoppingCartTotal', 'currency']),
 
         totalSale() {
             return 0

@@ -52,7 +52,7 @@
                             type="is-primary"
                             rounded
                         >
-                            C${{ props.row.total_payment }}
+                            {{ currency }}{{ props.row.total_payment }}
                         </b-tag>
                     </b-table-column>
 
@@ -71,7 +71,8 @@
                             "
                             class="has-text-weight-bold"
                         >
-                            C${{
+                            {{ currency
+                            }}{{
                                 props.row.total_credit - props.row.total_payment
                             }}
                         </b-tag>
@@ -123,10 +124,15 @@
 <script>
 import CustomerForm from '@/components/customers/CustomerForm.vue'
 import { customersReport } from '@/reports/customers-report'
+import { mapGetters } from 'vuex'
 
 export default {
     components: {
         CustomerForm
+    },
+
+    computed: {
+        ...mapGetters(['currency'])
     },
 
     data() {

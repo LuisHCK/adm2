@@ -8,7 +8,7 @@
                         <figure class="image image-1">
                             <span
                                 class="value has-text-white is-size-2 has-text-weight-bold"
-                                v-text="`C$${totalMoney}`"
+                                v-text="`${currency}${totalMoney}`"
                             ></span>
                         </figure>
                     </div>
@@ -132,6 +132,7 @@ import SalesList from '@/components/sales/SalesList.vue'
 import CustomersList from '@/components/customers/CustomersList.vue'
 import InventoryStatus from '@/components/dashboard/InventoryStatus.vue'
 import { lastXdays, setHourTo, enumerateDaysBetweenDates } from '@/lib/datetime'
+import { mapGetters } from 'vuex'
 
 const TODAY = new Date()
 
@@ -156,7 +157,8 @@ export default {
                 start: new Date(TODAY.setHours(0, 0, 0, 0)).toISOString(),
                 end: new Date(TODAY.setHours(23, 59, 59, 0)).toISOString()
             }
-        }
+        },
+        ...mapGetters(['currency'])
     },
 
     methods: {

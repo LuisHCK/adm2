@@ -60,10 +60,10 @@ const htmlTemplate = `
             <%=sale.shoppingCart.length %>
           </td>
           <td>
-            C$<%=sale.subTotal %>
+            <%= currency %><%=sale.subTotal %>
           </td>
           <td>
-            C$<%=sale.discounted %>
+            <%= currency %><%=sale.discounted %>
           </td>
           <td>
             <%=sale.sale_type == 'cash' ? 'Efectivo' : 'Crédito' %>
@@ -87,8 +87,17 @@ const logo = localStorage.getItem('company_logo')
  * @param {String} title Report title
  */
 function salesReport(sales, title, dateRange) {
-  const store = store.getters.store
-  return render(htmlTemplate, { sales, dateRange, title, logo, store, moment })
+    const storeData = store.getters.store
+    const currency = store.getters.currency
+    return render(htmlTemplate, {
+        sales,
+        dateRange,
+        title,
+        logo,
+        store: storeData,
+        moment,
+        currency
+    })
 }
 
 export { salesReport }

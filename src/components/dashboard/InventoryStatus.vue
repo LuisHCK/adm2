@@ -41,25 +41,37 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(product, index) in inventory.products" :key="'inv-product-' + index">
+                                <tr
+                                    v-for="(product,
+                                    index) in inventory.products"
+                                    :key="'inv-product-' + index"
+                                >
                                     <td>
-                                        {{product.product.name}}
+                                        {{ product.product.name }}
                                     </td>
                                     <td>
-                                        {{product.product.brand}}
+                                        {{ product.product.brand }}
                                     </td>
                                     <td>
-                                        {{product.product.content}}
-                                        {{product.product.unit}}
+                                        {{ product.product.content }}
+                                        {{ product.product.unit }}
                                     </td>
                                     <td>
-                                        <b-tag type="is-primary">
-                                            C${{product.price}}
+                                        <b-tag
+                                            type="is-primary"
+                                            class="has-text-weight-bold"
+                                            rounded
+                                        >
+                                            {{ currency }}{{ product.price }}
                                         </b-tag>
                                     </td>
                                     <td>
-                                        <b-tag type="is-danger">
-                                            {{product.stock}}
+                                        <b-tag
+                                            type="is-danger"
+                                            class="has-text-weight-bold"
+                                            rounded
+                                        >
+                                            {{ product.stock }}
                                         </b-tag>
                                     </td>
                                     <td>
@@ -67,16 +79,29 @@
                                             size="is-small"
                                             icon-left="pencil"
                                             type="is-success"
-                                            @click="openEditProduct(inventory.id, product.id)"
-                                            rounded>
-                                                Actualizar
+                                            @click="
+                                                openEditProduct(
+                                                    inventory.id,
+                                                    product.id
+                                                )
+                                            "
+                                            rounded
+                                        >
+                                            Actualizar
                                         </b-button>
                                     </td>
                                 </tr>
 
-                                <tr v-if="inventory.products && !inventory.products.length">
+                                <tr
+                                    v-if="
+                                        inventory.products &&
+                                            !inventory.products.length
+                                    "
+                                >
                                     <td colspan="6" class="has-text-centered">
-                                        <div class="notification is-info has-text-weight-semibold">
+                                        <div
+                                            class="notification is-info has-text-weight-semibold"
+                                        >
                                             No se encontraron advertencias
                                             <b-icon icon="check-bold" />
                                         </div>
@@ -84,17 +109,13 @@
                                 </tr>
                             </tbody>
                         </table>
-
                     </b-tab-item>
                 </b-tabs>
             </div>
         </div>
 
         <!-- Inventory product form -->
-        <b-modal
-            v-model="isEditOpen"
-            has-modal-card
-            trap-focus>
+        <b-modal v-model="isEditOpen" has-modal-card trap-focus>
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">Actualizar producto</p>
@@ -104,7 +125,8 @@
                         v-if="isEditOpen"
                         :inventoryId="selectedProduct.inventoryId"
                         :inventoryProductId="selectedProduct.inventoryProductId"
-                        @submit="updateInventoryProduct" />
+                        @submit="updateInventoryProduct"
+                    />
                 </section>
             </div>
         </b-modal>
@@ -112,11 +134,18 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'InventoryStatus',
 
     components: {
-        InventoryProductForm: () => import('@/components/inventory/InventoryProductForm.vue')
+        InventoryProductForm: () =>
+            import('@/components/inventory/InventoryProductForm.vue')
+    },
+
+    computed: {
+        ...mapGetters(['currency'])
     },
 
     data() {
@@ -163,7 +192,7 @@ export default {
         },
 
         openEditProduct(inventoryId, inventoryProductId) {
-            this.selectedProduct = {inventoryId, inventoryProductId}
+            this.selectedProduct = { inventoryId, inventoryProductId }
             this.isEditOpen = true
         },
 
@@ -182,7 +211,7 @@ export default {
                 type: error ? 'is-danger' : 'is-success',
                 position: 'is-bottom'
             })
-        },
+        }
     },
 
     mounted() {

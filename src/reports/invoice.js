@@ -115,7 +115,7 @@ const htmlTemplate = `
         </thead>
 
         <tbody>
-          <% sale.shoppingCart.forEach(item => { %>
+          <% sale.shoppingCart.filter(s => !s.refunded).forEach(item => { %>
           <tr>
             <td style="padding: 6px; text-align: right;">
               <%= item.quantity %>
@@ -129,10 +129,10 @@ const htmlTemplate = `
               <%= item.inventoryProduct.product.unit %>
             </td>
             <td style="padding: 6px; text-align: right;">
-              C$<%= item.inventoryProduct.price %>
+            <%= currency %><%= item.inventoryProduct.price %>
             </td>
             <td style="padding: 6px; text-align: right;">
-              C$<%= item.subTotal %>
+              <%= currency %><%= item.subTotal %>
             </td>
           </tr>
           <% }) %>
@@ -145,7 +145,7 @@ const htmlTemplate = `
               <b>Descuento</b>
             </td>
             <td align="right" style="padding: 6px;">
-              <b> C$<%= sale.discounted %> </b>
+              <b> <%= currency %><%= sale.discounted %> </b>
             </td>
           </tr>
           <% } %>
@@ -154,7 +154,7 @@ const htmlTemplate = `
               <b>TOTAL</b>
             </td>
             <td align="right" style="padding: 6px;">
-              <b> C$<%= sale.total %> </b>
+              <b> <%= currency %><%= sale.total %> </b>
             </td>
           </tr>
         </tfoot>
@@ -184,8 +184,16 @@ const logo = localStorage.getItem('company_logo')
  * @param {Object} sale Sale object
  */
 function printInvoice(sale) {
-  const store = store.getters.store
-  return render(htmlTemplate, { sale, store, logo, moment })
+    const storeData = store.getters.store
+    const currency = store.getters.currency
+
+    return render(htmlTemplate, {
+        sale,
+        store: storeData,
+        logo,
+        moment,
+        currency
+    })
 }
 
 export { printInvoice }

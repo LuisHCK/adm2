@@ -54,7 +54,7 @@
                             class="has-text-weight-bold"
                             rounded
                         >
-                            C${{ props.row.price }}
+                            {{ currency }}{{ props.row.price }}
                         </b-tag>
                     </b-table-column>
 
@@ -192,11 +192,16 @@
 import ImportProducts from '@/components/inventory/ImportProducts.vue'
 import InventoryProductForm from '@/components/inventory/InventoryProductForm.vue'
 import EventBus from '@/event-bus'
+import { mapGetters } from 'vuex'
 
 export default {
     components: {
         ImportProducts,
         InventoryProductForm
+    },
+
+    computed: {
+        ...mapGetters(['currency'])
     },
 
     data() {

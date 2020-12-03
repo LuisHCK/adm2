@@ -50,10 +50,12 @@
                     />
                 </td>
                 <td>
-                    <span v-text="`C$${item.inventoryProduct.price}`" />
+                    <span
+                        v-text="`${currency}${item.inventoryProduct.price}`"
+                    />
                 </td>
                 <td>
-                    <span v-text="`C$${item.subTotal}`" />
+                    <span v-text="`${currency}${item.subTotal}`" />
                 </td>
                 <td>
                     <b-button
@@ -71,8 +73,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'products-table',
+
+    computed: {
+        ...mapGetters(['currency'])
+    },
 
     props: {
         shoppingCart: {

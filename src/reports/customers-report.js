@@ -62,13 +62,13 @@ const customersHtmlTemplate = `
             <%= customer.address %>
           </td>
           <td>
-            C$<%= customer.total_credit %>
+            <%= currency %><%= customer.total_credit %>
           </td>
           <td>
-            C$<%= customer.total_payment %>
+            <%= currency %><%= customer.total_payment %>
           </td>
           <td>
-            C$<%= customer.total_credit - customer.total_payment %>
+            <%= currency %><%= customer.total_credit - customer.total_payment %>
           </td>
         </tr>
         <% }) %>
@@ -79,18 +79,20 @@ const customersHtmlTemplate = `
 const logo = localStorage.getItem('company_logo')
 
 function customersReport(customers) {
-  const store = store.getters.store
-  const title = 'Reporte de Clientes'
+    const storeData = store.getters.store
+    const currency = store.getters.currency
+    const title = 'Reporte de Clientes'
 
-  const renderedTemplate = render(customersHtmlTemplate, {
-    customers,
-    logo,
-    store,
-    moment,
-    title
-  })
+    const renderedTemplate = render(customersHtmlTemplate, {
+        customers,
+        logo,
+        store: storeData,
+        moment,
+        title,
+        currency
+    })
 
-  printContentent(renderedTemplate, title)
+    printContentent(renderedTemplate, title)
 }
 
 // CUSTOMER DETAIL
@@ -184,7 +186,7 @@ const customerDetailHtmlTemplate = `
             <%= moment(transaction.created_at).format('DD/MM/YYYY, h:mma') %>
           </td>
           <td>
-            C$<%= transaction.total %>
+            <%= currency %><%= transaction.total %>
           </td>
         </tr>
         <% }) %>
@@ -198,7 +200,7 @@ const customerDetailHtmlTemplate = `
           </td>
           <td>
             <b>
-              C$<%= data.totalDebt %>
+              <%= currency %><%= data.totalDebt %>
             </b>
           </td>
         </tr>
@@ -208,20 +210,22 @@ const customerDetailHtmlTemplate = `
 </html>`
 
 function customerDetailReport(data) {
-  const store = store.getters.store
-  const title = `Reporte de Cliente - ${data.customer.name}`
+    const storeData = store.getters.store
+    const currency = store.getters.currency
+    const title = `Reporte de Cliente - ${data.customer.name}`
 
-  const renderedTemplate = render(customerDetailHtmlTemplate, {
-    data,
-    logo,
-    store,
-    moment,
-    title
-  })
+    const renderedTemplate = render(customerDetailHtmlTemplate, {
+        data,
+        logo,
+        store: storeData,
+        moment,
+        title,
+        currency
+    })
 
-  const styles = `h4 { margin-botton: 1px !important; }`
+    const styles = `h4 { margin-botton: 1px !important; }`
 
-  printContentent(renderedTemplate, title, styles)
+    printContentent(renderedTemplate, title, styles)
 }
 
 export { customersReport, customerDetailReport }

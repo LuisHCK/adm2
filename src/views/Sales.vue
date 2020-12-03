@@ -90,7 +90,7 @@
                         label="Sub Total"
                     >
                         <b-tag
-                            v-text="'C$ ' + props.row.subTotal"
+                            v-text="currency + props.row.subTotal"
                             class="has-text-weight-bold"
                             type="is-info"
                             rounded
@@ -103,7 +103,7 @@
                         label="Descuento"
                     >
                         <b-tag
-                            v-text="'C$ ' + props.row.discounted"
+                            v-text="currency + props.row.discounted"
                             class="has-text-weight-bold"
                             rounded
                         />
@@ -125,7 +125,7 @@
                     <b-table-column v-slot="props" field="total" label="TOTAL">
                         <b-tag
                             type="is-success"
-                            v-text="'C$ ' + props.row.total"
+                            v-text="currency + props.row.total"
                             class="has-text-weight-bold"
                             rounded
                         />
@@ -231,7 +231,7 @@
                         <b>TOTAL</b>
                     </th>
 
-                    <th colspan="3">C${{ salesTotal }}</th>
+                    <th colspan="3">{{ currency }}{{ salesTotal }}</th>
                 </template>
 
                 <template slot="empty">
@@ -287,6 +287,7 @@ import { printContentent } from '@/lib/print'
 import { salesReport } from '@/reports/sales-report'
 import { printInvoice } from '@/reports/invoice'
 import RefundModal from '../components/sales/RefundModal.vue'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'sales-page',
@@ -314,7 +315,8 @@ export default {
     computed: {
         salesTotal() {
             return this.sales.reduce((a, b) => a + b.total, 0)
-        }
+        },
+        ...mapGetters(['currency'])
     },
 
     methods: {
