@@ -5,7 +5,7 @@ It's build using moden web technologies such as [VueJS](https://vuejs.org/), [Bu
 
 Doesn't require internet connection, everything is stored on device using [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
 
-> Currently only supports spanish - nicaraguan localization, more localization will be supported in the future
+> ~~Currently only supports spanish - nicaraguan localization, more localization will be supported in the future~~
 
 ## Screenshots
 
