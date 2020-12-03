@@ -69,12 +69,12 @@ export default {
   },
 
   computed: {
-    ...mapState(['company']),
+    ...mapState(['store']),
 
     // Get name
     getCompanyName() {
-      if (this.company && this.company.name) {
-        return this.company.name
+      if (this.store && this.store.name) {
+        return this.store.name
       } else {
         return 'ADM2'
       }

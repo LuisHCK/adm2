@@ -17,10 +17,10 @@ const customersHtmlTemplate = `
         <tr>
           <td style="vertical-align: top;">
             <h2><%= title %></h2>
-            <h3><%= company.name %></h3>
-            <div><%= company.address %></div>
-            <div><%= company.phone %></div>
-            <div><%= company.legal_id %></div>
+            <h3><%= store.name %></h3>
+            <div><%= store.address %></div>
+            <div><%= store.phone %></div>
+            <div><%= store.legal_id %></div>
           </td>
           <td style="text-align: right; vertical-align: top;">
             <img src="<%= logo %>" style=" height: 100px; width: auto;" />
@@ -79,13 +79,13 @@ const customersHtmlTemplate = `
 const logo = localStorage.getItem('company_logo')
 
 function customersReport(customers) {
-  const company = store.getters.company
+  const store = store.getters.store
   const title = 'Reporte de Clientes'
 
   const renderedTemplate = render(customersHtmlTemplate, {
     customers,
     logo,
-    company,
+    store,
     moment,
     title
   })
@@ -108,10 +108,10 @@ const customerDetailHtmlTemplate = `
         <tr>
           <td style="vertical-align: top;">
             <h2><%= title %></h2>
-            <h3><%= company.name %></h3>
-            <div><%= company.address %></div>
-            <div><%= company.phone %></div>
-            <div><%= company.legal_id %></div>
+            <h3><%= store.name %></h3>
+            <div><%= store.address %></div>
+            <div><%= store.phone %></div>
+            <div><%= store.legal_id %></div>
           </td>
           <td style="text-align: right; vertical-align: top;">
             <img src="<%= logo %>" style=" height: 100px; width: auto;" />
@@ -208,13 +208,13 @@ const customerDetailHtmlTemplate = `
 </html>`
 
 function customerDetailReport(data) {
-  const company = store.getters.company
+  const store = store.getters.store
   const title = `Reporte de Cliente - ${data.customer.name}`
 
   const renderedTemplate = render(customerDetailHtmlTemplate, {
     data,
     logo,
-    company,
+    store,
     moment,
     title
   })

@@ -1,16 +1,16 @@
 <template>
   <div class="side-nav is-primary" :class="sidenavVisible ? classes : 'hidden'">
     <div class="items-container">
-      <div class="company-logo">
-        <div class="company-cover has-text-centered">
+      <div class="store-logo">
+        <div class="store-cover has-text-centered">
           <img
-            :src="logo || require('@/assets/logo.png')"
+            :src="store.logo || require('@/assets/logo.png')"
             alt=""
             class="logo"
           />
           <span
             class="has-text-weight-bold is-size-4 is-margin-top-1"
-            v-text="company ? company.name : ''"
+            v-text="store ? store.name : ''"
           />
         </div>
       </div>
@@ -75,7 +75,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['company', 'sidenavVisible']),
+    ...mapState(['store', 'sidenavVisible']),
     classes() {
       return 'is-2-desktop ' + 'is-2-mobile' + ' is-2-tablet'
     },
@@ -153,14 +153,14 @@ export default {
   border-right: 1px solid #f1f1f1;
   position: fixed;
   transition: 0.3s;
-  .company-logo {
+  .store-logo {
     padding-bottom: 8px;
     img {
       width: auto;
       height: 120px;
     }
   }
-  .company-cover {
+  .store-cover {
     height: 220px;
     display: flex;
     justify-content: center;

@@ -16,6 +16,20 @@ export default {
         layout() {
             return this.$route.meta.layout
         }
+    },
+
+    methods: {
+        async getStoreData() {
+            const storeData = await Database.settings.get({ name: 'store' })
+
+            if (storeData) {
+                this.$store.commit('SET_STORE', storeData.value)
+            }
+        }
+    },
+
+    mounted() {
+        this.getStoreData()
     }
 }
 </script>

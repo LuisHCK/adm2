@@ -20,10 +20,10 @@ const htmlTemplate = `
         <tr>
           <td style="vertical-align: top;">
             <h2>Reporte de ventas</h2>
-            <h3><%= company.name %></h3>
-            <div><%= company.address %></div>
-            <div><%= company.phone %></div>
-            <div><%= company.legal_id %></div>
+            <h3><%= store.name %></h3>
+            <div><%= store.address %></div>
+            <div><%= store.phone %></div>
+            <div><%= store.legal_id %></div>
           </td>
           <td style="text-align: right; vertical-align: top;">
             <img src="<%= logo %>" style=" height: 100px; width: auto;" />
@@ -87,8 +87,8 @@ const logo = localStorage.getItem('company_logo')
  * @param {String} title Report title
  */
 function salesReport(sales, title, dateRange) {
-  const company = store.getters.company
-  return render(htmlTemplate, { sales, dateRange, title, logo, company, moment })
+  const store = store.getters.store
+  return render(htmlTemplate, { sales, dateRange, title, logo, store, moment })
 }
 
 export { salesReport }

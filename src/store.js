@@ -13,7 +13,7 @@ export default new Vuex.Store({
   state: {
     user: undefined,
     users: [],
-    company: undefined,
+    store: {},
     shoppingCart: [],
     shoppingCartCustomer: {},
     chartData: {},
@@ -31,8 +31,8 @@ export default new Vuex.Store({
       state.user = user
     },
 
-    setCompany(state, company) {
-      state.company = company
+    SET_STORE(state, store) {
+      state.store = store
     },
 
     TOGGLE_SIDENAV(state) {
@@ -116,8 +116,8 @@ export default new Vuex.Store({
       return state.user != undefined
     },
 
-    company: state => {
-      return state.company
+    store: state => {
+      return state.store
     },
 
     /**

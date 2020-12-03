@@ -34,7 +34,7 @@ export default {
   name: 'nav-bar',
 
   computed: {
-    ...mapState(['user', 'company', 'actionButtons'])
+    ...mapState(['user', 'store', 'actionButtons'])
   },
 
   methods: {
