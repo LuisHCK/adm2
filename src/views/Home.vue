@@ -198,7 +198,7 @@ export default {
             let datasets = [
                 {
                     label: 'Ventas',
-                    backgroundColor: '#039BE5',
+                    backgroundColor: '#039be596',
                     data: []
                 }
             ]
