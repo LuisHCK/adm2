@@ -5,8 +5,9 @@
                 <th>#</th>
                 <th>Producto</th>
                 <th>Existencias</th>
-                <th>Cantidad</th>
                 <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Descuento</th>
                 <th>Sub total</th>
                 <th>Acciones</th>
             </tr>
@@ -23,7 +24,14 @@
                 <td>
                     <span v-text="item.inventoryProduct.stock" />
                 </td>
+
                 <td>
+                    <span
+                        v-text="`${currency}${item.inventoryProduct.price}`"
+                    />
+                </td>
+
+                <td width="130px">
                     <input
                         :id="`qtyInput-${item.inventoryProduct.id}`"
                         :ref="`qty-input-${index}`"
@@ -49,11 +57,20 @@
                         @focus="focusSelect"
                     />
                 </td>
-                <td>
-                    <span
-                        v-text="`${currency}${item.inventoryProduct.price}`"
-                    />
+
+                <td width="130px">
+                    <b-field>
+                        <b-numberinput
+                            :controls="false"
+                            :max="100"
+                            :min="0"
+                            :value="item.inventoryProduct.discount"
+                            @input="emitDiscountChange($event, index)"
+                            rounded
+                        />
+                    </b-field>
                 </td>
+
                 <td>
                     <span v-text="`${currency}${item.subTotal}`" />
                 </td>
@@ -73,6 +90,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
+
+let discountTimeout
 
 export default {
     name: 'products-table',
@@ -97,6 +116,14 @@ export default {
 
         emitQuantityUpdate(index, event, stock) {
             this.$emit('onQuantityChange', index, event, stock)
+        },
+
+        emitDiscountChange(event, index) {
+            clearTimeout(discountTimeout)
+
+            discountTimeout = setTimeout(() => {
+                this.$emit('onDiscountChange', {event, index})
+            }, 500)
         },
 
         emitRemoveItem(index) {

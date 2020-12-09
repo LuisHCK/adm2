@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { getUserCount } from './lib/auth'
 import VuexPersistence from 'vuex-persist'
+import Maths from './lib/maths'
 
 Vue.use(Vuex)
 
@@ -70,7 +71,28 @@ export default new Vuex.Store({
             const qty = state.shoppingCart[payload.index].quantity
             const price =
                 state.shoppingCart[payload.index].inventoryProduct.price
-            state.shoppingCart[[payload.index]].subTotal = qty * price
+
+            const discount = state.shoppingCart[payload.index].discount || 0
+            const discounted = Maths.getPercent(qty * price, discount)
+
+            state.shoppingCart[[payload.index]].discounted = discounted
+
+            state.shoppingCart[[payload.index]].subTotal =
+                qty * price - discounted
+        },
+
+        SET_PRODUCT_DISCOUNT_SHOPPING_CART(state, payload) {
+            // Compute subtotal
+            const qty = state.shoppingCart[payload.index].quantity
+            const price =
+                state.shoppingCart[payload.index].inventoryProduct.price
+            const subTotal = qty * price
+            const discount = Number(payload.discount || 0)
+            const discounted = Maths.getPercent(subTotal, discount) || 0
+
+            state.shoppingCart[[payload.index]].discount = discount
+            state.shoppingCart[[payload.index]].discounted = discounted
+            state.shoppingCart[[payload.index]].subTotal = subTotal - discounted
         },
 
         /**
@@ -83,7 +105,12 @@ export default new Vuex.Store({
             // Compute subtotal
             const qty = state.shoppingCart[index].quantity
             const price = state.shoppingCart[index].inventoryProduct.price
-            state.shoppingCart[[index]].subTotal = qty * price
+            const discount = state.shoppingCart[index].discount || 0
+            const discounted = Maths.getPercent(price * qty, discount) || 0
+
+            console.log(discount, discounted)
+
+            state.shoppingCart[[index]].subTotal = qty * price - discounted
         },
 
         SET_SHOPPING_CART_CUSTOMER(state, payload) {

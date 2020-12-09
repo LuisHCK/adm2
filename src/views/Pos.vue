@@ -20,143 +20,21 @@
                         :shoppingCart="shoppingCart"
                         @onQuantityChange="setInventoryProductBuyQty"
                         @onRemoveItem="removeItem"
+                        @onDiscountChange="handleDiscountChange"
                     />
                 </div>
             </div>
             <div class="column is-3-desktop is-4-tablet">
-                <div class="panel">
-                    <div class="columns is-multiline">
-                        <!-- Sub total -->
-                        <div class="column is-half">
-                            <span>Subtotal</span>
-                        </div>
-                        <div class="column is-half has-text-right">
-                            <span v-text="`${currency}${shoppingCartTotal}`" />
-                        </div>
-                        <!-- Discounts -->
-                        <div class="column is-half">
-                            <span>Descuento</span>
-                        </div>
-                        <div class="column is-half has-text-right">
-                            <span>
-                                <span v-text="`-${currency}${discounted} `" />
-                                <small v-text="`(${discount}%)`" />
-                            </span>
-                        </div>
-                        <!-- Total -->
-                        <div class="column is-half">
-                            <span>TOTAL</span>
-                        </div>
-                        <div class="column is-half has-text-right">
-                            <strong
-                                class="is-size-4 has-text-danger"
-                                v-text="`${currency}${finalTotal}`"
-                            />
-                        </div>
-                    </div>
-
-                    <hr />
-
-                    <!-- payment section -->
-                    <div class="columns is-multiline">
-                        <div class="column is-one-third">
-                            <span>Paga con</span>
-                        </div>
-                        <div class="column is-two-thirds has-text-right">
-                            <b-input
-                                ref="payWithInput"
-                                @focus="focusSelect"
-                                type="number"
-                                v-model="payWith"
-                                :min="1"
-                                rounded
-                            ></b-input>
-                        </div>
-                        <!-- Exchange -->
-                        <div class="column is-half">
-                            <span>Vuelto</span>
-                        </div>
-                        <div class="column is-half has-text-right">
-                            <strong
-                                class="hast-text-success"
-                                v-text="`${currency}${exchange}`"
-                            />
-                        </div>
-
-                        <!-- Type of sale -->
-                        <div class="column is-full">
-                            <span>Tipo de venta</span>
-                        </div>
-                        <div class="column is-full">
-                            <b-field position="is-right" rounded>
-                                <b-radio-button
-                                    v-model="saleType"
-                                    name="sale-type"
-                                    :native-value="1"
-                                    type="is-success"
-                                    rounded
-                                >
-                                    <b-icon icon="account-cash" />
-                                    Contado
-                                </b-radio-button>
-                                <b-radio-button
-                                    v-model="saleType"
-                                    name="sale-type"
-                                    :native-value="0"
-                                    type="is-warning"
-                                    rounded
-                                >
-                                    <b-icon icon="credit-card-plus" />
-                                    Crédito
-                                </b-radio-button>
-                            </b-field>
-                        </div>
-                    </div>
-
-                    <hr />
-
-                    <!-- Customer section -->
-                    <div class="columns is-multiline">
-                        <div class="column is-3">
-                            <span>Cliente</span>
-                        </div>
-                        <div class="column" style="display: flex;">
-                            <v-select
-                                label="name"
-                                style="width: 100%;"
-                                :options="customers"
-                                @input="setCustomer"
-                                :value="shoppingCartCustomer"
-                            >
-                                <div slot="no-options">
-                                    No hay clientes registrados
-                                </div>
-                            </v-select>
-                            <b-button
-                                @click="showCustomerForm = true"
-                                type="is-primary"
-                                style="margin-left: 8px;"
-                                size="is-small"
-                            >
-                                <i class="mdi mdi-plus"></i>
-                            </b-button>
-                        </div>
-                    </div>
-
-                    <!-- Complete button -->
-                    <div>
-                        <b-button
-                            icon-left="send"
-                            type="is-success"
-                            @click="completeSale()"
-                            :disabled="!shoppingCart.length"
-                            expanded
-                            rounded
-                        >
-                            COMPLETAR VENTA
-                        </b-button>
-                    </div>
-                </div>
+                <pos-summary
+                    :shoppingCartTotal="shoppingCartTotal"
+                    :shoppingCartCustomer="shoppingCartCustomer"
+                    :shoppingCart="shoppingCart"
+                    :finalTotal="finalTotal"
+                    @changePayWith="payWith = $event"
+                    @setCustomer="setCustomer"
+                    @changeSaleType="saleType = $event"
+                    @submit="completeSale"
+                />
             </div>
         </div>
 
@@ -209,6 +87,7 @@ import ProductSearch from '@/components/pos/ProductSearch.vue'
 import CustomerForm from '@/components/customers/CustomerForm.vue'
 import ProductsTable from '@/components/pos/ProductsTable.vue'
 import SaleDetails from '@/components/sales/SaleDetails.vue'
+import PosSummary from '../components/pos/PosSummary.vue'
 import vSelect from 'vue-select'
 import { mapState, mapGetters } from 'vuex'
 import Maths from '@/lib/maths'
@@ -221,7 +100,8 @@ export default {
         vSelect,
         CustomerForm,
         ProductsTable,
-        SaleDetails
+        SaleDetails,
+        PosSummary
     },
 
     computed: {
@@ -279,10 +159,13 @@ export default {
             }
             // Add the product to shopping cart
             else {
+                let subTotal = inventoryProduct.price * 1
+                
+
                 this.$store.commit('ADD_PRODUCT_TO_SHOPPING_CART', {
                     inventoryProduct,
                     quantity: 1,
-                    subTotal: inventoryProduct.price * 1
+                    subTotal
                 })
             }
             setTimeout(() => {
@@ -332,6 +215,15 @@ export default {
             })
         },
 
+        /** Update product discount */
+        handleDiscountChange({ event, index }) {
+            const inventoryProduct = this.shoppingCart[index]
+            this.$store.commit('SET_PRODUCT_DISCOUNT_SHOPPING_CART', {
+                index,
+                discount: event
+            })
+        },
+
         cancelSale() {
             this.$store.commit('CLEAR_SHOPPING_CART')
         },
@@ -355,6 +247,7 @@ export default {
                 discounted: this.discounted,
                 total: this.finalTotal,
                 sale_type: this.saleType ? 'cash' : 'credit',
+                pay_with: this.payWith,
                 customer_id: this.shoppingCartCustomer.id,
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString()
@@ -394,10 +287,6 @@ export default {
                 type: type,
                 position: 'is-bottom'
             })
-        },
-
-        focusSelect(event) {
-            event.target.select()
         },
 
         getCustomers() {
