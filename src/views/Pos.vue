@@ -62,7 +62,7 @@
                         <div class="column is-one-third">
                             <span>Paga con</span>
                         </div>
-                        <div class="column has-text-right">
+                        <div class="column is-two-thirds has-text-right">
                             <b-input
                                 ref="payWithInput"
                                 @focus="focusSelect"
