@@ -6,9 +6,9 @@
                     <product-search @input="addToShoppingCart" />
                 </div>
                 <div class="column">
-                    <button @click="cancelSale" class="button is-danger">
+                    <b-button type="is-danger" @click="cancelSale" rounded>
                         Cancelar venta
-                    </button>
+                    </b-button>
                 </div>
             </div>
         </div>

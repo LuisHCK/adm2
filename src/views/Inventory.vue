@@ -1,136 +1,28 @@
 <template>
     <div class="page-container">
-        <div class="panel">
-            <h3 class="is-size-4 has-text-weight-bold">{{ inventory.name }}</h3>
-            <b-table
-                :data="inventoryProducts"
-                :striped="true"
-                :hoverable="true"
-                :loading="loading"
-                class="is-margin-top-1"
-            >
-                <template>
-                    <b-table-column
-                        v-slot="props"
-                        field="id"
-                        label="ID"
-                        width="40"
-                        numeric
-                        >{{ props.row.id }}</b-table-column
-                    >
-
-                    <b-table-column
-                        v-slot="props"
-                        field="product_id"
-                        label="Nombre"
-                    >
-                        <strong
-                            v-text="getProduct(props.row.product_id).name"
-                        />
-                        <br />
-                        <small
-                            v-text="getProduct(props.row.product_id).brand"
-                        />
-                    </b-table-column>
-
-                    <b-table-column
-                        v-slot="props"
-                        field="product"
-                        label="Presentación"
-                    >
-                        <span
-                            v-text="getProduct(props.row.product_id).content"
-                        />
-                        <span v-text="getProduct(props.row.product_id).unit" />
-                    </b-table-column>
-
-                    <b-table-column
-                        v-slot="props"
-                        field="price"
-                        label="Precio Unitario"
-                    >
-                        <b-tag
-                            type="is-info"
-                            class="has-text-weight-bold"
-                            rounded
-                        >
-                            {{ currency }}{{ props.row.price }}
-                        </b-tag>
-                    </b-table-column>
-
-                    <b-table-column
-                        v-slot="props"
-                        field="stock"
-                        label="Cantidad en existencia"
-                    >
-                        <b-tag
-                            type="is-primary"
-                            class="has-text-weight-bold"
-                            rounded
-                        >
-                            {{ props.row.stock }}
-                        </b-tag>
-                    </b-table-column>
-
-                    <b-table-column v-slot="props" field="lot" label="Lote">
-                        <b-tag
-                            v-text="props.row.lot || '---'"
-                            type="is-info"
-                            class="has-text-weight-bold"
-                            rounded
-                        />
-                    </b-table-column>
-
-                    <b-table-column
-                        v-slot="props"
-                        field="codebar"
-                        label="Código"
-                    >
-                        {{ getProduct(props.row.product_id).codebar }}
-                    </b-table-column>
-
-                    <b-table-column
-                        v-slot="props"
-                        field="actions"
-                        label="Acciones"
-                    >
-                        <b-field>
-                            <div class="control">
-                                <b-button
-                                    @click="openUpdateForm(props.row.id)"
-                                    icon-left="pencil"
-                                    type="is-primary"
-                                    size="is-small"
-                                    rounded
-                                />
-                            </div>
-                            <div class="control">
-                                <b-button
-                                    @click="deleteInventoryProduct(props.row)"
-                                    icon-left="delete"
-                                    type="is-danger"
-                                    size="is-small"
-                                    rounded
-                                />
-                            </div>
-                        </b-field>
-                    </b-table-column>
-                </template>
-
-                <template slot="empty">
-                    <section class="section">
-                        <div class="content has-text-grey has-text-centered">
-                            <p>
-                                <b-icon
-                                    icon="package-variant"
-                                    size="is-large"
-                                ></b-icon>
-                            </p>
-                            <p>No hay productos para mostrar.</p>
+        <div class="columns">
+            <div class="column is-full-mobile is-one-quarter-desktop">
+                <inventory-summary
+                    :inventory="inventory"
+                    :total-products="totalProducts"
+                    :gross-profit="grossProfit"
+                />
+            </div>
+            <div class="column">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="content">
+                            <inventory-table
+                                :inventory-products="inventoryProducts"
+                                :loading="loading"
+                                @update="openUpdateForm"
+                                @delete="deleteInventoryProduct"
+                                @update-price="updateInventoryProduct"
+                            />
                         </div>
-                    </section>
-                </template>
-            </b-table>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Product modal form -->
@@ -164,27 +56,6 @@
                 </section>
             </div>
         </b-modal>
-
-        <!-- Show bulk import modal -->
-        <b-modal
-            :active.sync="showBulkImportModal"
-            has-modal-card
-            :width="1024"
-        >
-            <div class="modal-card is-full-width">
-                <header class="modal-card-head">
-                    <span class="modal-card-title"
-                        >Importar multiples productos</span
-                    >
-                </header>
-                <section class="modal-card-body">
-                    <import-products
-                        :products="products"
-                        @close="toggleModal"
-                    />
-                </section>
-            </div>
-        </b-modal>
     </div>
 </template>
 
@@ -193,56 +64,68 @@ import ImportProducts from '@/components/inventory/ImportProducts.vue'
 import InventoryProductForm from '@/components/inventory/InventoryProductForm.vue'
 import EventBus from '@/event-bus'
 import { mapGetters } from 'vuex'
+import InventoryTable from '../components/inventory/InventoryTable.vue'
+import InventorySummary from '../components/inventory/InventorySummary.vue'
 
 export default {
     components: {
         ImportProducts,
-        InventoryProductForm
+        InventoryProductForm,
+        InventoryTable,
+        InventorySummary
     },
 
     computed: {
-        ...mapGetters(['currency'])
+        ...mapGetters(['currency']),
+        grossProfit() {
+            if (this.inventoryProducts.length) {
+                let subTotal = this.inventoryProducts.map(
+                    item => Number(item.price || 0) * Number(item.stock || 0)
+                )
+
+                return subTotal.reduce((acc, curr) => acc + curr, 0)
+            }
+
+            return 0
+        }
     },
 
     data() {
         return {
             inventory: {},
             inventoryProducts: [],
-            products: [],
             showForm: false,
             showUpdateForm: false,
             selectedInventoryProduct: undefined,
             loading: false,
-            showBulkImportModal: false
+            showBulkImportModal: false,
+            totalProducts: 0
         }
     },
 
     methods: {
-        getInventoryProducts() {
-            Database.inventory_product
-                .where({ inventory_id: this.inventory.id })
-                .toArray(data => {
-                    this.inventoryProducts = data
-                    this.getProductDetails()
-                })
+        async getInventoryProducts() {
+            this.loading = true
+            const query = Database.inventory_product.where({
+                inventory_id: this.inventory.id
+            })
+
+            let data = await query.toArray()
+
+            this.totalProducts = await query.count()
+
+            data.map(async d => {
+                d.product = await this.getProduct(d.product_id)
+            })
+
+            setTimeout(() => {
+                this.loading = false
+                this.inventoryProducts = data
+            }, 300)
         },
 
-        getProductDetails() {
-            this.inventoryProducts.map(element => {
-                Database.product.get(element.product_id).then(product => {
-                    EventBus.$emit('RESET_INVENTORY_PRODUCT_FORM')
-                    this.products.push(product)
-                })
-            })
-        },
-
-        getProduct(id) {
-            const product = this.products.find(product => {
-                return product.id == id
-            })
-            // Return empty objetct if not product
-            if (!product) return {}
-
+        async getProduct(id) {
+            const product = await Database.product.get(id)
             return product
         },
 
@@ -251,19 +134,15 @@ export default {
                 .add(data)
                 .then(() => {
                     this.showToast('Se agregó el producto al inventario')
-                    this.getInventoryProducts()
                     this.showForm = false
                 })
                 .catch(err => console.log(err))
         },
 
-        getInventory() {
-            const inventoryId = this.$route.params.id
-
-            Database.inventory.get(inventoryId, data => {
-                this.inventory = data
-                this.getInventoryProducts()
-            })
+        async getInventory() {
+            const inventoryId = Number(this.$route.params.id)
+            this.inventory = await Database.inventory.get(inventoryId)
+            this.getInventoryProducts()
         },
 
         /**
@@ -277,24 +156,32 @@ export default {
             })
         },
 
-        updateInventoryProduct(data) {
-            Database.inventory_product.update(data.id, data).then(() => {
-                this.showToast('Se actualizó el inventario!')
-                this.showUpdateForm = false
+        async updateInventoryProduct(data) {
+            const updatedInventory = await Database.inventory_product.update(
+                data.id,
+                data
+            )
+
+            if (updatedInventory) {
+                // Refresh table data
                 this.getInventoryProducts()
-            })
+
+                this.showToast('Se actualizó el inventario!')
+            }
+
+            this.showUpdateForm = false
         },
 
-        getProductName(product_id) {
-            const product = this.getProduct(product_id)
+        getProductName(product) {
+            if (!product) return '¡Desconocido!'
             return `${product.name} - ${product.content} ${product.unit}`
         },
 
         deleteInventoryProduct(inventoryProduct) {
+            const productName = this.getProductName(inventoryProduct.product)
+
             this.$buefy.dialog.confirm({
-                title: `Quitar ${this.getProductName(
-                    inventoryProduct.product_id
-                )}`,
+                title: `Quitar: ${productName}`,
                 message:
                     '¿Estás seguro que quieres <b>quitar</b> este producto del inventario?' +
                     ' Esta acción no puede deshacerse.',
@@ -307,7 +194,6 @@ export default {
                         'Se quitó el producto del inventario'
                     )
                     Database.inventory_product.delete(inventoryProduct.id)
-                    this.getInventoryProducts()
                 }
             })
         },

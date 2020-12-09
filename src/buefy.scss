@@ -24,6 +24,11 @@ $link: $primary;
 $link-invert: $primary-invert;
 $link-focus-border: $primary;
 
+/** Cards **/
+$modal-card-title-size: $size-5;
+$modal-card-head-background-color: $primary;
+$modal-card-title-color: $light;
+
 // Import Bulma and Buefy styles
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
@@ -31,6 +36,10 @@ $link-focus-border: $primary;
 /** SPECIFIC OVERRIDES */
 .card-footer {
     border-top: 1px solid #f1f1f1;
+}
+
+.modal-card-foot {
+    background-color: white;
 }
 
 // Flex alignment

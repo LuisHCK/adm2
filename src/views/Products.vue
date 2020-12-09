@@ -173,8 +173,13 @@
             <div v-if="selectedProduct" class="modal-card">
                 <header class="modal-card-head">
                     <span
-                        class="modal-card-title"
-                        v-text="selectedProduct.name"
+                        class="modal-card-title has-text-weight-bold"
+                        v-text="'Editar: ' + selectedProduct.name"
+                    />
+                    <button
+                        type="button"
+                        class="delete"
+                        @click="showUpdateForm = false"
                     />
                 </header>
                 <section class="modal-card-body">

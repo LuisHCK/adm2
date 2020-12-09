@@ -1,36 +1,20 @@
 <template>
     <form @submit.prevent="submit" id="inventoryProductForm">
-        <!-- Name -->
-        <div v-if="inventoryProduct" style="margin-bottom: 20px;">
-            <strong v-text="getProductName(inventoryProduct.product)" />
-            <br />
-            <small v-text="inventoryProduct.product.brand" />
+        <div class="columns">
+            <!-- Name -->
+            <div class="column is-half">
+                <div v-if="inventoryProduct" style="margin-bottom: 20px;">
+                    <strong v-text="getProductName(inventoryProduct.product)" />
+                    <br />
+                    <small v-text="inventoryProduct.product.brand" />
+                </div>
+            </div>
+
+            <!-- Providers -->
+            <div class="column is-half">
+                
+            </div>
         </div>
-
-        <!-- Select -->
-        <b-field
-            v-else
-            label="Producto*"
-            :type="messages.product_id ? 'is-danger' : ''"
-            :message="messages.product_id"
-        >
-            <v-select
-                v-model="form.product_id"
-                :options="products"
-                label="name"
-                :reduce="product => product.id"
-            >
-                <template slot="option" slot-scope="option">
-                    {{ option.name }} - {{ option.brand }} |
-                    {{ option.content }} {{ option.unit }}
-                </template>
-
-                <template slot="selected-option" slot-scope="option">
-                    {{ option.name }} - {{ option.brand }} |
-                    {{ option.content }} {{ option.unit }}
-                </template>
-            </v-select>
-        </b-field>
 
         <div class="columns">
             <div class="column">
@@ -53,6 +37,11 @@
             <div class="column">
                 <!-- Stock -->
                 <b-field label="Existencias*">
+                    <p class="control">
+                        <span class="button is-static">
+                            <b-icon icon="package-variant" />
+                        </span>
+                    </p>
                     <b-numberinput
                         v-model="form.stock"
                         min="0"
@@ -114,13 +103,6 @@ export default {
     },
 
     methods: {
-        getProducts() {
-            Database.product
-                .toArray()
-                .then(products => (this.products = products))
-                .then(() => (this.loading = false))
-        },
-
         submit() {
             if (this.form.product_id && this.form.price && this.form.stock) {
                 // Append inventory id if not updating mode
@@ -175,10 +157,6 @@ export default {
     },
 
     mounted() {
-        if (this.inventoryId) {
-            this.getProducts()
-        }
-
         if (this.inventoryProductId) {
             this.getInventoryProduct()
         }
