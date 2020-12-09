@@ -27,7 +27,7 @@
                     <input
                         :id="`qtyInput-${item.inventoryProduct.id}`"
                         :ref="`qty-input-${index}`"
-                        class="quantity-input input"
+                        class="quantity-input input is-rounded"
                         type="number"
                         min="1"
                         :value="item.quantity || 1"
@@ -57,15 +57,14 @@
                 <td>
                     <span v-text="`${currency}${item.subTotal}`" />
                 </td>
-                <td>
+                <td style="text-align: center">
                     <b-button
                         type="is-danger"
-                        size="is-normal"
-                        rounded
+                        size="is-small"
                         @click="emitRemoveItem(index)"
-                    >
-                        <i class="mdi mdi-delete"></i>
-                    </b-button>
+                        rounded
+                        icon-left="delete"
+                    />
                 </td>
             </tr>
         </tbody>

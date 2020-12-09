@@ -196,6 +196,7 @@ export default {
   position: relative;
   input {
     width: 100%;
+    border-radius: 64px;
   }
   .search-result {
     position: absolute;

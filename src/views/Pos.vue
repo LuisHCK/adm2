@@ -16,14 +16,14 @@
         <div class="columns">
             <div class="column">
                 <div class="panel">
-                    <ProductsTable
+                    <products-table
                         :shoppingCart="shoppingCart"
                         @onQuantityChange="setInventoryProductBuyQty"
                         @onRemoveItem="removeItem"
                     />
                 </div>
             </div>
-            <div class="column is-4-desktop is-4-tablet">
+            <div class="column is-3-desktop is-4-tablet">
                 <div class="panel">
                     <div class="columns is-multiline">
                         <!-- Sub total -->
@@ -59,16 +59,17 @@
 
                     <!-- payment section -->
                     <div class="columns is-multiline">
-                        <div class="column is-half">
+                        <div class="column is-one-third">
                             <span>Paga con</span>
                         </div>
-                        <div class="column is-half has-text-right">
+                        <div class="column has-text-right">
                             <b-input
                                 ref="payWithInput"
                                 @focus="focusSelect"
                                 type="number"
                                 v-model="payWith"
                                 :min="1"
+                                rounded
                             ></b-input>
                         </div>
                         <!-- Exchange -->
@@ -83,16 +84,17 @@
                         </div>
 
                         <!-- Type of sale -->
-                        <div class="column is-one-third">
+                        <div class="column is-full">
                             <span>Tipo de venta</span>
                         </div>
-                        <div class="column">
-                            <b-field position="is-right">
+                        <div class="column is-full">
+                            <b-field position="is-right" rounded>
                                 <b-radio-button
                                     v-model="saleType"
                                     name="sale-type"
                                     :native-value="1"
                                     type="is-success"
+                                    rounded
                                 >
                                     <b-icon icon="account-cash" />
                                     Contado
@@ -102,6 +104,7 @@
                                     name="sale-type"
                                     :native-value="0"
                                     type="is-warning"
+                                    rounded
                                 >
                                     <b-icon icon="credit-card-plus" />
                                     Crédito
@@ -133,6 +136,7 @@
                                 @click="showCustomerForm = true"
                                 type="is-primary"
                                 style="margin-left: 8px;"
+                                size="is-small"
                             >
                                 <i class="mdi mdi-plus"></i>
                             </b-button>
@@ -141,13 +145,16 @@
 
                     <!-- Complete button -->
                     <div>
-                        <button
+                        <b-button
+                            icon-left="send"
+                            type="is-success"
                             @click="completeSale()"
-                            class="button is-success is-fullwidth"
                             :disabled="!shoppingCart.length"
+                            expanded
+                            rounded
                         >
                             COMPLETAR VENTA
-                        </button>
+                        </b-button>
                     </div>
                 </div>
             </div>
@@ -177,7 +184,7 @@
             @close="saleInvoice = undefined"
             has-modal-card
         >
-            <div v-if="showSaleInvoice" class="modal-card">
+            <div v-if="showSaleInvoice" class="modal-card" style="width: auto">
                 <header class="modal-card-head">
                     <p class="modal-card-title">Venta #{{ saleInvoice.id }}</p>
                     <b-button
