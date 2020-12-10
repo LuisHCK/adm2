@@ -197,18 +197,29 @@ export default {
             let labels = []
             let datasets = [
                 {
-                    label: 'Ventas',
-                    backgroundColor: '#039be596',
+                    label: 'Ventas al contado',
+                    borderColor: '#90CAF9',
+                    fill: false,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#64B5F6',
+                    data: []
+                },
+                {
+                    label: 'Ventas al crédito',
+                    borderColor: '#ef9a9a',
+                    fill: false,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#e57373',
                     data: []
                 }
             ]
 
-            this.dates.reverse().map(date => {
+            this.dates.reverse().map(async date => {
                 // Add label
                 labels.push(this.$moment(date).format('ddd D MMM'))
 
                 // add datasets
-                Database.sale
+                const sales = await Database.sale
                     .where('created_at')
                     .between(
                         date.toISOString(),
@@ -216,9 +227,22 @@ export default {
                         true,
                         true
                     )
-                    .count(count => {
-                        datasets[0].data.push(count)
-                    })
+                    .toArray()
+                // .count(count => {
+                //     console.log(count)
+                //     datasets[0].data.push(count)
+                // })
+
+                const cashSales = sales.filter(sale =>
+                    sale ? sale.sale_type === 'cash' : false
+                ).length
+
+                const creditSales = sales.filter(sale =>
+                    sale ? sale.sale_type === 'credit' : false
+                ).length
+
+                datasets[0].data.push(cashSales)
+                datasets[1].data.push(creditSales)
             })
 
             // set graph
