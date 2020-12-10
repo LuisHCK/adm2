@@ -99,18 +99,6 @@
 
                     <b-table-column
                         v-slot="props"
-                        field="discount"
-                        label="Descuento"
-                    >
-                        <b-tag
-                            v-text="currency + props.row.discounted"
-                            class="has-text-weight-bold"
-                            rounded
-                        />
-                    </b-table-column>
-
-                    <b-table-column
-                        v-slot="props"
                         field="sale_type"
                         label="Pago"
                     >
@@ -285,7 +273,7 @@ import SaleDetails from '@/components/sales/SaleDetails.vue'
 import Invoice from '@/components/sales/Invoice.vue'
 import { printContentent } from '@/lib/print'
 import { salesReport } from '@/reports/sales-report'
-import { printInvoice } from '@/reports/invoice'
+import { printInvoice } from '../reports/invoice'
 import RefundModal from '../components/sales/RefundModal.vue'
 import { mapGetters } from 'vuex'
 

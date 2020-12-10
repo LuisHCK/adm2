@@ -17,7 +17,6 @@
             <div class="column">
                 <div class="panel">
                     <products-table
-                        :shoppingCart="shoppingCart"
                         @onQuantityChange="setInventoryProductBuyQty"
                         @onRemoveItem="removeItem"
                         @onDiscountChange="handleDiscountChange"
@@ -90,9 +89,9 @@ import SaleDetails from '@/components/sales/SaleDetails.vue'
 import PosSummary from '../components/pos/PosSummary.vue'
 import vSelect from 'vue-select'
 import { mapState, mapGetters } from 'vuex'
-import Maths from '@/lib/maths'
 import { printContentent } from '@/lib/print'
 import { printInvoice } from '@/reports/invoice'
+import Maths from '../lib/maths'
 
 export default {
     components: {
@@ -112,12 +111,8 @@ export default {
             return 0
         },
 
-        discounted() {
-            return Maths.percentOfNum(this.discount, this.shoppingCartTotal)
-        },
-
         finalTotal() {
-            return this.shoppingCartTotal - this.discounted
+            return this.shoppingCartTotal
         },
 
         exchange() {
@@ -160,11 +155,15 @@ export default {
             // Add the product to shopping cart
             else {
                 let subTotal = inventoryProduct.price * 1
-                
 
                 this.$store.commit('ADD_PRODUCT_TO_SHOPPING_CART', {
                     inventoryProduct,
                     quantity: 1,
+                    discount: inventoryProduct.discount || 0,
+                    discounted: Maths.percentOfNum(
+                        subTotal,
+                        inventoryProduct.discount || 0
+                    ),
                     subTotal
                 })
             }
@@ -244,7 +243,6 @@ export default {
                 discount: this.discount,
                 customer: this.shoppingCartCustomer,
                 subTotal: this.shoppingCartTotal,
-                discounted: this.discounted,
                 total: this.finalTotal,
                 sale_type: this.saleType ? 'cash' : 'credit',
                 pay_with: this.payWith,

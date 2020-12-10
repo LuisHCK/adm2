@@ -109,6 +109,12 @@ const htmlTemplate = `
               align="right"
               style="padding: 6px; border-top: 1px solid black; border-bottom: 1px solid black; font-size: 10pt;"
             >
+              Descuento
+            </th>
+            <th
+              align="right"
+              style="padding: 6px; border-top: 1px solid black; border-bottom: 1px solid black; font-size: 10pt;"
+            >
               Subtotal
             </th>
           </tr>
@@ -132,7 +138,18 @@ const htmlTemplate = `
             <%= currency %><%= item.inventoryProduct.price %>
             </td>
             <td style="padding: 6px; text-align: right;">
-              <%= currency %><%= item.subTotal %>
+              <% if(item.discount && item.discounted){ %>
+                <%= currency %><%= item.discounted %>
+              <% } else{ %>  
+                  --
+              <% } %>
+            </td>
+            <td style="padding: 6px; text-align: right;">
+              <% if(item.discount && item.discounted){ %>
+                <%= currency %><%= item.subTotal - (item.discounted || 0) %>
+              <% } else{ %>  
+                <%= currency %><%= item.subTotal %>
+              <% } %>
             </td>
           </tr>
           <% }) %>
@@ -141,7 +158,7 @@ const htmlTemplate = `
         <tfoot>
           <% if (sale.discount) { %>
           <tr style="border-top: 1px solid black;" v-if="sale.discount">
-            <td colspan="3" align="right" style="padding: 6px;">
+            <td colspan="4" align="right" style="padding: 6px;">
               <b>Descuento</b>
             </td>
             <td align="right" style="padding: 6px;">
@@ -150,7 +167,7 @@ const htmlTemplate = `
           </tr>
           <% } %>
           <tr style="border-top: 1px solid black;">
-            <td colspan="3" align="right" style="padding: 6px;">
+            <td colspan="4" align="right" style="padding: 6px;">
               <b>TOTAL</b>
             </td>
             <td align="right" style="padding: 6px;">

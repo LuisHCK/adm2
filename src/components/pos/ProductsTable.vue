@@ -64,15 +64,28 @@
                             :controls="false"
                             :max="100"
                             :min="0"
-                            :value="item.inventoryProduct.discount"
+                            :value="item.discount"
                             @input="emitDiscountChange($event, index)"
+                            @focus="focusSelect"
                             rounded
                         />
                     </b-field>
                 </td>
 
                 <td>
-                    <span v-text="`${currency}${item.subTotal}`" />
+                    <div
+                        v-if="item.discount && item.discounted"
+                        class="discounted"
+                    >
+                        <div class="original-price">
+                            {{ currency }}{{ item.subTotal }}
+                        </div>
+
+                        <div class="updated-price">
+                            {{ currency }}{{ item.subTotal - item.discounted }}
+                        </div>
+                    </div>
+                    <div v-else v-text="`${currency}${item.subTotal}`" />
                 </td>
                 <td style="text-align: center">
                     <b-button
@@ -89,7 +102,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 let discountTimeout
 
@@ -97,16 +110,8 @@ export default {
     name: 'products-table',
 
     computed: {
-        ...mapGetters(['currency'])
-    },
-
-    props: {
-        shoppingCart: {
-            type: Array,
-            default: () => {
-                return []
-            }
-        }
+        ...mapGetters(['currency']),
+        ...mapState(['shoppingCart'])
     },
 
     methods: {
@@ -122,7 +127,7 @@ export default {
             clearTimeout(discountTimeout)
 
             discountTimeout = setTimeout(() => {
-                this.$emit('onDiscountChange', {event, index})
+                this.$emit('onDiscountChange', { event, index })
             }, 500)
         },
 
@@ -137,4 +142,16 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.discounted {
+    .original-price {
+        font-size: 12px;
+        text-decoration: line-through;
+        color: #636363;
+    }
+    .updated-price {
+        font-size: 14px;
+        font-weight: 500;
+    }
+}
+</style>

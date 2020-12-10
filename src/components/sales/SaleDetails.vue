@@ -30,6 +30,7 @@
                         <th>Código</th>
                         <th>Cantidad</th>
                         <th>Precio</th>
+                        <th>Descuento</th>
                         <th>Subtotal</th>
                     </tr>
                 </thead>
@@ -46,13 +47,29 @@
                         <td
                             v-text="`${currency}${item.inventoryProduct.price}`"
                         ></td>
-                        <td v-text="`${currency}${item.subTotal}`"></td>
+                        <td>
+                            <span v-if="item.discount && item.discounted">
+                                {{ currency }}{{ item.discounted || 0 }}
+                            </span>
+                            <span v-else>
+                                --
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="item.discount && item.discounted">
+                                {{ currency
+                                }}{{ item.subTotal - item.discounted }}
+                            </span>
+                            <span v-else>
+                                {{ currency }}{{ item.subTotal }}
+                            </span>
+                        </td>
                     </tr>
                 </tbody>
 
                 <tfoot>
                     <tr>
-                        <td colspan="5" class="has-text-right">
+                        <td colspan="6" class="has-text-right">
                             <strong class="is-size-5">TOTAL</strong>
                         </td>
                         <td>

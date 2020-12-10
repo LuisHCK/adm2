@@ -72,13 +72,8 @@ export default new Vuex.Store({
             const price =
                 state.shoppingCart[payload.index].inventoryProduct.price
 
-            const discount = state.shoppingCart[payload.index].discount || 0
-            const discounted = Maths.getPercent(qty * price, discount)
-
-            state.shoppingCart[[payload.index]].discounted = discounted
-
-            state.shoppingCart[[payload.index]].subTotal =
-                qty * price - discounted
+            state.shoppingCart[[payload.index]].subTotal = qty * price
+            state.shoppingCart = [...state.shoppingCart]
         },
 
         SET_PRODUCT_DISCOUNT_SHOPPING_CART(state, payload) {
@@ -87,12 +82,13 @@ export default new Vuex.Store({
             const price =
                 state.shoppingCart[payload.index].inventoryProduct.price
             const subTotal = qty * price
-            const discount = Number(payload.discount || 0)
-            const discounted = Maths.getPercent(subTotal, discount) || 0
 
-            state.shoppingCart[[payload.index]].discount = discount
+            const discounted = Maths.getPercent(subTotal, payload.discount || 0)
+
+            state.shoppingCart[[payload.index]].discount = payload.discount
             state.shoppingCart[[payload.index]].discounted = discounted
-            state.shoppingCart[[payload.index]].subTotal = subTotal - discounted
+
+            state.shoppingCart = [...state.shoppingCart]
         },
 
         /**
@@ -105,12 +101,9 @@ export default new Vuex.Store({
             // Compute subtotal
             const qty = state.shoppingCart[index].quantity
             const price = state.shoppingCart[index].inventoryProduct.price
-            const discount = state.shoppingCart[index].discount || 0
-            const discounted = Maths.getPercent(price * qty, discount) || 0
 
-            console.log(discount, discounted)
-
-            state.shoppingCart[[index]].subTotal = qty * price - discounted
+            state.shoppingCart[[index]].subTotal = qty * price
+            state.shoppingCart = [...state.shoppingCart]
         },
 
         SET_SHOPPING_CART_CUSTOMER(state, payload) {
@@ -155,7 +148,8 @@ export default new Vuex.Store({
          */
         shoppingCartTotal: state => {
             return state.shoppingCart.reduce((val, obj) => {
-                return val + obj.subTotal
+                const discounted = obj.discounted || 0
+                return val + (obj.subTotal - discounted)
             }, 0)
         },
 
