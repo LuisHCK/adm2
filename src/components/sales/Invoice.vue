@@ -7,7 +7,7 @@
             <tbody>
                 <tr>
                     <td style="vertical-align: top;">
-                        <h2>Factura Comercial</h2>
+                        <h2>Factura</h2>
                         <h3>{{ store.name }}</h3>
                         <div>{{ store.address }}</div>
                         <div>{{ store.phone }}</div>
