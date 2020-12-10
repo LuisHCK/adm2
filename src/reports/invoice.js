@@ -9,6 +9,27 @@ const htmlTemplate = `
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Invoice <%= sale.id %></title>
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; };
+
+      table {
+        width: 100%
+      }
+      
+      table.bordered-table {
+        border-collapse: collapse !important;
+        width: 100%
+      }
+
+      table.bordered-table td, table.bordered-table th {
+        padding: 6px;
+        border: 1px solid black;
+      }
+    
+      mt-1 {
+        margin-top: 1em;
+      }
+    </style>
   </head>
   <body>
     <div
@@ -26,7 +47,7 @@ const htmlTemplate = `
               <div><%= store.legal_id %></div>
             </td>
             <td style="text-align: right; vertical-align: top;">
-              <img src="<%= logo %>" style=" height: 100px; width: auto;" />
+              <img src="<%= store.logo %>" style=" height: 100px; width: auto;" />
             </td>
           </tr>
         </tbody>

@@ -10,6 +10,27 @@ const customersHtmlTemplate = `
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %></title>
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; };
+
+      table {
+        width: 100%
+      }
+      
+      table.bordered-table {
+        border-collapse: collapse !important;
+        width: 100%
+      }
+
+      table.bordered-table td, table.bordered-table th {
+        padding: 6px;
+        border: 1px solid black;
+      }
+    
+      mt-1 {
+        margin-top: 1em;
+      }
+    </style>
   </head>
   <body>
     <table style="width: 100%;">
@@ -23,7 +44,7 @@ const customersHtmlTemplate = `
             <div><%= store.legal_id %></div>
           </td>
           <td style="text-align: right; vertical-align: top;">
-            <img src="<%= logo %>" style=" height: 100px; width: auto;" />
+            <img src="<%= store.logo %>" style=" height: 100px; width: auto;" />
             <div style="margin-top: 1em;">
               <%= moment().format('DD/MM/YYYY, h:mm a') %>
             </div>
@@ -103,6 +124,27 @@ const customerDetailHtmlTemplate = `
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %></title>
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; };
+
+      table {
+        width: 100%
+      }
+      
+      table.bordered-table {
+        border-collapse: collapse !important;
+        width: 100%
+      }
+
+      table.bordered-table td, table.bordered-table th {
+        padding: 6px;
+        border: 1px solid black;
+      }
+    
+      mt-1 {
+        margin-top: 1em;
+      }
+    </style>
   </head>
   <body>
     <table style="width: 100%;">
@@ -116,7 +158,7 @@ const customerDetailHtmlTemplate = `
             <div><%= store.legal_id %></div>
           </td>
           <td style="text-align: right; vertical-align: top;">
-            <img src="<%= logo %>" style=" height: 100px; width: auto;" />
+            <img src="<%= store.logo %>" alt="LOGO" style=" height: 100px; width: 100px;" />
             <div style="margin-top: 1em;">
               <%= moment().format('DD/MM/YYYY, h:mm a') %>
             </div>
@@ -216,7 +258,6 @@ function customerDetailReport(data) {
 
     const renderedTemplate = render(customerDetailHtmlTemplate, {
         data,
-        logo,
         store: storeData,
         moment,
         title,

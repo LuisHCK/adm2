@@ -44,28 +44,6 @@ export function printContentent(
 }
 
 /**
- * Render final template
- * @param {String} title Title String
- * @param {String} styles Styles String
- * @param {String} htmlString Main content
- */
-function renderTemplate(title, styles, htmlString) {
-    const renderedTemplate = `<!DOCTYPE html>
-  <html lang="es">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${title}</title>
-    </head>
-    <body style="font-family: sans-serif;">
-    ${htmlString}
-    </body>
-  </html>`
-
-    return renderedTemplate
-}
-
-/**
  * Use Web print mode
  * @param {String} renderedTemplate Rendered template
  * @param {Function} callback Callback funtion
@@ -101,7 +79,7 @@ function printElectron(renderedTemplate, title = 'Reporte ADM2', styles = '') {
         win.webContents.insertCSS(winStyles)
         win.webContents.print({}, success => {
             // close window after print order.
-            // win.close()
+            win.close()
         })
     })
 }

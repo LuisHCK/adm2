@@ -11,8 +11,27 @@ const htmlTemplate = `
     <title>
       <%= title %>
     </title>
-    <styles>
-    </styles>
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; };
+
+      table {
+        width: 100%
+      }
+      
+      table.bordered-table {
+        border-collapse: collapse !important;
+        width: 100%
+      }
+
+      table.bordered-table td, table.bordered-table th {
+        padding: 6px;
+        border: 1px solid black;
+      }
+    
+      mt-1 {
+        margin-top: 1em;
+      }
+    </style>
   </head>
   <body>
     <table style="width: 100%;">
@@ -26,7 +45,7 @@ const htmlTemplate = `
             <div><%= store.legal_id %></div>
           </td>
           <td style="text-align: right; vertical-align: top;">
-            <img src="<%= logo %>" style=" height: 100px; width: auto;" />
+            <img src="<%= store.logo %>" style=" height: 100px; width: auto;" />
           </td>
         </tr>
       </tbody>
@@ -34,14 +53,13 @@ const htmlTemplate = `
 
     <br />
 
-    <table class="sales-table">
+    <table class="sales-table bordered-table">
       <thead>
         <tr style="font-size: 11pt; text-align: left;">
           <th>ID</th>
           <th>Cliente</th>
           <th>Productos</th>
           <th>Sub Total</th>
-          <th>Descuento</th>
           <th>Pago</th>
           <th>TOTAL</th>
           <th>Fecha de venta</th>
@@ -63,13 +81,10 @@ const htmlTemplate = `
             <%= currency %><%=sale.subTotal %>
           </td>
           <td>
-            <%= currency %><%=sale.discounted %>
-          </td>
-          <td>
             <%=sale.sale_type == 'cash' ? 'Efectivo' : 'Crédito' %>
           </td>
           <td>
-            <%=sale.total %>
+            <%= currency %><%=sale.total %>
           </td>
           <td>
             <%=moment(sale.created_at).format('DD/MM/YYYY, h:mm a') %>
