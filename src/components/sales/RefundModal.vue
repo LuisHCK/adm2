@@ -167,7 +167,7 @@ export default {
                     refund_type: refundType,
                     shoppingCart: this.sale.shoppingCart,
                     subTotal: updatedSubTotal,
-                    total: updatedSubTotal - this.sale.discounted
+                    total: updatedSubTotal
                 })
 
                 this.notifySuccess()
