@@ -1,6 +1,12 @@
-const electron = require('electron')
-const BrowserWindow = electron.remote.BrowserWindow
 import { onElectron } from './electron-utils'
+
+let electron
+let BrowserWindow
+
+if (onElectron) {
+    electron = require('electron')
+    BrowserWindow = electron.remote.BrowserWindow
+}
 
 const globalStyles = `
   body { font-family: Arial, Helvetica, sans-serif; };
@@ -25,16 +31,16 @@ const globalStyles = `
  * @param {Function} callback Optional callback
  */
 export function printContentent(
-  htmlString,
-  title = '',
-  styles = '',
-  callback = () => {}
+    htmlString,
+    title = '',
+    styles = '',
+    callback = () => {}
 ) {
-  if (onElectron) {
-    printElectron(htmlString, title, styles)
-  } else {
-    webPrint(htmlString, callback)
-  }
+    if (onElectron) {
+        printElectron(htmlString, title, styles)
+    } else {
+        webPrint(htmlString, callback)
+    }
 }
 
 /**
@@ -44,7 +50,7 @@ export function printContentent(
  * @param {String} htmlString Main content
  */
 function renderTemplate(title, styles, htmlString) {
-  const renderedTemplate = `<!DOCTYPE html>
+    const renderedTemplate = `<!DOCTYPE html>
   <html lang="es">
     <head>
       <meta charset="UTF-8">
@@ -56,7 +62,7 @@ function renderTemplate(title, styles, htmlString) {
     </body>
   </html>`
 
-  return renderedTemplate
+    return renderedTemplate
 }
 
 /**
@@ -65,16 +71,16 @@ function renderTemplate(title, styles, htmlString) {
  * @param {Function} callback Callback funtion
  */
 function webPrint(renderedTemplate, callback = null) {
-  var printWindow = window.open('', title)
-  printWindow.document.body.innerHTML = renderedTemplate
-  printWindow.focus()
-  printWindow.print()
-  printWindow.close()
+    var printWindow = window.open('_blank', "Title")
+    printWindow.document.body.innerHTML = renderedTemplate
+    printWindow.focus()
+    printWindow.print()
+    printWindow.close()
 
-  // Execute callback if given
-  if (callback) {
-    return callback()
-  }
+    // Execute callback if given
+    if (callback) {
+        return callback()
+    }
 }
 
 /**
@@ -82,29 +88,28 @@ function webPrint(renderedTemplate, callback = null) {
  * @param {String} renderedTemplate Rendered template
  * @param {Function} callback Callback function
  */
-function printElectron(renderedTemplate, title = 'Reporte ADM2', styles='') {
-  let win = new BrowserWindow({ width: 750, height: 900 })
-  const file =
-    'data:text/html;charset=UTF-8,' + encodeURIComponent(renderedTemplate)
-  win.loadURL(file, { title: title })
+function printElectron(renderedTemplate, title = 'Reporte ADM2', styles = '') {
+    let win = new BrowserWindow({ width: 750, height: 900 })
+    const file =
+        'data:text/html;charset=UTF-8,' + encodeURIComponent(renderedTemplate)
+    win.loadURL(file, { title: title })
 
-  
-  // if pdf is loaded start printing.
-  win.webContents.on('did-finish-load', () => {
-    // Merge styles
-    const winStyles = mergeStyles(styles)
-    win.webContents.insertCSS(winStyles)
-    win.webContents.print({}, success => {
-      // close window after print order.
-      // win.close()
+    // if pdf is loaded start printing.
+    win.webContents.on('did-finish-load', () => {
+        // Merge styles
+        const winStyles = mergeStyles(styles)
+        win.webContents.insertCSS(winStyles)
+        win.webContents.print({}, success => {
+            // close window after print order.
+            // win.close()
+        })
     })
-  })
 }
 
 function mergeStyles(customStyles) {
-  if (customStyles) {
-    return `${globalStyles}${customStyles}`
-  } else {
-    return globalStyles
-  }
+    if (customStyles) {
+        return `${globalStyles}${customStyles}`
+    } else {
+        return globalStyles
+    }
 }
