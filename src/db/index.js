@@ -20,7 +20,8 @@ database.version(0.1).stores({
     sale:
         '++id,inventory_product_id,quantity,user_id,customer_id,sale_type,[customer_id+sale_type],refund_type,created_at,updated_at',
     route: '++id,name,description,phone,created_at,updated_at',
-    customer_payment: '++id,amount,balance,customer_id,created_at,updated_at'
+    customer_payment: '++id,amount,balance,customer_id,created_at,updated_at',
+    withdrawal: '++id,type,amount,user_id,notes,total,subtotal,date,created_at,updated_at'
 })
 
 const User = database.user.defineClass(classes.User)
