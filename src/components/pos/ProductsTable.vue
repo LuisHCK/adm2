@@ -26,9 +26,9 @@
                 </td>
 
                 <td>
-                    <span
-                        v-text="`${currency}${item.inventoryProduct.price}`"
-                    />
+                    <span>
+                        {{ item.inventoryProduct.price | money }}
+                    </span>
                 </td>
 
                 <td width="130px">
@@ -78,14 +78,16 @@
                         class="discounted"
                     >
                         <div class="original-price">
-                            {{ currency }}{{ item.subTotal }}
+                            {{ item.subTotal | money }}
                         </div>
 
                         <div class="updated-price">
-                            {{ currency }}{{ item.subTotal - item.discounted }}
+                            {{ (item.subTotal - item.discounted) | money }}
                         </div>
                     </div>
-                    <div v-else v-text="`${currency}${item.subTotal}`" />
+                    <div v-else >
+                        {{ item.subTotal | money }}
+                    </div>
                 </td>
                 <td style="text-align: center">
                     <b-button
@@ -102,7 +104,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 let discountTimeout
 
@@ -110,7 +112,6 @@ export default {
     name: 'products-table',
 
     computed: {
-        ...mapGetters(['currency']),
         ...mapState(['shoppingCart'])
     },
 

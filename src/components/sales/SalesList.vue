@@ -13,8 +13,7 @@
                 <template v-if="sales.length">
                     <tr v-for="(item, i) in sales" :key="'sale_item' + i">
                         <td class="has-text-weight-bold">
-                            {{ currency }}
-                            {{ item.total }}
+                            {{ item.total | money }}
                         </td>
                         <td>{{ item.customer.name }}</td>
                         <td>
@@ -45,14 +44,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 export default {
     name: 'sales-list',
-
-    computed: {
-        ...mapGetters(['currency'])
-    },
 
     props: {
         sales: {

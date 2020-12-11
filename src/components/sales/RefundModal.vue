@@ -76,7 +76,7 @@
                                 type="is-success"
                                 rounded
                             >
-                                {{ currency }}{{ props.row.subTotal }}
+                                {{ props.row.subTotal | money }}
                             </b-tag>
                         </b-table-column>
                     </template>
@@ -91,7 +91,7 @@
                                 type="is-primary"
                                 rounded
                             >
-                                {{ currency }}{{ sale.total }}
+                                {{ sale.total | money }}
                             </b-tag>
                         </th>
                     </template>
@@ -115,7 +115,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 export default {
     name: 'refund-modal',
 
@@ -140,9 +139,7 @@ export default {
     computed: {
         isOpen() {
             return this.value
-        },
-
-        ...mapGetters(['currency'])
+        }
     },
 
     methods: {

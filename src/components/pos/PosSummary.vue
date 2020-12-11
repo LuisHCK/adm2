@@ -6,7 +6,9 @@
                 <span>Subtotal</span>
             </div>
             <div class="column is-half has-text-right">
-                <span v-text="`${currency}${shoppingCartTotal}`" />
+                <span>
+                    {{ shoppingCartTotal | money }}
+                </span>
             </div>
             <!-- Discounts -->
             <!-- <div class="column is-half">
@@ -23,10 +25,9 @@
                 <span>TOTAL</span>
             </div>
             <div class="column is-half has-text-right">
-                <strong
-                    class="is-size-4 has-text-danger"
-                    v-text="`${currency}${finalTotal}`"
-                />
+                <strong class="is-size-4 has-text-danger">
+                    {{ finalTotal | money }}
+                </strong>
             </div>
         </div>
 
@@ -52,10 +53,9 @@
                 <span>Vuelto</span>
             </div>
             <div class="column is-half has-text-right">
-                <strong
-                    class="hast-text-success"
-                    v-text="`${currency}${exchange}`"
-                />
+                <strong class="hast-text-success">
+                    {{ exchange | money }}
+                </strong>
             </div>
 
             <!-- Type of sale -->
@@ -135,7 +135,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
 
@@ -169,7 +168,6 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['currency']),
         exchange() {
             return this.finalTotal > 0 && this.payWith
                 ? this.payWith - this.finalTotal

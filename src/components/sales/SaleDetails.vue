@@ -44,12 +44,12 @@
                         <td v-text="getProductName(item.inventoryProduct)"></td>
                         <td v-text="item.inventoryProduct.product.codebar"></td>
                         <td v-text="item.quantity"></td>
-                        <td
-                            v-text="`${currency}${item.inventoryProduct.price}`"
-                        ></td>
+                        <td>
+                            {{ item.inventoryProduct.price | money }}
+                        </td>
                         <td>
                             <span v-if="item.discount && item.discounted">
-                                {{ currency }}{{ item.discounted || 0 }}
+                                {{ item.discounted || 0 | money }}
                             </span>
                             <span v-else>
                                 --
@@ -57,11 +57,10 @@
                         </td>
                         <td>
                             <span v-if="item.discount && item.discounted">
-                                {{ currency
-                                }}{{ item.subTotal - item.discounted }}
+                                {{ (item.subTotal - item.discounted) | money }}
                             </span>
                             <span v-else>
-                                {{ currency }}{{ item.subTotal }}
+                                {{ item.subTotal | money }}
                             </span>
                         </td>
                     </tr>
@@ -86,7 +85,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 export default {
     name: 'sale-details',
 
@@ -99,8 +98,6 @@ export default {
 
     computed: {
         ...mapState(['store']),
-
-        ...mapGetters(['currency']),
 
         // Get name
         getCompanyName() {

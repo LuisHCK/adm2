@@ -11,6 +11,7 @@ import 'moment/locale/es'
 import '@/buefy.scss'
 import '@/styles.scss'
 import './registerServiceWorker'
+import './filters/money-format.filter'
 
 Vue.use(Buefy)
 

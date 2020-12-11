@@ -1,0 +1,1 @@
+import './money-format.filter'
