@@ -7,6 +7,15 @@ Doesn't require internet connection, everything is stored on device using [Index
 
 > ~~Currently only supports spanish - nicaraguan localization, more localization will be supported in the future~~
 
+## Features
+- Product list management
+- Stock management
+- Smart POS system
+- Invoice printing 
+- Report printing
+- Cross platform support: Windows, Mac, Linux, Mobile, Web (comming soon)
+- No internet connection required (but recommended to keep the app updated)
+
 ## Screenshots
 
 ![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshots/4413dfd3-15a1-47f5-90cc-9c7356d7d64d.jpeg)
