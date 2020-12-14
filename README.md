@@ -9,11 +9,18 @@ Doesn't require internet connection, everything is stored on device using [Index
 
 ## Screenshots
 
-![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshot-localhost_8080-2020.03.04-08_20_34.jpg)
+![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshots/4413dfd3-15a1-47f5-90cc-9c7356d7d64d.jpeg)
 
-![screenshot](https://github.com/LuisHCK/adm2/blob/master/public/screenshot-localhost_8080-2020.03.04-08_18_46.jpg)
+![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshots/30510e0b-5deb-4547-99c9-9b61aefb7587.jpeg)
 
-![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshot-localhost_8080-2020.03.04-08_20_18.jpg)
+![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshots/c17b8e0a-16f6-4b8f-ba0b-99fb47b90e87.jpeg)
+
+![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshots/8be903b7-e593-4a6f-95a7-2ca7c30b9c0c.jpeg)
+
+![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshots/71c31d91-5a99-44ff-911a-4ca07f1e87c6.jpeg)
+
+![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshots/71c31d91-5a99-44ff-911a-4ca07f1e87c6.jpeg)
+
 
 ## Project setup
 ```
