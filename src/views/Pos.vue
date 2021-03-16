@@ -92,6 +92,7 @@ import { mapState, mapGetters } from 'vuex'
 import { printContentent } from '@/lib/print'
 import { printInvoice } from '@/reports/invoice'
 import Maths from '../lib/maths'
+import { registerCashboxLog } from '../controllers/cashbox'
 
 export default {
     components: {
@@ -104,7 +105,7 @@ export default {
     },
 
     computed: {
-        ...mapState(['shoppingCart', 'shoppingCartCustomer']),
+        ...mapState(['shoppingCart', 'shoppingCartCustomer', 'user']),
         ...mapGetters(['shoppingCartTotal', 'currency']),
 
         totalSale() {
@@ -260,6 +261,20 @@ export default {
             this.cancelSale()
             // Open detail retult
             this.showSaleInvoice = true
+            // Register cashbox log
+            this.createCashBoxLog()
+        },
+
+        async createCashBoxLog() {
+            await registerCashboxLog({
+                amount: this.saleInvoice.total,
+                concept: `Venta POS cont #${this.saleInvoice.id}`,
+                type: 'add',
+                reference: `FACT-${this.saleInvoice.id}`,
+                notes: '',
+                user_id: this.user,
+                date: this.saleInvoice.created_at
+            })
         },
 
         reduceInventoryQuantity() {

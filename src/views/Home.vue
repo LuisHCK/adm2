@@ -126,7 +126,7 @@
 
             <!-- Inventory status -->
             <div class="column is-half-desktop">
-                <InventoryStatus />
+                <inventory-status />
             </div>
         </div>
     </div>
@@ -136,8 +136,9 @@
 import LineChart from '@/components/charts/LineChart.vue'
 import SalesList from '@/components/sales/SalesList.vue'
 import CustomersList from '@/components/customers/CustomersList.vue'
-import InventoryStatus from '@/components/dashboard/InventoryStatus.vue'
+import InventoryStatus from '../components/dashboard/InventoryStatus.vue'
 import { lastXdays, setHourTo, enumerateDaysBetweenDates } from '@/lib/datetime'
+import { getMoneyInCashBox } from '../controllers/cashbox'
 
 const TODAY = new Date()
 
@@ -166,7 +167,7 @@ export default {
     },
 
     methods: {
-        getSales() {
+        async getSales() {
             const sales = Database.sale
 
             // Set date filters
@@ -185,9 +186,7 @@ export default {
                 .then(val => (this.totalSales = val))
 
             // Count amount of money
-            sales.where({ sale_type: 'cash' }).each(sale => {
-                this.totalMoney += sale.total
-            })
+            this.totalMoney = await getMoneyInCashBox()
 
             // latest 5 sales
             sales

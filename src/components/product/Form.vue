@@ -120,7 +120,12 @@
             </div>
 
             <div class="column is-full">
-                <b-button type="is-success" icon-left="content-save" rounded >
+                <b-button
+                    native-type="submit"
+                    type="is-success"
+                    icon-left="content-save"
+                    rounded
+                >
                     Guardar
                 </b-button>
             </div>
@@ -145,7 +150,7 @@ export default {
             form: {
                 name: undefined,
                 brand: undefined,
-                unity: undefined
+                unit: undefined
             },
             messages: {},
             statuses: ['activo', 'en revisión', 'deshabilitado'],

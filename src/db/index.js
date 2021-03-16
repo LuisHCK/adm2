@@ -21,7 +21,8 @@ database.version(0.1).stores({
         '++id,inventory_product_id,quantity,user_id,customer_id,sale_type,[customer_id+sale_type],refund_type,created_at,updated_at',
     route: '++id,name,description,phone,created_at,updated_at',
     customer_payment: '++id,amount,balance,customer_id,created_at,updated_at',
-    withdrawal: '++id,type,amount,user_id,notes,total,subtotal,date,created_at,updated_at'
+    cash_box:
+        '++id,amount,concept,type,reference,notes,date,user_id,created_at,updated_at'
 })
 
 const User = database.user.defineClass(classes.User)
@@ -38,6 +39,7 @@ const InventoryProduct = database.inventory_product.defineClass(
 const Tax = database.tax.defineClass(classes.Tax)
 const Coupon = database.coupon.defineClass(classes.Coupon)
 const Sale = database.sale.defineClass(classes.Sale)
+const CashBox = database.cash_box.defineClass(classes.CashBox)
 
 database.open()
 
@@ -55,5 +57,6 @@ export {
     InventoryProduct,
     Tax,
     Coupon,
-    Sale
+    Sale,
+    CashBox
 }

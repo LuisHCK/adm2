@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
     name: 'sale-details',
 
@@ -98,6 +98,7 @@ export default {
 
     computed: {
         ...mapState(['store']),
+        ...mapGetters(['currency']),
 
         // Get name
         getCompanyName() {
