@@ -76,7 +76,11 @@
 <script>
 import { months, daysAbr } from '@/lib/locale'
 import { mapGetters, mapState } from 'vuex'
-import { registerCashboxLog } from '../../controllers/cashbox'
+import {
+    cashBoxDateFormat,
+    cashBoxRefGen,
+    registerCashboxLog
+} from '../../controllers/cashbox'
 
 export default {
     name: 'transaction-form',
@@ -139,14 +143,16 @@ export default {
 
         async onSubmitForm() {
             const date = this.$moment()
-            const dateString = date.format('DD-MM-YYYY_h:mm-a')
             const isoString = date.toISOString()
             // Register the close
             await registerCashboxLog({
                 amount: -Math.abs(this.form.withdrawalAmount),
-                concept: `Retiro de efectivo`,
+                concept: `Cierre de caja`,
                 type: 'close',
-                reference: `RE-${dateString}`,
+                reference: cashBoxRefGen(
+                    'close',
+                    cashBoxDateFormat(date.toDate())
+                ),
                 notes: this.form.notes,
                 user_id: this.user,
                 date: isoString,
@@ -159,8 +165,11 @@ export default {
                 await registerCashboxLog({
                     amount: this.balance,
                     concept: 'Saldo en caja',
-                    type: 'add',
-                    reference: `RE-${dateString}`,
+                    type: 'balance',
+                    reference: cashBoxRefGen(
+                        'balance',
+                        cashBoxDateFormat(date.toDate())
+                    ),
                     user_id: this.user,
                     date: isoString,
                     created_at: isoString,

@@ -1,7 +1,23 @@
 <template>
-    <card title="Movimientos de caja">
+    <card>
+        <template slot="title">
+            <div class="is-flex is-justify-content-space-between w-100">
+                <p class="card-header-title">
+                    Movimientos de caja
+                </p>
+
+                <div class="is-flex is-justify-content-flex-end p-4">
+                    <log-filters
+                        @onDateChange="getLogsByDate"
+                        @onSearchChange="searchLogs"
+                        @onCleanFilter="getLogs"
+                    />
+                </div>
+            </div>
+        </template>
+
         <b-table
-            :data="data"
+            :data="logs"
             :loading="loading"
             :paginated="true"
             :pagination-simple="true"
@@ -63,27 +79,24 @@
 </template>
 
 <script>
+import { getCashBoxLogs, searchCashBoxLog } from '../../controllers/cashbox'
 import Card from '../ui/Card.vue'
+import LogFilters from './LogFilters.vue'
 export default {
-    components: { Card },
+    components: { Card, LogFilters },
 
     name: 'logs',
 
-    props: {
-        data: {
-            type: Array,
-            default: () => []
-        },
-
-        loading: {
-            type: Boolean,
-            default: false
+    data() {
+        return {
+            loading: true,
+            logs: []
         }
     },
 
     methods: {
         /**
-         * @param {('add'|'subtract'|'close')} type
+         * @param {('add'|'subtract'|'close','balance')} type
          */
         typeTypeOptions(type) {
             switch (type) {
@@ -105,13 +118,56 @@ export default {
                         className: 'is-danger'
                     }
 
+                case 'balance':
+                    return {
+                        label: 'Saldo',
+                        className: 'is-info'
+                    }
+
                 default:
                     return {
                         label: 'Tipo inválido',
                         className: 'is-dark'
                     }
             }
+        },
+
+        async getLogs() {
+            this.logs = await getCashBoxLogs()
+            this.loading = false
+        },
+
+        /**
+         * @param {Date[]} dates
+         */
+        async getLogsByDate([start_date, finish_date]) {
+            // Set the finish date to the end of the day
+            finish_date.setHours(24, 59, 59)
+
+            if (start_date && finish_date) {
+                this.logs = await getCashBoxLogs({
+                    start_date: start_date.toISOString(),
+                    finish_date: finish_date.toISOString()
+                })
+
+                this.loading = false
+            }
+        },
+
+        /**
+         * @param {string} search value
+         */
+        async searchLogs(searchValue) {
+            if (searchValue) {
+                this.logs = await searchCashBoxLog(searchValue)
+            } else {
+                this.getLogs()
+            }
         }
+    },
+
+    mounted() {
+        this.getLogs()
     }
 }
 </script>

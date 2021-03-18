@@ -1,11 +1,13 @@
 <template>
     <div class="page-container">
         <div class="columns is-mobile is-multiline">
-            <div class="column is-one-quarter-desktop is-full-mobile">
+            <div
+                class="column is-one-quarter-desktop is-half-tablet is-full-mobile"
+            >
                 <accounts />
             </div>
-            <div class="column">
-                <logs :data="logs" />
+            <div class="column is-full-tablet is-three-quarters-desktop">
+                <logs />
             </div>
         </div>
         <transaction-form
@@ -20,7 +22,7 @@
 import Accounts from '../components/cashbox/Accounts.vue'
 import Logs from '../components/cashbox/Logs.vue'
 import TransactionForm from '../components/cashbox/TransactionForm.vue'
-import { getCashBoxLogs, getMoneyInCashBox } from '../controllers/cashbox'
+import { getMoneyInCashBox } from '../controllers/cashbox'
 
 export default {
     name: 'cashbox',
@@ -33,7 +35,6 @@ export default {
 
     data() {
         return {
-            logs: [],
             showForm: false,
             totalCash: 0,
             transactionFormIsOpen: false
@@ -47,10 +48,6 @@ export default {
     },
 
     methods: {
-        async getLogs() {
-            this.logs = await getCashBoxLogs()
-        },
-
         async getTotalCash() {
             this.totalCash = await getMoneyInCashBox()
         },
@@ -85,7 +82,6 @@ export default {
     },
 
     mounted() {
-        this.getLogs()
         this.getTotalCash()
     }
 }

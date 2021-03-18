@@ -92,7 +92,11 @@ import { mapState, mapGetters } from 'vuex'
 import { printContentent } from '@/lib/print'
 import { printInvoice } from '@/reports/invoice'
 import Maths from '../lib/maths'
-import { registerCashboxLog } from '../controllers/cashbox'
+import {
+    cashBoxDateFormat,
+    cashBoxRefGen,
+    registerCashboxLog
+} from '../controllers/cashbox'
 
 export default {
     components: {
@@ -270,7 +274,12 @@ export default {
                 amount: this.saleInvoice.total,
                 concept: `Venta POS cont #${this.saleInvoice.id}`,
                 type: 'add',
-                reference: `FACT-${this.saleInvoice.id}`,
+                reference: cashBoxRefGen(
+                    'sale',
+                    `${this.saleInvoice.id}-${cashBoxDateFormat(
+                        this.saleInvoice.created_at
+                    )}`
+                ),
                 notes: '',
                 user_id: this.user,
                 date: this.saleInvoice.created_at
