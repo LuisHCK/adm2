@@ -201,7 +201,7 @@ export default {
     }
   }
   // break points
-  @media only screen and (max-width: 1023px) {
+  @media only screen and (max-width: $sidenav-break-point) {
     position: fixed;
     z-index: 1000;
     left: 0px;

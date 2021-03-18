@@ -1,8 +1,13 @@
 <template>
     <div class="panel">
-        <div class="columns is-multiline">
+        <h2
+            class="is-size-5-mobile is-size-4-desktop has-text-weight-bold mb-4"
+        >
+            Resúmen
+        </h2>
+        <div class="columns is-mobile is-multiline">
             <!-- Sub total -->
-            <div class="column is-half">
+            <div class="column is-half-desktop">
                 <span>Subtotal</span>
             </div>
             <div class="column is-half has-text-right">
@@ -10,16 +15,6 @@
                     {{ shoppingCartTotal | money }}
                 </span>
             </div>
-            <!-- Discounts -->
-            <!-- <div class="column is-half">
-                <span>Descuento</span>
-            </div>
-            <div class="column is-half has-text-right">
-                <span>
-                    <span v-text="`-${currency}${discounted} `" />
-                    <small v-text="`(${discount}%)`" />
-                </span>
-            </div> -->
             <!-- Total -->
             <div class="column is-half">
                 <span>TOTAL</span>
@@ -34,7 +29,7 @@
         <hr />
 
         <!-- payment section -->
-        <div class="columns is-multiline">
+        <div class="columns is-mobile is-multiline">
             <div class="column is-one-third">
                 <span>Paga con</span>
             </div>
@@ -52,6 +47,7 @@
             <div class="column is-half">
                 <span>Vuelto</span>
             </div>
+
             <div class="column is-half has-text-right">
                 <strong class="hast-text-success">
                     {{ exchange | money }}
@@ -59,10 +55,11 @@
             </div>
 
             <!-- Type of sale -->
-            <div class="column is-full">
+            <div class="column is-full-desktop is-half-mobile">
                 <span>Tipo de venta</span>
             </div>
-            <div class="column is-full">
+
+            <div class="column is-full-desktop is-half-mobile">
                 <b-field position="is-right" rounded>
                     <b-radio-button
                         v-model="saleType"
@@ -91,11 +88,11 @@
         <hr />
 
         <!-- Customer section -->
-        <div class="columns is-multiline">
-            <div class="column is-full">
+        <div class="columns is-mobile is-multiline">
+            <div class="column is-full-desktop is-one-quarter-mobile">
                 <span>Cliente</span>
             </div>
-            <div class="column is-full" style="display: flex;">
+            <div class="column is-full-desktop" style="display: flex;">
                 <v-select
                     label="name"
                     style="width: 100%;"
@@ -119,17 +116,31 @@
         </div>
 
         <!-- Complete button -->
-        <div>
-            <b-button
-                icon-left="send"
-                type="is-success"
-                @click="completeSale"
-                :disabled="!shoppingCart.length"
-                expanded
-                rounded
-            >
-                COMPLETAR VENTA
-            </b-button>
+        <div class="complete-sale-button">
+            <div class="field is-grouped">
+                <div class="control complete">
+                    <b-button
+                        icon-left="send"
+                        type="is-success"
+                        @click="completeSale"
+                        :disabled="!shoppingCart.length"
+                        expanded
+                        rounded
+                    >
+                        COMPLETAR VENTA
+                    </b-button>
+                </div>
+
+                <div class="control">
+                    <b-button
+                        type="is-danger"
+                        @click="cancelSale"
+                        icon-right="delete"
+                        :disabled="!shoppingCart.length"
+                        rounded
+                    />
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -200,6 +211,10 @@ export default {
             event.target.select()
         },
 
+        cancelSale() {
+            this.$store.commit('CLEAR_SHOPPING_CART')
+        },
+
         /**
          * Set customer for of this shopping cart
          */
@@ -225,5 +240,29 @@ export default {
 <style lang="scss" scoped>
 .panel {
     padding: 15px 20px;
+}
+
+.complete-sale-button {
+    display: flex;
+    justify-content: center;
+
+    .field {
+        width: 100%;
+    }
+
+    .complete {
+        flex-grow: 1;
+    }
+
+    @media only screen and (max-width: 770px) {
+        position: fixed;
+        background-color: white;
+        width: 100%;
+        left: 0;
+        bottom: 0;
+        padding: 20px 30px;
+        box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1),
+            0 0px 0 1px rgba(10, 10, 10, 0.02);
+    }
 }
 </style>

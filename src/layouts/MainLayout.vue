@@ -1,11 +1,11 @@
 <template>
-  <div class="main-layout">
-    <side-nav />
-    <div class="view-container">
-      <nav-bar />
-      <router-view />
+    <div class="main-layout">
+        <side-nav />
+        <div class="view-container">
+            <nav-bar />
+            <router-view />
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -13,26 +13,28 @@ import NavBar from '../components/Layout/NavBar.vue'
 import SideNav from '../components/Layout/SideNav.vue'
 
 export default {
-  name: 'main-layout',
+    name: 'main-layout',
 
-  components: {
-    NavBar,
-    SideNav
-  }
+    components: {
+        NavBar,
+        SideNav
+    }
 }
 </script>
 
 <style lang="scss" scoped>
+@import 'src/assets/_variables.scss';
+
 .main-layout {
-  display: flex;
+    display: flex;
 }
 .view-container {
-  width: 100%;
-  transition: 0.3s;
-  padding-left: 280px;
-  @media only screen and (max-width: 1023px) {
-    display: block;
-    padding-left: 0px;
-  }
+    width: 100%;
+    transition: 0.3s;
+    padding-left: 280px;
+    @media only screen and (max-width: $sidenav-break-point) {
+        display: block;
+        padding-left: 0px;
+    }
 }
 </style>

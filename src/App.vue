@@ -34,6 +34,7 @@ export default {
 }
 </script>
 <style lang="scss">
+@import 'src/assets/_variables.scss';
 @import url('./assets/_fonts.scss');
 
 html {
@@ -74,7 +75,7 @@ body {
 }
 
 .page {
-    @media only screen and (max-width: 1023px) {
+    @media only screen and (max-width: $sidenav-break-point) {
         padding: 8px;
     }
 }
