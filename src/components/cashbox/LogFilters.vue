@@ -7,6 +7,7 @@
                     type="is-primary"
                     icon-left="filter"
                     icon-right="chevron-down"
+                    rounded
                 />
             </template>
 
