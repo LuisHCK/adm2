@@ -1,95 +1,104 @@
 .page-container {
-  padding: 8px;
+    padding: 8px;
 }
 
 .card-item {
-  background-color: white;
-  border: 1px solid rgb(224, 224, 224);
-  padding: 12px;
-  border-radius: 8px;
-  display: flex;
-  cursor: pointer;
-  transition: 0.3s;
-  margin: 1px;
+    background-color: white;
+    border: 1px solid rgb(224, 224, 224);
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    cursor: pointer;
+    transition: 0.3s;
+    margin: 1px;
 
-  .main {
-    width: 100%;
-  }
-  .counter {
-    width: 35%;
-    text-align: center;
-  }
-  &:hover {
-    background-color: rgb(252, 252, 252);
-  }
+    .main {
+        width: 100%;
+    }
+    .counter {
+        width: 35%;
+        text-align: center;
+    }
+    &:hover {
+        background-color: rgb(252, 252, 252);
+    }
 }
 
 .strong,
 .bold {
-  font-weight: bold !important;
+    font-weight: bold !important;
 }
 
-.is-full-width {
-  width: 100%;
+.is-full-width,
+.w-100 {
+    width: 100%;
 }
 
 .justify-end {
-  justify-content: flex-end;
+    justify-content: flex-end;
 }
 
 .align-center {
-  align-items: center;
+    align-items: center;
 }
 
 // Padding classes
 .padding-vertical-1 {
-  padding: 1em 0em;
+    padding: 1em 0em;
 }
 
 /** MARGIN HELPERS */
 .is-margin-top-1 {
-  margin-top: 1em;
+    margin-top: 1em;
 }
 
 .is-margin-top-2 {
-  margin-top: 1.5em;
+    margin-top: 1.5em;
 }
 
 .is-margin-top-3 {
-  margin-top: 2em;
+    margin-top: 2em;
 }
 
 .is-margin-top-4 {
-  margin-top: 2.5em;
+    margin-top: 2.5em;
 }
 
 .is-margin-bottom-1 {
-  margin-top: 1em;
+    margin-top: 1em;
 }
 
 .is-margin-bottom-2 {
-  margin-bottom: 1.5em;
+    margin-bottom: 1.5em;
 }
 
 .is-margin-bottom-3 {
-  margin-bottom: 2em;
+    margin-bottom: 2em;
 }
 
 .is-margin-bottom-4 {
-  margin-bottom: 2.5em;
+    margin-bottom: 2.5em;
 }
 
 /* Scroll Bar*/
 *::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+    width: 6px;
+    height: 6px;
 }
 *::-webkit-scrollbar-track {
-  border-radius: 10px;
-  background-color: #f8f8f8;
+    border-radius: 10px;
+    background-color: #f8f8f8;
 }
 *::-webkit-scrollbar-thumb {
-  background-color: #bebebe;
-  border-radius: 10px;
-  box-shadow: #0000001f 0 3px 6px 1px;
+    background-color: #bebebe;
+    border-radius: 10px;
+    box-shadow: #0000001f 0 3px 6px 1px;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.justify-between {
+    justify-content: space-between;
 }

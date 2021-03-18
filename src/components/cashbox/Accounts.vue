@@ -1,30 +1,15 @@
 <template>
-    <card title="Detalle de cuentas">
+    <card title="Dinero en caja">
         <ul class="accounts-list">
-            <li
-                v-for="(account, index) in accounts"
-                :key="'account-detail-' + index"
-            >
-                <div class="account-name">
-                    {{ account.name }}
-                </div>
-
-                <div
-                    class="account-total"
-                    :class="getTotalClass(account.value)"
-                >
-                    {{ account.value | money }}
-                </div>
-            </li>
             <li>
                 <div class="account-name grand-total">
                     TOTAL
                 </div>
                 <div
                     class="account-total grand-total"
-                    :class="getTotalClass(total)"
+                    :class="getTotalClass(totalCash)"
                 >
-                    {{ total | money }}
+                    {{ totalCash | money }}
                 </div>
             </li>
         </ul>
@@ -32,21 +17,16 @@
 </template>
 
 <script>
+import { getMoneyInCashBox } from '../../controllers/cashbox'
 import Card from '../ui/Card.vue'
 export default {
     components: { Card },
 
     name: 'accounts',
 
-    props: {
-        accounts: {
-            type: Array,
-            default: () => []
-        },
-
-        total: {
-            type: Number,
-            default: 0
+    data() {
+        return {
+            totalCash: 0
         }
     },
 
@@ -54,6 +34,10 @@ export default {
         getTotalClass(value) {
             return value <= 0 ? 'has-text-danger' : 'has-text-success'
         }
+    },
+
+    async mounted() {
+        this.totalCash = await getMoneyInCashBox()
     }
 }
 </script>

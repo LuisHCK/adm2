@@ -1,126 +1,55 @@
 <template>
     <div class="page-container">
         <div class="columns is-mobile is-multiline">
-            <div class="column is-one-third-desktop is-full-mobile">
-                <accounts :accounts="accounts" :total="totalAccounts" />
+            <div
+                class="column is-one-quarter-desktop is-half-tablet is-full-mobile"
+            >
+                <accounts />
             </div>
-            <div class="column">
-                <transactions />
+            <div class="column is-full-tablet is-three-quarters-desktop">
+                <logs />
             </div>
         </div>
-
-        <transaction-form :is-open="showForm" @close="showForm = false" />
+        <transaction-form
+            :isOpen="transactionFormIsOpen"
+            @close="toggleTransactionForm"
+            :totalCash="totalCash"
+        />
     </div>
 </template>
 
 <script>
-import * as moment from 'moment'
 import Accounts from '../components/cashbox/Accounts.vue'
-import Transactions from '../components/cashbox/Transactions.vue'
+import Logs from '../components/cashbox/Logs.vue'
 import TransactionForm from '../components/cashbox/TransactionForm.vue'
+import { getMoneyInCashBox } from '../controllers/cashbox'
 
 export default {
     name: 'cashbox',
 
     components: {
         Accounts,
-        Transactions,
+        Logs,
         TransactionForm
     },
 
     data() {
         return {
-            sales: [],
-            withdrawals: [],
-            accounts: [],
-            showForm: false
+            showForm: false,
+            totalCash: 0,
+            transactionFormIsOpen: false
         }
     },
 
     computed: {
         totalAccounts() {
             return this.accounts.reduce((prev, next) => prev + next.value, 0)
-        },
-
-        withdrawalBreak() {
-            return this.withdrawals[0]
-                ? this.withdrawals[0].date
-                : '1970-01-01T00:00:00.000Z'
         }
     },
 
     methods: {
-        getTotalClass(value) {
-            return value <= 0 ? 'has-text-danger' : 'has-text-success'
-        },
-
-        async getWithdrawals() {
-            this.withdrawals = await Database.withdrawal
-                .orderBy('date')
-                .toArray()
-
-            this.getSales()
-        },
-
-        async getSales() {
-            this.sales = await Database.sale
-                .where('created_at')
-                .aboveOrEqual(this.withdrawalBreak)
-                .toArray()
-
-            this.getCashAccount()
-            this.getCreditAccount()
-            this.getCustomerPayments()
-        },
-
-        getCashAccount() {
-            const total = this.sales
-                .filter(s => s.sale_type === 'cash')
-                .reduce((prev, next) => prev + next.total, 0)
-
-            this.accounts.push({
-                name: 'Ventas de Contado',
-                value: total
-            })
-        },
-
-        async getCreditAccount() {
-            const total = this.sales
-                .filter(s => s.sale_type === 'credit')
-                .reduce((prev, next) => prev + next.total, 0)
-
-            const payments = await Database.customer_payment
-                .where('created_at')
-                .aboveOrEqual(this.withdrawalBreak)
-                .toArray()
-
-            const totalPayments =
-                payments.reduce(
-                    (prev, next) => prev + Number(next.amount),
-                    0
-                ) || 0
-
-            this.accounts.push({
-                name: 'Ventas al Crédito',
-                value: total - totalPayments
-            })
-        },
-
-        async getCustomerPayments() {
-            const payments = await Database.customer_payment
-                .where('created_at')
-                .aboveOrEqual(this.withdrawalBreak)
-                .toArray()
-
-            const total = payments.reduce(
-                (prev, next) => prev + Number(next.amount),
-                0
-            )
-
-            this.accounts.push({
-                name: 'Abonos de clientes',
-                value: total
-            })
+        async getTotalCash() {
+            this.totalCash = await getMoneyInCashBox()
         },
 
         setActionButtons() {
@@ -133,16 +62,18 @@ export default {
 
             const AddTransaction = {
                 type: 'is-success',
-                icon: 'plus',
-                label: 'Nueva Transacción',
-                action: () => {
-                    this.showForm = true
-                }
+                icon: 'cash-register',
+                label: 'Cierre de caja',
+                action: this.toggleTransactionForm
             }
             this.$store.commit('SET_ACTION_BUTTONS', [
                 AddTransaction,
                 printReport
             ])
+        },
+
+        toggleTransactionForm() {
+            this.transactionFormIsOpen = !this.transactionFormIsOpen
         }
     },
 
@@ -151,7 +82,7 @@ export default {
     },
 
     mounted() {
-        this.getWithdrawals()
+        this.getTotalCash()
     }
 }
 </script>

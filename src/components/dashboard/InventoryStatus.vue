@@ -33,8 +33,6 @@
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
-                                    <th>Marca</th>
-                                    <th>Presentación</th>
                                     <th>Precio</th>
                                     <th>Existencias</th>
                                     <th>Acciones</th>
@@ -47,14 +45,15 @@
                                     :key="'inv-product-' + index"
                                 >
                                     <td>
-                                        {{ product.product.name }}
-                                    </td>
-                                    <td>
-                                        {{ product.product.brand }}
-                                    </td>
-                                    <td>
-                                        {{ product.product.content }}
-                                        {{ product.product.unit }}
+                                        <div>
+                                            {{ product.product.name }}
+                                            -
+                                            {{ product.product.content }}
+                                            {{ product.product.unit }}
+                                        </div>
+                                        <small>
+                                            {{ product.product.brand }}
+                                        </small>
                                     </td>
                                     <td>
                                         <b-tag
