@@ -1,106 +1,158 @@
 <template>
-    <table class="table is-fullwidth">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Producto</th>
-                <th>Existencias</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Descuento</th>
-                <th>Sub total</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(item, index) in shoppingCart" :key="'ip-' + index">
-                <td>{{ index + 1 }}</td>
-                <td>
-                    <div
-                        v-text="getProductName(item.inventoryProduct.product)"
-                    />
-                    <small>{{ item.inventoryProduct.inventory.name }}</small>
-                </td>
-                <td>
-                    <span v-text="item.inventoryProduct.stock" />
-                </td>
+    <div class="pos-table">
+        <b-table
+            :data="shoppingCart"
+            :striped="true"
+            :hoverable="true"
+            :sticky-header="true"
+        >
+            <template>
+                <b-table-column
+                    field="index"
+                    label="#"
+                    width="40"
+                    numeric
+                    v-slot="props"
+                >
+                    {{ props.index + 1 }}
+                </b-table-column>
 
-                <td>
-                    <span>
-                        {{ item.inventoryProduct.price | money }}
+                <b-table-column
+                    field="inventoryProduct"
+                    label="Producto"
+                    v-slot="props"
+                >
+                    <div>
+                        {{ getProductName(props.row.inventoryProduct.product) }}
+                    </div>
+                    <small>
+                        {{ props.row.inventoryProduct.inventory.name }}
+                    </small>
+                </b-table-column>
+
+                <b-table-column
+                    field="inventoryProduct"
+                    label="Existencias"
+                    v-slot="props"
+                >
+                    {{ props.row.inventoryProduct.stock }}
+                </b-table-column>
+
+                <b-table-column
+                    field="inventoryProduct"
+                    label="Precio"
+                    v-slot="props"
+                >
+                    <span class="price">
+                        {{ props.row.inventoryProduct.price | money }}
                     </span>
-                </td>
+                </b-table-column>
 
-                <td width="130px">
+                <b-table-column
+                    field="inventoryProduct"
+                    label="Cantidad"
+                    v-slot="props"
+                >
                     <input
-                        :id="`qtyInput-${item.inventoryProduct.id}`"
-                        :ref="`qty-input-${index}`"
+                        :id="`qtyInput-${props.row.inventoryProduct.id}`"
+                        :ref="`qty-input-${props.index}`"
                         class="quantity-input input is-rounded"
                         type="number"
                         min="1"
-                        :value="item.quantity || 1"
-                        :max="item.inventoryProduct.stock"
+                        :value="props.row.quantity || 1"
+                        :max="props.row.inventoryProduct.stock"
                         @input="
                             emitQuantityUpdate(
-                                index,
+                                props.index,
                                 $event,
-                                item.inventoryProduct.stock
+                                props.row.inventoryProduct.stock
                             )
                         "
                         @change="
                             emitQuantityUpdate(
-                                index,
+                                props.index,
                                 $event,
-                                item.inventoryProduct.stock
+                                props.row.inventoryProduct.stock
                             )
                         "
                         @focus="focusSelect"
                     />
-                </td>
+                </b-table-column>
 
-                <td width="130px">
+                <b-table-column
+                    field="inventoryProduct"
+                    label="Descuento"
+                    v-slot="props"
+                >
                     <b-field>
                         <b-numberinput
+                            class="discount-input"
                             :controls="false"
                             :max="100"
                             :min="0"
-                            :value="item.discount"
-                            @input="emitDiscountChange($event, index)"
+                            :value="props.row.discount"
+                            @input="emitDiscountChange($event, props.index)"
                             @focus="focusSelect"
                             rounded
                         />
                     </b-field>
-                </td>
+                </b-table-column>
 
-                <td>
+                <b-table-column
+                    field="inventoryProduct"
+                    label="Subtotal"
+                    v-slot="props"
+                >
                     <div
-                        v-if="item.discount && item.discounted"
+                        v-if="props.row.discount && props.row.discounted"
                         class="discounted"
                     >
                         <div class="original-price">
-                            {{ item.subTotal | money }}
+                            {{ props.row.subTotal | money }}
                         </div>
 
-                        <div class="updated-price">
-                            {{ (item.subTotal - item.discounted) | money }}
+                        <div class="updated-price sub-total">
+                            {{
+                                (props.row.subTotal - props.row.discounted)
+                                    | money
+                            }}
                         </div>
                     </div>
-                    <div v-else >
-                        {{ item.subTotal | money }}
+                    <div class="sub-total" v-else>
+                        {{ props.row.subTotal | money }}
                     </div>
-                </td>
-                <td style="text-align: center">
+                </b-table-column>
+
+                <b-table-column
+                    field="inventoryProduct"
+                    label=""
+                    v-slot="props"
+                >
                     <b-button
                         type="is-danger"
                         size="is-small"
-                        @click="emitRemoveItem(index)"
+                        @click="emitRemoveItem(props.index)"
                         rounded
                         icon-left="delete"
                     />
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                </b-table-column>
+            </template>
+
+            <template slot="empty">
+                <section class="section">
+                    <div class="content has-text-grey has-text-centered">
+                        <p>
+                            <b-icon
+                                icon="package-variant"
+                                size="is-large"
+                            />
+                        </p>
+                        <p>No hay productos para mostrar.</p>
+                    </div>
+                </section>
+            </template>
+        </b-table>
+    </div>
 </template>
 
 <script>
@@ -122,6 +174,14 @@ export default {
 
         emitQuantityUpdate(index, event, stock) {
             this.$emit('onQuantityChange', index, event, stock)
+
+            // Focus when add 0
+            if (!event.target.value) {
+                setTimeout(() => {
+                    this.focusSelect(event)
+                    
+                }, 100);
+            }
         },
 
         emitDiscountChange(event, index) {
@@ -143,16 +203,38 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.discounted {
-    .original-price {
-        font-size: 12px;
-        text-decoration: line-through;
-        color: #636363;
+<style lang="scss">
+.pos-table {
+    .discounted {
+        .original-price {
+            font-size: 12px;
+            text-decoration: line-through;
+            color: #636363;
+        }
     }
-    .updated-price {
-        font-size: 14px;
-        font-weight: 500;
+
+    .quantity-input,
+    .discount-input .input {
+        max-width: 92px;
+        text-align: center;
+        font-weight: bold !important;
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        &[type='number'] {
+            -moz-appearance: textfield;
+        }
+    }
+
+    .price,
+    .sub-total {
+        font-size: 18px;
+        font-weight: bolder;
     }
 }
 </style>

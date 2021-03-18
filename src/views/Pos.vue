@@ -1,14 +1,9 @@
 <template>
     <div class="pos-page page-container">
-        <div class="panel">
-            <div class="columns">
-                <div class="column is-6">
+        <div class="panel py-4">
+            <div class="columns is-mobile">
+                <div class="column is-6-desktop is-full-mobile">
                     <product-search @input="addToShoppingCart" />
-                </div>
-                <div class="column">
-                    <b-button type="is-danger" @click="cancelSale" rounded>
-                        Cancelar venta
-                    </b-button>
                 </div>
             </div>
         </div>
@@ -16,6 +11,11 @@
         <div class="columns">
             <div class="column">
                 <div class="panel">
+                    <h2
+                        class="is-size-5-mobile is-size-4-desktop has-text-weight-bold mb-4"
+                    >
+                        Productos
+                    </h2>
                     <products-table
                         @onQuantityChange="setInventoryProductBuyQty"
                         @onRemoveItem="removeItem"
@@ -23,7 +23,7 @@
                     />
                 </div>
             </div>
-            <div class="column is-3-desktop is-4-tablet">
+            <div class="column is-one-third">
                 <pos-summary
                     :shoppingCartTotal="shoppingCartTotal"
                     :shoppingCartCustomer="shoppingCartCustomer"
@@ -82,15 +82,15 @@
 
 <script>
 import 'vue-select/dist/vue-select.css'
-import ProductSearch from '@/components/pos/ProductSearch.vue'
-import CustomerForm from '@/components/customers/CustomerForm.vue'
-import ProductsTable from '@/components/pos/ProductsTable.vue'
-import SaleDetails from '@/components/sales/SaleDetails.vue'
+import ProductSearch from '../components/pos/ProductSearch.vue'
+import CustomerForm from '../components/customers/CustomerForm.vue'
+import ProductsTable from '../components/pos/ProductsTable.vue'
+import SaleDetails from '../components/sales/SaleDetails.vue'
 import PosSummary from '../components/pos/PosSummary.vue'
 import vSelect from 'vue-select'
 import { mapState, mapGetters } from 'vuex'
-import { printContentent } from '@/lib/print'
-import { printInvoice } from '@/reports/invoice'
+import { printContentent } from '../lib/print'
+import { printInvoice } from '../reports/invoice'
 import Maths from '../lib/maths'
 import {
     cashBoxDateFormat,
@@ -199,7 +199,7 @@ export default {
          * Call muttation to add Product Buy Quantity
          */
         setInventoryProductBuyQty(index, event, stock) {
-            let quantity = Number(event.target.value)
+            let quantity = Number(event.target.value) || 1
 
             // Check maximum
             // When input quantity reach stock limit, alert to user and fix input
@@ -347,5 +347,11 @@ export default {
 <style lang="scss" scoped>
 .quantity-input {
     width: 60px;
+}
+
+@media only screen and (max-width: 770px) {
+    .pos-page {
+        padding-bottom: 8rem;
+    }
 }
 </style>
