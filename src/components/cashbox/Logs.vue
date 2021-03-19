@@ -1,7 +1,7 @@
 <template>
     <card>
         <template slot="title">
-            <div class="is-flex is-justify-content-space-between w-100">
+            <div class="is-flex is-justify-content-space-between w-100 actions">
                 <p class="card-header-title">
                     Movimientos de caja
                 </p>
@@ -172,4 +172,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import "~bulma/sass/utilities/_all";
+@include mobile {
+    .actions {
+        flex-direction: column;
+    }
+}
+</style>
