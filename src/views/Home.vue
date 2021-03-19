@@ -1,83 +1,35 @@
 <template>
     <div class="home page-container">
         <div class="columns is-mobile is-multiline">
-            <div class="column is-half-mobile">
+            <div class="column is-full-mobile">
                 <!-- card 1 -->
-                <div class="panel">
-                    <div class="card-image">
-                        <figure class="image image-1">
-                            <span
-                                class="value has-text-white is-size-2 has-text-weight-bold"
-                            >
-                                {{ totalMoney | money }}
-                            </span>
-                        </figure>
-                    </div>
-                    <div class="card-content">
-                        <div class="content has-text-centered">
-                            <div class="is-size-4">Dinero en caja</div>
-                        </div>
-                    </div>
-                    <footer class="card-footer">
-                        <a
-                            @click="$router.push('/cashbox')"
-                            class="card-footer-item"
-                        >
-                            Ir a caja
-                        </a>
-                    </footer>
-                </div>
+                <info-card
+                    title="Dinero en caja"
+                    :total="totalMoney | money"
+                    linkTo="cashbox"
+                    linkLabel="Ir a caja"
+                    image="/10.jpg"
+                />
             </div>
 
-            <div class="column is-half-mobile">
-                <div class="panel">
-                    <div class="card-image">
-                        <figure class="image image-2">
-                            <span
-                                class="value has-text-white is-size-2 has-text-weight-bold"
-                                >{{ totalSales }}</span
-                            >
-                        </figure>
-                    </div>
-                    <div class="card-content">
-                        <div class="content has-text-centered">
-                            <div class="is-size-4">Ventas del día</div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <a
-                            @click="$router.push('/sales')"
-                            class="card-footer-item"
-                            >Ir a ventas</a
-                        >
-                    </div>
-                </div>
+            <div class="column is-full-mobile">
+                <info-card
+                    title="Ventas del día"
+                    :total="totalSales | money"
+                    linkTo="sales"
+                    linkLabel="Ir a ventas"
+                    image="/11.jpg"
+                />
             </div>
 
-            <div class="column is-half-mobile">
-                <div class="panel">
-                    <div class="card-image">
-                        <figure class="image image-3">
-                            <span
-                                class="value has-text-white is-size-2 has-text-weight-bold"
-                            >
-                                {{ totalProviders }}
-                            </span>
-                        </figure>
-                    </div>
-                    <div class="card-content">
-                        <div class="content has-text-centered">
-                            <div class="is-size-4">Proveedores</div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <a
-                            @click="$router.push('/providers')"
-                            class="card-footer-item"
-                            >Ver Proveedores</a
-                        >
-                    </div>
-                </div>
+            <div class="column is-full-mobile">
+                <info-card
+                    title="Ventas del día"
+                    :total="totalProviders"
+                    linkTo="providers"
+                    linkLabel="Ver proveedores"
+                    image="/12.jpg"
+                />
             </div>
         </div>
 
@@ -93,7 +45,7 @@
         </div>
 
         <div class="columns is-mobile is-multiline">
-            <div class="column is-half-desktop">
+            <div class="column is-full-tablet is-full-mobile is-half-desktop">
                 <div class="card">
                     <header class="card-header">
                         <p class="card-header-title">
@@ -109,7 +61,7 @@
             </div>
 
             <!-- Customers -->
-            <div class="column is-half-desktop">
+            <div class="column is-full-tablet is-full-mobile is-half-desktop">
                 <div class="card">
                     <header class="card-header">
                         <p class="card-header-title">
@@ -133,18 +85,29 @@
 </template>
 
 <script>
-import LineChart from '@/components/charts/LineChart.vue'
-import SalesList from '@/components/sales/SalesList.vue'
-import CustomersList from '@/components/customers/CustomersList.vue'
+import LineChart from '../components/charts/LineChart.vue'
+import SalesList from '../components/sales/SalesList.vue'
+import CustomersList from '../components/customers/CustomersList.vue'
 import InventoryStatus from '../components/dashboard/InventoryStatus.vue'
-import { lastXdays, setHourTo, enumerateDaysBetweenDates } from '@/lib/datetime'
+import {
+    lastXdays,
+    setHourTo,
+    enumerateDaysBetweenDates
+} from '../lib/datetime'
 import { getMoneyInCashBox } from '../controllers/cashbox'
+import InfoCard from '../components/dashboard/InfoCard.vue'
 
 const TODAY = new Date()
 
 export default {
     name: 'home',
-    components: { LineChart, SalesList, CustomersList, InventoryStatus },
+    components: {
+        LineChart,
+        SalesList,
+        CustomersList,
+        InventoryStatus,
+        InfoCard
+    },
     data() {
         return {
             totalSales: 0,
@@ -279,23 +242,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss" scoped>
-.image {
-    background-size: cover;
-    height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &.image-1 {
-        background-image: url('/10.jpg');
-    }
-    &.image-2 {
-        background-image: url('/11.jpg');
-    }
-    &.image-3 {
-        background-image: url('/12.jpg');
-    }
-}
-</style>

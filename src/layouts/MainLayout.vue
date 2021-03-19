@@ -23,8 +23,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'src/assets/_variables.scss';
-
 .main-layout {
     display: flex;
 }

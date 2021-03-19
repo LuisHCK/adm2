@@ -1,76 +1,73 @@
 <template>
     <div class="sales-list">
         <!-- Table header -->
-        <table class="table is-fullwidth">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Nombre</th>
-                    <th>Compras de contado</th>
-                    <th>Compras al crédito</th>
-                    <th align="right">Opciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <template v-if="customers.length">
-                    <tr v-for="(customer, i) in customers" :key="i">
-                        <td>
-                            <i class="user-icon mdi mdi-account-circle"></i>
-                        </td>
-                        <td v-text="customer.name"></td>
-                        <td>
-                            <b-tag
-                                v-text="customer.cash_purchases"
-                                type="is-success"
-                                class="has-text-weight-bold"
-                                rounded
-                            />
-                        </td>
-                        <td>
-                            <b-tag
-                                v-text="customer.credit_purchases"
-                                type="is-danger"
-                                class="has-text-weight-bold"
-                                rounded
-                            />
-                        </td>
-                        <td align="right">
-                            <b-button
-                                type="is-info"
-                                @click="
-                                    $router.push('/customers/' + customer.id)
-                                "
-                                size="is-small"
-                                icon-left="eye"
-                                rounded
-                            >
-                                Ver cliente
-                            </b-button>
-                        </td>
-                    </tr>
-                </template>
-                <template v-else>
-                    <tr>
-                        <th colspan="5">No hay resultados</th>
-                    </tr>
-                </template>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="5">
-                        <router-link :to="{ path: 'customers' }"
-                            >Todos los clientes</router-link
-                        >
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+        <b-table
+            :data="customers"
+            :striped="true"
+            :hoverable="true"
+            :sticky-header="true"
+        >
+            <template>
+                <b-table-column label="" field="id">
+                    <i class="user-icon mdi mdi-account-circle" />
+                </b-table-column>
+
+                <b-table-column label="Nombre" field="customer" v-slot="props">
+                    {{ props.row.name }}
+                </b-table-column>
+
+                <b-table-column
+                    label="Compras de contado"
+                    field="customer"
+                    v-slot="props"
+                >
+                    <b-tag
+                        v-text="props.row.cash_purchases"
+                        type="is-success"
+                        class="has-text-weight-bold"
+                        rounded
+                    />
+                </b-table-column>
+
+                <b-table-column
+                    label="Compras a crédito"
+                    field="customer"
+                    v-slot="props"
+                >
+                    <b-tag
+                        v-text="props.row.credit_purchases"
+                        type="is-danger"
+                        class="has-text-weight-bold"
+                        rounded
+                    />
+                </b-table-column>
+
+                <b-table-column label="" v-slot="props">
+                    <b-button
+                        type="is-info"
+                        @click="$router.push('/customers/' + props.row.id)"
+                        size="is-small"
+                        icon-left="eye"
+                        rounded
+                    >
+                        Ver cliente
+                    </b-button>
+                </b-table-column>
+            </template>
+
+            <template slot="empty">
+                <empty-table-card />
+            </template>
+        </b-table>
     </div>
 </template>
 
 <script>
+import EmptyTableCard from '../ui/EmptyTableCard.vue'
 export default {
     name: 'customers-list',
+
+    components: { EmptyTableCard },
 
     data() {
         return {

@@ -29,85 +29,82 @@
                             </span>
                         </template>
                         <!-- Products table -->
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Precio</th>
-                                    <th>Existencias</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="(product,
-                                    index) in inventory.products"
-                                    :key="'inv-product-' + index"
+                        <b-table
+                            :data="inventory.products"
+                            :striped="true"
+                            :hoverable="true"
+                            :sticky-header="true"
+                        >
+                            <template>
+                                <b-table-column
+                                    v-slot="props"
+                                    field="product"
+                                    label="Nombre"
                                 >
-                                    <td>
-                                        <div>
-                                            {{ product.product.name }}
-                                            -
-                                            {{ product.product.content }}
-                                            {{ product.product.unit }}
-                                        </div>
-                                        <small>
-                                            {{ product.product.brand }}
-                                        </small>
-                                    </td>
-                                    <td>
-                                        <b-tag
-                                            type="is-primary"
-                                            class="has-text-weight-bold"
-                                            rounded
-                                        >
-                                            {{ currency }}{{ product.price }}
-                                        </b-tag>
-                                    </td>
-                                    <td>
-                                        <b-tag
-                                            type="is-danger"
-                                            class="has-text-weight-bold"
-                                            rounded
-                                        >
-                                            {{ product.stock }}
-                                        </b-tag>
-                                    </td>
-                                    <td>
-                                        <b-button
-                                            size="is-small"
-                                            icon-left="pencil"
-                                            type="is-success"
-                                            @click="
-                                                openEditProduct(
-                                                    inventory.id,
-                                                    product.id
-                                                )
-                                            "
-                                            rounded
-                                        >
-                                            Actualizar
-                                        </b-button>
-                                    </td>
-                                </tr>
+                                    <div>
+                                        {{ props.row.product.name }}
+                                        -
+                                        {{ props.row.product.content }}
+                                        {{ props.row.product.unit }}
+                                    </div>
+                                    <small>
+                                        {{ props.row.product.brand }}
+                                    </small>
+                                </b-table-column>
 
-                                <tr
-                                    v-if="
-                                        inventory.products &&
-                                            !inventory.products.length
-                                    "
+                                <b-table-column
+                                    v-slot="props"
+                                    field="product"
+                                    label="Precio"
                                 >
-                                    <td colspan="6" class="has-text-centered">
-                                        <div
-                                            class="notification is-info has-text-weight-semibold"
-                                        >
-                                            No se encontraron advertencias
-                                            <b-icon icon="check-bold" />
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    <b-tag
+                                        type="is-primary"
+                                        class="has-text-weight-bold"
+                                        rounded
+                                    >
+                                        {{ props.row.price | money }}
+                                    </b-tag>
+                                </b-table-column>
+                                <b-table-column
+                                    v-slot="props"
+                                    field="product"
+                                    label="Existencias"
+                                >
+                                    <b-tag
+                                        type="is-danger"
+                                        class="has-text-weight-bold"
+                                        rounded
+                                    >
+                                        {{ props.row.stock }}
+                                    </b-tag>
+                                </b-table-column>
+
+                                <b-table-column
+                                    v-slot="props"
+                                    field="product"
+                                    label=""
+                                >
+                                    <b-button
+                                        size="is-small"
+                                        icon-left="pencil"
+                                        type="is-success"
+                                        @click="
+                                            openEditProduct(
+                                                inventory.id,
+                                                props.row.id
+                                            )
+                                        "
+                                        rounded
+                                    >
+                                        Actualizar
+                                    </b-button>
+                                </b-table-column>
+                            </template>
+
+                            <template slot="empty">
+                                <empty-table-card />
+                            </template>
+                        </b-table>
                     </b-tab-item>
                 </b-tabs>
             </div>
@@ -134,13 +131,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import EmptyTableCard from '../ui/EmptyTableCard.vue'
 
 export default {
     name: 'InventoryStatus',
 
     components: {
         InventoryProductForm: () =>
-            import('@/components/inventory/InventoryProductForm.vue')
+            import('@/components/inventory/InventoryProductForm.vue'),
+        EmptyTableCard
     },
 
     computed: {

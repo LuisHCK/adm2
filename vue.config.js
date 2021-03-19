@@ -8,5 +8,13 @@ module.exports = {
     },
     configureWebpack: {
         devtool: 'source-map'
+    },
+
+    css: {
+        loaderOptions: {
+            sass: {
+                data: `@import 'src/assets/_variables.scss';`
+            }
+        }
     }
 }
