@@ -8,31 +8,27 @@
             <button class="navbar-toggle-menu" @click="toggleSidenav()">
                 <b-icon icon="menu"></b-icon>
             </button>
-            <a class="navbar-item" @click="$router.push('/')">
-                <span class="strong is-size-2" v-text="$route.meta.title" />
-            </a>
-            <div class="action-buttons">
-                <b-button
-                    v-for="(actionBtn, index) in actionButtons"
-                    :class="actionBtn.class"
-                    :key="index"
-                    :type="actionBtn.type"
-                    :icon-left="actionBtn.icon"
-                    :disabled="actionBtn.disabled"
-                    rounded
-                    @click="actionBtn.action"
-                >
-                    {{ actionBtn.label }}
-                </b-button>
+            <div class="navbar-item">
+                <span
+                    class="strong is-size-2-desktop is-size-6-mobile"
+                    v-text="$route.meta.title"
+                />
             </div>
+
+            <action-buttons />
         </div>
     </nav>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import ActionButtons from './ActionButtons.vue'
 export default {
     name: 'nav-bar',
+
+    components: {
+        ActionButtons
+    },
 
     computed: {
         ...mapState(['user', 'store', 'actionButtons'])

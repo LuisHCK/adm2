@@ -461,6 +461,7 @@ export default {
                 type: 'is-info',
                 icon: 'package-variant',
                 label: 'Agregar al inventario',
+                description: 'Selecciona los productos a agregar',
                 action: () => {
                     if (!this.checkedProducts || !this.checkedProducts.length) {
                         return this.$buefy.dialog.alert({
@@ -482,14 +483,15 @@ export default {
                 type: 'is-success',
                 icon: 'plus',
                 label: 'Nuevo',
+                description: 'Crea un nuevo producto',
                 action: () => {
                     this.showForm = true
                 }
             }
 
             this.$store.commit('SET_ACTION_BUTTONS', [
-                addInventoryBtn,
-                addProductBtn
+                addProductBtn,
+                addInventoryBtn
             ])
         },
 

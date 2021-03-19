@@ -15,7 +15,7 @@
             <div class="column is-full-mobile">
                 <info-card
                     title="Ventas del día"
-                    :total="totalSales | money"
+                    :total="totalSales"
                     linkTo="sales"
                     linkLabel="Ir a ventas"
                     image="/11.jpg"
@@ -24,7 +24,7 @@
 
             <div class="column is-full-mobile">
                 <info-card
-                    title="Ventas del día"
+                    title="Proveedores"
                     :total="totalProviders"
                     linkTo="providers"
                     linkLabel="Ver proveedores"
