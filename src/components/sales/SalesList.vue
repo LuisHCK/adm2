@@ -1,51 +1,41 @@
 <template>
     <div class="sales-list">
         <!-- Table header -->
-        <table class="table is-fullwidth">
-            <thead>
-                <tr>
-                    <th>Total</th>
-                    <th>Cliente</th>
-                    <th>Hora</th>
-                </tr>
-            </thead>
-            <tbody>
-                <template v-if="sales.length">
-                    <tr v-for="(item, i) in sales" :key="'sale_item' + i">
-                        <td class="has-text-weight-bold">
-                            {{ item.total | money }}
-                        </td>
-                        <td>{{ item.customer.name }}</td>
-                        <td>
-                            {{
-                                item.created_at | moment('MMM DD YYYY, h:mm a')
-                            }}
-                        </td>
-                    </tr>
-                </template>
+        <b-table
+            :data="sales"
+            :striped="true"
+            :hoverable="true"
+            :sticky-header="true"
+        >
+            <template>
+                <b-table-column field="total" label="Total" v-slot="props">
+                    <span class="has-text-weight-bold">
+                        {{ props.row.total | money }}
+                    </span>
+                </b-table-column>
 
-                <template v-else>
-                    <tr>
-                        <th colspan="3">No hay ventas registradas</th>
-                    </tr>
-                </template>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="3">
-                        <router-link :to="{ path: 'sales' }"
-                            >Todas las ventas</router-link
-                        >
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+                <b-table-column field="customer" label="Cliente" v-slot="props">
+                    {{ props.row.customer.name }}
+                </b-table-column>
+
+                <b-table-column field="customer" label="Client" v-slot="props">
+                    {{ props.row.created_at | moment('MMM DD YYYY, h:mm a') }}
+                </b-table-column>
+            </template>
+
+            <template slot="empty">
+                <empty-table-card />
+            </template>
+        </b-table>
     </div>
 </template>
 
 <script>
+import EmptyTableCard from '../ui/EmptyTableCard.vue'
 export default {
     name: 'sales-list',
+
+    components: {EmptyTableCard},
 
     props: {
         sales: {

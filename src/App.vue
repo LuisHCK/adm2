@@ -34,7 +34,7 @@ export default {
 }
 </script>
 <style lang="scss">
-@import 'src/assets/_variables.scss';
+@import '@/buefy.scss';
 @import url('./assets/_fonts.scss');
 
 html {

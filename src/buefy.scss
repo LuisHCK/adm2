@@ -1,22 +1,52 @@
 // Import Bulma's core
-@import "~bulma/sass/utilities/_all";
-@import "src/assets/_variables";
-@import "src/assets/_spacing";
+@import '~bulma/sass/utilities/_all';
+@import 'src/assets/_variables';
+@import 'src/assets/_spacing';
 
 $success: #2ebb60;
 
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')
 $colors: (
-    "white": ($white, $black),
-    "black": ($black, $white),
-    "light": ($light, $light-invert),
-    "dark": ($dark, $dark-invert),
-    "primary": ($primary, $primary-invert),
-    "info": ($info, $info-invert),
-    "success": ($success, $success-invert),
-    "warning": ($warning, $warning-invert),
-    "danger": ($danger, $danger-invert),
-    "twitter": ($twitter, $twitter-invert)
+    'white': (
+        $white,
+        $black
+    ),
+    'black': (
+        $black,
+        $white
+    ),
+    'light': (
+        $light,
+        $light-invert
+    ),
+    'dark': (
+        $dark,
+        $dark-invert
+    ),
+    'primary': (
+        $primary,
+        $primary-invert
+    ),
+    'info': (
+        $info,
+        $info-invert
+    ),
+    'success': (
+        $success,
+        $success-invert
+    ),
+    'warning': (
+        $warning,
+        $warning-invert
+    ),
+    'danger': (
+        $danger,
+        $danger-invert
+    ),
+    'twitter': (
+        $twitter,
+        $twitter-invert
+    )
 );
 
 // Links
@@ -30,8 +60,8 @@ $modal-card-head-background-color: $primary;
 $modal-card-title-color: $light;
 
 // Import Bulma and Buefy styles
-@import "~bulma";
-@import "~buefy/src/scss/buefy";
+@import '~bulma';
+@import '~buefy/src/scss/buefy';
 
 /** SPECIFIC OVERRIDES */
 .card-footer {

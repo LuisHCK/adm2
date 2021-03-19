@@ -47,8 +47,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'src/assets/_variables.scss';
-
 .navbar {
     width: 100%;
 
