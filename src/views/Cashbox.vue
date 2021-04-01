@@ -23,6 +23,8 @@ import Accounts from '../components/cashbox/Accounts.vue'
 import Logs from '../components/cashbox/Logs.vue'
 import TransactionForm from '../components/cashbox/TransactionForm.vue'
 import { getMoneyInCashBox } from '../controllers/cashbox'
+import EventBus from '../event-bus'
+import { PRINT_CASH_BOX_REPORT } from '../event-bus/events'
 
 export default {
     name: 'cashbox',
@@ -57,7 +59,7 @@ export default {
                 type: 'is-primary',
                 icon: 'printer',
                 label: 'Imprimir Reporte',
-                action: () => {}
+                action: () => EventBus.$emit(PRINT_CASH_BOX_REPORT)
             }
 
             const AddTransaction = {

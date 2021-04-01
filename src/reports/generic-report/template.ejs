@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+            <%= title %>
+        </title>
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            table {
+                width: 100%;
+            }
+
+            table.bordered-table {
+                border-collapse: collapse !important;
+                width: 100%;
+            }
+
+            table.bordered-table td,
+            table.bordered-table th {
+                padding: 6px;
+                border: 1px solid black;
+            }
+
+            mt-1 {
+                margin-top: 1em;
+            }
+        </style>
+    </head>
+    <body>
+        <table style="width: 100%;">
+            <tbody>
+                <tr>
+                    <td style="vertical-align: top;">
+                        <h2>Reporte de ventas</h2>
+                        <h3><%= shop.name %></h3>
+                        <div><%= shop.address %></div>
+                        <div><%= shop.phone %></div>
+                        <div><%= shop.legal_id %></div>
+                    </td>
+                    <td style="text-align: right; vertical-align: top;">
+                        <img
+                            src="<%= shop.logo %>"
+                            style=" height: 100px; width: auto;"
+                        />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br />
+
+        <table class="sales-table bordered-table">
+            <thead>
+                <tr style="font-size: 11pt; text-align: left;">
+                    <% columns.forEach(function(column) { %>
+                    <th class="<%= column.class %>" width="<%= column.width %>">
+                        <%= column.label %>
+                    </th>
+                    <% }); %>
+                </tr>
+            </thead>
+            <tbody>
+                <% data.forEach(function(row) { %>
+                <tr>
+                    <% columns.forEach(function(column) { %>
+                    <td class="<%= column.class %>">
+                        <%= row[column.value] %>
+                    </td>
+                    <% }); %>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </body>
+</html>

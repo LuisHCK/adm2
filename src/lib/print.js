@@ -67,7 +67,7 @@ function webPrint(renderedTemplate, callback = null) {
  * @param {Function} callback Callback function
  */
 function printElectron(renderedTemplate, title = 'Reporte ADM2', styles = '') {
-    let win = new BrowserWindow({ width: 750, height: 900 })
+    const win = new BrowserWindow({ width: 750, height: 900 })
     const file =
         'data:text/html;charset=UTF-8,' + encodeURIComponent(renderedTemplate)
     win.loadURL(file, { title: title })
@@ -80,6 +80,7 @@ function printElectron(renderedTemplate, title = 'Reporte ADM2', styles = '') {
         win.webContents.print({}, success => {
             // close window after print order.
             win.close()
+            win.destroy()
         })
     })
 }
