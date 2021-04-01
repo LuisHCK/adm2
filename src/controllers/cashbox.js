@@ -1,5 +1,7 @@
 import database from '../db'
 import * as moment from 'moment'
+import renderReport from '../reports/generic-report'
+import store from '../store'
 
 /**
  * @typedef CashBoxLog
@@ -181,4 +183,75 @@ export const cashBoxRefGen = (type, value) => {
  */
 export const cashBoxDateFormat = date => {
     return moment(date).format('DDMMYYhmma')
+}
+
+/**
+ * Return the log type
+ * @param {('add'|'subtract'|'close','balance')} type
+ * @returns {{label: string, className:string}} logType
+ */
+export const getLogType = type => {
+    switch (type) {
+        case 'add':
+            return {
+                label: 'Ingreso',
+                className: 'is-success'
+            }
+
+        case 'subtract':
+            return {
+                label: 'Egreso',
+                className: 'is-warning'
+            }
+
+        case 'close':
+            return {
+                label: 'Cierre',
+                className: 'is-danger'
+            }
+
+        case 'balance':
+            return {
+                label: 'Saldo',
+                className: 'is-info'
+            }
+
+        default:
+            return {
+                label: 'Tipo inválido',
+                className: 'is-dark'
+            }
+    }
+}
+
+/**
+ *
+ * @param {CashBoxLog[]} cashboxLog
+ */
+export const printChashboxReport = cashboxLog => {
+    const title = 'Reporte de caja'
+    const currency = store.getters.currency
+    const shop = { ...store.getters.store }
+
+    const columns = [
+        { label: '#', value: 'id' },
+        { label: 'Cantidad', value: 'amount' },
+        { label: 'Cantidad', value: 'type' },
+        { label: 'Concepto', value: 'concept' },
+        { label: 'Referencia', value: 'reference' },
+        { label: 'Creado por', value: 'created_by_name' },
+        { label: 'Fecha', value: 'date' }
+    ]
+
+    const data = cashboxLog.map(log => {
+        log.created_by_name = log.created_by.name
+        log.amount = `${currency}${log.amount}`
+        log.type = getLogType(log.type).label
+
+        return { ...log }
+    })
+
+    console.log(shop)
+
+    renderReport({ columns, data, shop, title })
 }

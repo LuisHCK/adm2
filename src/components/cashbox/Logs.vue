@@ -41,8 +41,8 @@
                 <b-table-column label="Tipo" v-slot="props">
                     <b-tag
                         class="has-text-weight-bold"
-                        v-text="typeTypeOptions(props.row.type).label"
-                        :type="typeTypeOptions(props.row.type).className"
+                        v-text="getLogType(props.row.type).label"
+                        :type="getLogType(props.row.type).className"
                         rounded
                     />
                 </b-table-column>
@@ -79,13 +79,25 @@
 </template>
 
 <script>
-import { getCashBoxLogs, searchCashBoxLog } from '../../controllers/cashbox'
+import {
+    getCashBoxLogs,
+    getLogType,
+    printChashboxReport,
+    searchCashBoxLog
+} from '../../controllers/cashbox'
+import eventBus from '../../event-bus'
+import { PRINT_CASH_BOX_REPORT } from '../../event-bus/events'
 import Card from '../ui/Card.vue'
 import LogFilters from './LogFilters.vue'
+
 export default {
     components: { Card, LogFilters },
 
     name: 'logs',
+
+    computed: {
+        getLogType: () => getLogType
+    },
 
     data() {
         return {
@@ -95,43 +107,6 @@ export default {
     },
 
     methods: {
-        /**
-         * @param {('add'|'subtract'|'close','balance')} type
-         */
-        typeTypeOptions(type) {
-            switch (type) {
-                case 'add':
-                    return {
-                        label: 'Ingreso',
-                        className: 'is-success'
-                    }
-
-                case 'subtract':
-                    return {
-                        label: 'Egreso',
-                        className: 'is-warning'
-                    }
-
-                case 'close':
-                    return {
-                        label: 'Cierre',
-                        className: 'is-danger'
-                    }
-
-                case 'balance':
-                    return {
-                        label: 'Saldo',
-                        className: 'is-info'
-                    }
-
-                default:
-                    return {
-                        label: 'Tipo inválido',
-                        className: 'is-dark'
-                    }
-            }
-        },
-
         async getLogs() {
             this.logs = await getCashBoxLogs()
             this.loading = false
@@ -163,17 +138,29 @@ export default {
             } else {
                 this.getLogs()
             }
+        },
+
+        printReport() {
+            console.log(PRINT_CASH_BOX_REPORT)
+            printChashboxReport(
+                // Deep clone the array
+                this.logs.map(log => {
+                    return { ...log }
+                })
+            )
         }
     },
 
     mounted() {
         this.getLogs()
+
+        eventBus.$on(PRINT_CASH_BOX_REPORT, () => this.printReport())
     }
 }
 </script>
 
 <style lang="scss" scoped>
-@import "~bulma/sass/utilities/_all";
+@import '~bulma/sass/utilities/_all';
 @include mobile {
     .actions {
         flex-direction: column;

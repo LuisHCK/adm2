@@ -16,5 +16,13 @@ module.exports = {
                 additionalData: `@import 'src/assets/_variables.scss';`
             }
         }
+    },
+
+    chainWebpack: config => {
+        config.module
+            .rule('rawloader')
+            .test(/\.(txt|html|ejs)$/)
+            .use('raw-loader')
+            .loader('raw-loader')
     }
 }
