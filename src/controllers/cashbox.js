@@ -251,7 +251,5 @@ export const printChashboxReport = cashboxLog => {
         return { ...log }
     })
 
-    console.log(shop)
-
     renderReport({ columns, data, shop, title })
 }
