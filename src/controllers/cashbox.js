@@ -2,6 +2,7 @@ import database from '../db'
 import * as moment from 'moment'
 import renderReport from '../reports/generic-report'
 import store from '../store'
+import { formatNumber } from '../filters/money-format.filter'
 
 /**
  * @typedef CashBoxLog
@@ -227,11 +228,15 @@ export const getLogType = type => {
 /**
  *
  * @param {CashBoxLog[]} cashboxLog
+ * @param {string} notes
  */
-export const printChashboxReport = cashboxLog => {
+export const printChashboxReport = (cashboxLog, notes) => {
     const title = 'Reporte de caja'
-    const currency = store.getters.currency
+    const { name } = store.getters.currentUser
     const shop = { ...store.getters.store }
+    const created_at = moment().format('DD/MM/YYYY, h:mm a')
+
+    console.log(notes)
 
     const columns = [
         { label: '#', value: 'id' },
@@ -245,11 +250,20 @@ export const printChashboxReport = cashboxLog => {
 
     const data = cashboxLog.map(log => {
         log.created_by_name = log.created_by.name
-        log.amount = `${currency}${log.amount}`
+        log.amount = formatNumber(log.amount)
         log.type = getLogType(log.type).label
+        log.date = moment(log.date).format('DD/MM/YYYY, h:mm a')
 
         return { ...log }
     })
 
-    renderReport({ columns, data, shop, title })
+    renderReport({
+        columns,
+        data,
+        shop,
+        title,
+        created_at,
+        created_by: name,
+        notes
+    })
 }

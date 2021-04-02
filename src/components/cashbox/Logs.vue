@@ -25,7 +25,7 @@
             :striped="true"
             :hoverable="true"
             sticky-header
-            height="75vh"
+            height="calc(100vh - 30rem)"
         >
             <template>
                 <b-table-column label="#" v-slot="props">
@@ -102,7 +102,8 @@ export default {
     data() {
         return {
             loading: true,
-            logs: []
+            logs: [],
+            currentFilter: undefined
         }
     },
 
@@ -110,6 +111,8 @@ export default {
         async getLogs() {
             this.logs = await getCashBoxLogs()
             this.loading = false
+            // Clear current filter
+            this.currentFilter = undefined
         },
 
         /**
@@ -126,6 +129,12 @@ export default {
                 })
 
                 this.loading = false
+
+                // Set current filter
+                this.currentFilter = [
+                    this.$moment(start_date).format('D/MM/YY, h:mm a'),
+                    this.$moment(finish_date).format('D/MM/YY, h:mm a')
+                ]
             }
         },
 
@@ -135,18 +144,26 @@ export default {
         async searchLogs(searchValue) {
             if (searchValue) {
                 this.logs = await searchCashBoxLog(searchValue)
+
+                // Set current filter
+                this.currentFilter = [searchValue]
             } else {
                 this.getLogs()
             }
         },
 
         printReport() {
-            console.log(PRINT_CASH_BOX_REPORT)
+            const notes =
+                this.currentFilter && this.currentFilter.length
+                    ? `Filtrado por: ${this.currentFilter.join(' - ')}`
+                    : ''
+
             printChashboxReport(
                 // Deep clone the array
                 this.logs.map(log => {
                     return { ...log }
-                })
+                }),
+                notes
             )
         }
     },

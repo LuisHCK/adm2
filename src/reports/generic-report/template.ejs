@@ -36,7 +36,7 @@
             <tbody>
                 <tr>
                     <td style="vertical-align: top;">
-                        <h2>Reporte de ventas</h2>
+                        <h2><%= title %></h2>
                         <h3><%= shop.name %></h3>
                         <div><%= shop.address %></div>
                         <div><%= shop.phone %></div>
@@ -47,6 +47,61 @@
                             src="<%= shop.logo %>"
                             style=" height: 100px; width: auto;"
                         />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Template -->
+        <table style="width: 100%; margin-top: 1em;">
+            <thead>
+                <tr>
+                    <th width="70%"></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="vertical-align: top;">
+                        <div>
+                            <b>Creado por:</b>
+                        </div>
+                        <div>
+                            <%= created_by %>
+                        </div>
+
+                        <div style="padding-top: 0.5em;">
+                            <b>Notas:</b>
+                        </div>
+                        <div>
+                            <%= notes %>
+                        </div>
+                    </td>
+                    <td style="vertical-align: top; text-align: right;">
+                        <table style="width: 100%;">
+                            <tbody>
+                                <tr>
+                                    <td
+                                        style="text-align: left; white-space: nowrap;"
+                                    >
+                                        <b>Fecha de cración:</b>
+                                    </td>
+                                    <td
+                                        style="text-align: left; white-space: nowrap;"
+                                    >
+                                        <%= created_at %>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="text-align: left; white-space: nowrap;"
+                                    ></td>
+                                    <td
+                                        style="text-align: left; white-space: nowrap;"
+                                    ></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </td>
                 </tr>
             </tbody>

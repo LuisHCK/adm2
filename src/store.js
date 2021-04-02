@@ -153,7 +153,9 @@ export default new Vuex.Store({
             }, 0)
         },
 
-        currency: state => state.store.currency || '$'
+        currency: state => state.store.currency || '$',
+
+        currentUser: state => state.user
     },
 
     plugins: [vuexLocal.plugin]
