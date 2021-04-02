@@ -6,7 +6,7 @@
             >
                 <accounts />
             </div>
-            <div class="column is-full-tablet is-three-quarters-desktop">
+            <div class="column is-full">
                 <logs />
             </div>
         </div>
