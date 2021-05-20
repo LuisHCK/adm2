@@ -13,6 +13,7 @@ Doesn't require internet connection, everything is stored on device using [Index
 - Report printing
 - Cross platform support: Windows, Mac, Linux, Mobile, Web (comming soon)
 - No internet connection required (but recommended to keep the app updated)
+- Database backups
 
 ## Screenshots
 
