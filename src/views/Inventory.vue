@@ -17,7 +17,7 @@
                                 :loading="loading"
                                 @update="openUpdateForm"
                                 @delete="deleteInventoryProduct"
-                                @update-price="updateInventoryProduct"
+                                @update-price="handleInventoryProductUpdate"
                             />
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                     <inventory-product-form
                         :inventory-product-id="selectedInventoryProduct"
                         :show="showUpdateForm"
-                        @submit="updateInventoryProduct"
+                        @submit="handleInventoryProductUpdate"
                     />
                 </section>
             </div>
@@ -65,7 +65,14 @@ import InventoryProductForm from '../components/inventory/InventoryProductForm.v
 import { mapGetters } from 'vuex'
 import InventoryTable from '../components/inventory/InventoryTable.vue'
 import InventorySummary from '../components/inventory/InventorySummary.vue'
-import { getInventoryProducts } from '../controllers/inventory'
+import {
+    createInventoryProduct,
+    deleteProductFromInventory,
+    getInventoryById,
+    getInventoryProducts,
+    updateInventoryProduct
+} from '../controllers/inventories'
+import { getProductById } from '../controllers/products'
 
 export default {
     components: {
@@ -119,22 +126,22 @@ export default {
         },
 
         async getProduct(id) {
-            const product = await Database.product.get(id)
-            return product
+            return await getProductById(id)
         },
 
-        saveInventoryProduct(data) {
-            Database.inventory_product
-                .add(data)
-                .then(() => {
-                    this.showToast('Se agregó el producto al inventario')
-                    this.showForm = false
-                })
-                .catch(err => console.log(err))
+        async saveInventoryProduct(data) {
+            try {
+                await createInventoryProduct(data)
+                this.showToast('Se agregó el producto al inventario')
+                this.showForm = false
+            } catch (error) {
+                this.showToast('No se pudo guardar el producto', true)
+                console.error(error)
+            }
         },
 
         async getInventory() {
-            this.inventory = await Database.inventory.get(this.inventoryId)
+            this.inventory = await getInventoryById(this.inventoryId)
             this.initInventory()
         },
 
@@ -149,11 +156,8 @@ export default {
             })
         },
 
-        async updateInventoryProduct(data) {
-            const updatedInventory = await Database.inventory_product.update(
-                data.id,
-                data
-            )
+        async handleInventoryProductUpdate(data) {
+            const updatedInventory = await updateInventoryProduct(data)
 
             if (updatedInventory) {
                 // Refresh table data
@@ -193,7 +197,7 @@ export default {
         },
 
         async handleDelete(productId) {
-            await Database.inventory_product.delete(productId)
+            await deleteProductFromInventory(productId)
             this.initInventory()
         },
 
