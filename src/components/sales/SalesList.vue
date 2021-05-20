@@ -15,10 +15,10 @@
                 </b-table-column>
 
                 <b-table-column field="customer" label="Cliente" v-slot="props">
-                    {{ props.row.customer.name }}
+                    {{ props.row.customer.name || "--" }}
                 </b-table-column>
 
-                <b-table-column field="customer" label="Client" v-slot="props">
+                <b-table-column field="customer" label="Fecha" v-slot="props">
                     {{ props.row.created_at | moment('MMM DD YYYY, h:mm a') }}
                 </b-table-column>
             </template>

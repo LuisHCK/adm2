@@ -121,7 +121,7 @@
                         v-if="isEditOpen"
                         :inventoryId="selectedProduct.inventoryId"
                         :inventoryProductId="selectedProduct.inventoryProductId"
-                        @submit="updateInventoryProduct"
+                        @submit="handleUpdateInventoryProduct"
                     />
                 </section>
             </div>
@@ -130,8 +130,13 @@
 </template>
 
 <script>
+import { getProductById } from '@/controllers/products'
 import { mapGetters } from 'vuex'
 import EmptyTableCard from '../ui/EmptyTableCard.vue'
+import {
+    updateInventoryProduct,
+    getAllInventories
+} from '@/controllers/inventories'
 
 export default {
     name: 'InventoryStatus',
@@ -158,7 +163,7 @@ export default {
 
     methods: {
         async getInventories() {
-            this.inventories = await Database.inventory.toArray()
+            this.inventories = await getAllInventories()
             this.getProducts()
         },
 
@@ -176,9 +181,7 @@ export default {
                     .toArray()
 
                 inventoryProducts.forEach(async invProd => {
-                    const product = await Database.product.get(
-                        invProd.product_id
-                    )
+                    const product = await getProductById(invProd.product_id)
                     invProd.product = product
                     this.$forceUpdate()
                 })
@@ -198,13 +201,12 @@ export default {
             this.isEditOpen = true
         },
 
-        updateInventoryProduct(data) {
-            Database.inventory_product.update(data.id, data).then(() => {
-                this.showToast('Se actualizó el inventario!')
-                this.getInventories()
-                this.selectedProduct = {}
-                this.isEditOpen = false
-            })
+        async handleUpdateInventoryProduct(data) {
+            await updateInventoryProduct(data)
+            this.showToast('Se actualizó el inventario!')
+            this.getInventories()
+            this.selectedProduct = {}
+            this.isEditOpen = false
         },
 
         showToast(message, error = false) {

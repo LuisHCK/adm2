@@ -2,6 +2,14 @@ import database from '../db'
 import { getProductById } from './products'
 
 /**
+ * Get all inventories
+ * @returns {Promise<Array>}
+ */
+export const getAllInventories = () => {
+    return database.inventory.toArray()
+}
+
+/**
  * Return an inventory by it's id
  * @param {number | string} inventoryId
  * @returns {Promise} Inventory promise
