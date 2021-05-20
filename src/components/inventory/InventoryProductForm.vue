@@ -109,7 +109,7 @@ export default {
             if (
                 this.form.product_id &&
                 this.form.price &&
-                (this.form.stock || this.form.unlimited_stock)
+                (this.form.stock > -1 || this.form.unlimited_stock)
             ) {
                 // Append inventory id if not updating mode
                 if (!this.inventoryProduct) {

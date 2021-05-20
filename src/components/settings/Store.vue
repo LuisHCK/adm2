@@ -122,11 +122,10 @@ export default {
 
             if (settings) {
                 this.settingsId = settings.id
-
                 this.store = { ...settings.value }
             }
 
-            this.$store.commit('SET_STORE', settings.value)
+            this.$store.commit('SET_STORE', { ...settings.value })
         },
 
         showSuccess() {

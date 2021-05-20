@@ -223,7 +223,9 @@ export default {
     },
 
     mounted() {
-        this.getProduct(this.productId)
+        if (this.productId) {
+            this.getProduct(this.productId)
+        }
         this.getProviders()
     }
 }

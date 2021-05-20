@@ -41,14 +41,13 @@
                 </b-field>
 
                 <b-field
-                    label="Empresa"
+                    label="Nombre de la tienda"
                     :type="messages.company_name ? 'is-danger' : ''"
                     :message="messages.company_name"
                 >
                     <b-input
                         type="text"
                         v-model="form.company_name"
-                        placeholder="Nombre de la empresa o compañía"
                     >
                     </b-input>
                 </b-field>
@@ -74,9 +73,10 @@
 </template>
 
 <script>
-import EventBus from '@/event-bus'
-import { hashSync } from '../lib/auth'
-import { restoreDatabase } from '@/db/backup'
+import EventBus from '../event-bus'
+import { restoreDatabase } from '../db/backup'
+import { createSettings } from '../controllers/settings'
+import { registerUser, getTotalUsers } from '../controllers/users'
 
 export default {
     name: 'Registration.vue',
@@ -117,34 +117,28 @@ export default {
             else return true
         },
 
-        submitForm() {
+        async submitForm() {
             if (this.validateForm()) {
-                // Set password hash
-                this.form.password_digest = hashSync(this.form.password)
-                delete this.form.password
                 // Register new usuer
-                Database.user
-                    .add(this.form)
-                    .then(user => {
-                        this.notifySuccess('Se guardó el nuevo usuario')
-                        // Store current user
-                        this.$store.commit('setUser', user)
-                        // Save store.name
-                        this.SET_STOREName(this.form.company_name)
-                        // Redirect to path
-                        this.$router.push('/')
-                    })
-                    .catch(err => {
-                        console.log(err)
-                        this.notifyError('Ocurrió un error al guardar')
-                    })
+                try {
+                    const newUser = await registerUser(this.form)
+                    this.$store.commit('setUser', newUser)
+                } catch (error) {
+                    console.error(error)
+                    this.notifyError('Ocurrió un error al guardar')
+                }
+
+                this.setStoreName(this.form.company_name)
+                this.notifySuccess('Se guardó el nuevo usuario')
+                this.$router.push('/')
             } else {
                 this.notifyError('Por favor verifica los datos introducidos')
             }
         },
 
-        SET_STOREName(name) {
+        async setStoreName(name) {
             this.$store.commit('SET_STORE', { name: name })
+            await createSettings({ name: 'store', value: { name } })
         },
 
         notifyError(text) {
@@ -170,7 +164,7 @@ export default {
         },
 
         async checkUsers() {
-            const usersCount = await Database.user.count()
+            const usersCount = await getTotalUsers()
 
             if (usersCount > 0) {
                 return this.$router.push('/login')

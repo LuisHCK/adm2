@@ -168,7 +168,11 @@ export default {
                     .where({
                         inventory_id: inventory.id
                     })
-                    .filter(invProd => invProd.stock <= this.minQuantity)
+                    .filter(
+                        invProd =>
+                            invProd.stock <= this.minQuantity &&
+                            !invProd.unlimited_stock
+                    )
                     .toArray()
 
                 inventoryProducts.forEach(async invProd => {
