@@ -27,6 +27,15 @@ export const getInventoryProducts = async inventoryId => {
 }
 
 /**
+ * Find inventory product by it's id
+ * @param {number | string} invProdId Inventory product id
+ * @returns {Promise}
+ */
+export const getInventoryProductById = async invProdId => {
+    return await database.inventory_product.get(invProdId)
+}
+
+/**
  *
  * @param {*} data
  * @returns {Promise}

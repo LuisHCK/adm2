@@ -70,6 +70,8 @@
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
 import { mapGetters } from 'vuex'
+import { getInventoryProductById } from '../../controllers/inventories'
+import { getProductById } from '../../controllers/products'
 
 export default {
     name: 'inventory-product-form',
@@ -123,17 +125,13 @@ export default {
             }
         },
 
-        getInventoryProduct() {
-            Database.inventory_product
-                .get(this.inventoryProductId)
-                .then(data => {
-                    // set form data
-                    this.form = data
-                    Database.product.get(data.product_id).then(product => {
-                        this.inventoryProduct = data
-                        this.inventoryProduct.product = product
-                    })
-                })
+        async getInventoryProduct() {
+            const data = await getInventoryProductById(this.inventoryProductId)
+            this.form = data
+
+            const product = await getProductById(data.product_id)
+            this.inventoryProduct = data
+            this.inventoryProduct.product = product
         },
 
         showMessages() {
