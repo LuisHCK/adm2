@@ -66,7 +66,8 @@
 </template>
 
 <script>
-import { InventoryProduct } from '../../db'
+import { getAllInventoryProducts } from '@/controllers/inventories'
+
 export default {
     name: 'product-search',
 
@@ -117,29 +118,8 @@ export default {
         /**
          * Load all inventory products
          */
-        getInventoryProducts() {
-            Database.inventory_product.toArray().then(data => {
-                this.inventoryProducts = data
-                this.getRelationships()
-            })
-        },
-
-        /**
-         * Force load relationships
-         */
-        getRelationships(data) {
-            this.inventoryProducts.map(inventoryProduct => {
-                // Get products
-                Database.product.get(
-                    inventoryProduct.product_id,
-                    product => (inventoryProduct.product = product)
-                )
-                // Get inventory
-                Database.inventory.get(
-                    inventoryProduct.inventory_id,
-                    inventory => (inventoryProduct.inventory = inventory)
-                )
-            })
+        async getInventoryProducts() {
+            this.inventoryProducts = await getAllInventoryProducts()
             this.loadComplete = true
         },
 

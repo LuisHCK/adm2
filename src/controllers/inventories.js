@@ -1,4 +1,5 @@
 import database from '../db'
+import { getProductById } from './products'
 
 /**
  * Return an inventory by it's id
@@ -36,6 +37,18 @@ export const getInventoryProductById = async invProdId => {
 }
 
 /**
+ * Get the total products in an inventory
+ * @param {number | string} inventoryId Inventory ID
+ * @returns {Promise<number>}
+ */
+export const countInventoryProducts = async inventoryId => {
+    return database.inventory_product
+        .where('inventory_id')
+        .equals(inventoryId)
+        .count()
+}
+
+/**
  *
  * @param {*} data
  * @returns {Promise}
@@ -55,4 +68,21 @@ export const createInventoryProduct = data => {
  */
 export const deleteProductFromInventory = productId => {
     return database.inventory_product.delete(productId)
+}
+
+/**
+ * Return all product inventories
+ * @returns {Promise<Array>} List of inventory products
+ */
+export const getAllInventoryProducts = async () => {
+    const inventoryProducts = await database.inventory_product.toArray()
+
+    await Promise.all(
+        inventoryProducts.map(async invProd => {
+            invProd.product = await getProductById(invProd.product_id)
+            invProd.inventory = await getInventoryById(invProd.inventory_id)
+        })
+    )
+
+    return inventoryProducts
 }

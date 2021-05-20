@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import { countInventoryProducts } from '../../controllers/inventories'
+
 export default {
     name: 'inventory-card',
 
@@ -42,12 +44,8 @@ export default {
             this.$router.push(`/inventories/${this.inventory.id}`)
         },
 
-        countInventoryProducts() {
-            Database.inventory_product
-                .where('inventory_id')
-                .equals(this.inventory.id)
-                .count()
-                .then(count => (this.productsCount = count))
+        async countInventoryProducts() {
+            this.productsCount = await countInventoryProducts(this.inventory.id)
         }
     },
 
