@@ -197,7 +197,7 @@ export default {
 
 <style lang="scss" scoped>
 #registration-page {
-    background-image: url('/andrew-ridley-jR4Zf-riEjI-unsplash.jpg');
+    background-image: url('/blake-wisz-GFrBMipOd_E-unsplash.jpg');
     background-size: cover;
     min-height: 100vh;
     display: flex;

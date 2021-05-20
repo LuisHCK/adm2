@@ -11,9 +11,7 @@
             </div>
 
             <!-- Providers -->
-            <div class="column is-half">
-                
-            </div>
+            <div class="column is-half"></div>
         </div>
 
         <div class="columns">
@@ -47,10 +45,15 @@
                         min="0"
                         :controls="false"
                         @focus="focusInput"
+                        :disabled="form.unlimited_stock"
                     />
                 </b-field>
             </div>
         </div>
+
+        <b-field label="Existencias ilimitadas">
+            <b-switch v-model="form.unlimited_stock" />
+        </b-field>
 
         <!-- Lote -->
         <b-field label="Lote">
@@ -66,7 +69,6 @@
 <script>
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
-import EventBus from '@/event-bus'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -104,7 +106,11 @@ export default {
 
     methods: {
         submit() {
-            if (this.form.product_id && this.form.price && this.form.stock) {
+            if (
+                this.form.product_id &&
+                this.form.price &&
+                (this.form.stock || this.form.unlimited_stock)
+            ) {
                 // Append inventory id if not updating mode
                 if (!this.inventoryProduct) {
                     this.form.inventory_id = this.inventoryId

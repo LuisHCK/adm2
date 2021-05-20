@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import { InventoryProduct } from '../../db'
 export default {
     name: 'product-search',
 
@@ -195,7 +196,10 @@ export default {
          * Emit Inventory Product selection
          */
         selectInventoryProduct(inventoryProduct) {
-            if (inventoryProduct.stock > 0) {
+            if (
+                inventoryProduct.stock > 0 ||
+                inventoryProduct.unlimited_stock
+            ) {
                 this.$emit('input', inventoryProduct)
             } else {
                 this.confirmAdd(inventoryProduct)

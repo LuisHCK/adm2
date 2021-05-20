@@ -14,7 +14,7 @@ database.version(0.1).stores({
         '++id,product_id,provider_id,active,user_id,created_at,updated_at',
     inventory: '++id,name,location,user_id,created_at,updated_at',
     inventory_product:
-        '++id,product_id,inventory_id,price,lot,stock,created_at,updated_at',
+        '++id,product_id,inventory_id,price,lot,stock,unlimited_stock,created_at,updated_at',
     tax: '++id,name,amount,user_id,created_at,updated_at',
     coupon: '++id,name,amount,created_at,updated_at',
     sale:

@@ -209,12 +209,13 @@
                     >
                 </header>
                 <section class="modal-card-body" style="overflow: hidden">
-                    <ImportProducts
+                    <import-products
                         :products="checkedProducts"
                         :selectedInventory="selectedInventory"
                         @cancel="toggleImportModal"
                         @save="handleSave"
                         @select-inventory="openInventorySelection"
+                        @onUpdate="handleUpdateImportList"
                     />
                 </section>
             </div>
@@ -234,11 +235,11 @@
 </template>
 
 <script>
-import EventBus from '@/event-bus'
-import ProductForm from '@/components/product/Form.vue'
-import InventorySelect from '@/components/product/InventorySelect.vue'
-import ProductDetail from '@/components/product/ProductDetail.vue'
-import ImportProducts from '@/components/inventory/ImportProducts.vue'
+import EventBus from '../event-bus'
+import ProductForm from '../components/product/Form.vue'
+import InventorySelect from '../components/product/InventorySelect.vue'
+import ProductDetail from '../components/product/ProductDetail.vue'
+import ImportProducts from '../components/inventory/ImportProducts.vue'
 
 export default {
     name: 'products',
@@ -415,6 +416,7 @@ export default {
                     product_id: product.id,
                     inventory_id: this.selectedInventory.id,
                     stock: product.stock,
+                    unlimited_stock: product.unlimited_stock,
                     price: product.price
                 }
             })
@@ -512,6 +514,10 @@ export default {
             this.showInventorySelect = false
 
             this.handleSave()
+        },
+
+        handleUpdateImportList(products) {
+            this.checkedProducts = products
         },
 
         /**

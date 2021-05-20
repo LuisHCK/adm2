@@ -61,11 +61,11 @@
 
 <script>
 import ImportProducts from '@/components/inventory/ImportProducts.vue'
-import InventoryProductForm from '@/components/inventory/InventoryProductForm.vue'
-import EventBus from '@/event-bus'
+import InventoryProductForm from '../components/inventory/InventoryProductForm.vue'
 import { mapGetters } from 'vuex'
 import InventoryTable from '../components/inventory/InventoryTable.vue'
 import InventorySummary from '../components/inventory/InventorySummary.vue'
+import { getInventoryProducts } from '../controllers/inventory'
 
 export default {
     components: {
@@ -77,6 +77,7 @@ export default {
 
     computed: {
         ...mapGetters(['currency']),
+
         grossProfit() {
             if (this.inventoryProducts.length) {
                 let subTotal = this.inventoryProducts.map(
@@ -87,6 +88,10 @@ export default {
             }
 
             return 0
+        },
+
+        totalProducts() {
+            return this.inventoryProducts ? this.inventoryProducts.length : 0
         }
     },
 
@@ -98,30 +103,19 @@ export default {
             showUpdateForm: false,
             selectedInventoryProduct: undefined,
             loading: false,
-            showBulkImportModal: false,
-            totalProducts: 0
+            showBulkImportModal: false
         }
     },
 
     methods: {
-        async getInventoryProducts() {
+        async initInventory() {
             this.loading = true
-            const query = Database.inventory_product.where({
-                inventory_id: this.inventory.id
-            })
 
-            let data = await query.toArray()
+            this.inventoryProducts = await getInventoryProducts(
+                this.inventoryId
+            )
 
-            this.totalProducts = await query.count()
-
-            data.map(async d => {
-                d.product = await this.getProduct(d.product_id)
-            })
-
-            setTimeout(() => {
-                this.loading = false
-                this.inventoryProducts = data
-            }, 300)
+            this.loading = false
         },
 
         async getProduct(id) {
@@ -140,9 +134,8 @@ export default {
         },
 
         async getInventory() {
-            const inventoryId = Number(this.$route.params.id)
-            this.inventory = await Database.inventory.get(inventoryId)
-            this.getInventoryProducts()
+            this.inventory = await Database.inventory.get(this.inventoryId)
+            this.initInventory()
         },
 
         /**
@@ -164,7 +157,7 @@ export default {
 
             if (updatedInventory) {
                 // Refresh table data
-                this.getInventoryProducts()
+                this.initInventory()
 
                 this.showToast('Se actualizó el inventario!')
             }
@@ -190,12 +183,18 @@ export default {
                 type: 'is-danger',
                 hasIcon: true,
                 onConfirm: () => {
+                    this.handleDelete(inventoryProduct.id)
+
                     this.$buefy.toast.open(
                         'Se quitó el producto del inventario'
                     )
-                    Database.inventory_product.delete(inventoryProduct.id)
                 }
             })
+        },
+
+        async handleDelete(productId) {
+            await Database.inventory_product.delete(productId)
+            this.initInventory()
         },
 
         openUpdateForm(inventoryProductId) {
@@ -226,6 +225,7 @@ export default {
     },
 
     mounted() {
+        this.inventoryId = Number(this.$route.params.id)
         this.getInventory()
         this.setActionButtons()
     }

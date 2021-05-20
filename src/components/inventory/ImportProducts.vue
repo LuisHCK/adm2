@@ -44,12 +44,28 @@
                     props.row.codebar
                 }}</b-table-column>
 
+                <b-table-column v-slot="props">
+                    <b-field>
+                        <b-switch
+                            v-model="props.row.unlimited_stock"
+                            @input="handleUnlimitedSwitch($event, props.index)"
+                        >
+                            Ilimitado
+                        </b-switch>
+                    </b-field>
+                </b-table-column>
+
                 <b-table-column
                     v-slot="props"
                     field="stock"
                     label="Existencias"
                 >
                     <b-field>
+                        <p class="control">
+                            <span class="button is-static">
+                                <b-icon icon="numeric" />
+                            </span>
+                        </p>
                         <b-numberinput
                             :controls="false"
                             type="is-info"
@@ -58,11 +74,16 @@
                             controls-position="compact"
                             v-model="props.row.stock"
                             @focus="handleFocus"
+                            :disabled="props.row.unlimited_stock"
                         />
                     </b-field>
                 </b-table-column>
+
                 <b-table-column v-slot="props" field="price" label="Precio">
                     <b-field>
+                        <p class="control">
+                            <span class="button is-static" v-text="currency" />
+                        </p>
                         <b-numberinput
                             :controls="false"
                             type="is-info"
@@ -123,6 +144,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     name: 'ImportProducts',
 
@@ -144,6 +166,10 @@ export default {
         }
     },
 
+    computed: {
+        ...mapGetters(['currency'])
+    },
+
     methods: {
         handleClose() {
             this.$emit('cancel')
@@ -151,6 +177,14 @@ export default {
 
         handleFocus(e) {
             e.target.select()
+        },
+
+        handleUnlimitedSwitch(value, index) {
+            if (!!value) {
+                let updatedProducts = [...this.products]
+                updatedProducts[index].stock = 0
+                this.$emit('onUpdate', updatedProducts)
+            }
         }
     }
 }

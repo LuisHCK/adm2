@@ -35,7 +35,11 @@
                     label="Existencias"
                     v-slot="props"
                 >
-                    {{ props.row.inventoryProduct.stock }}
+                    {{
+                        props.row.inventoryProduct.unlimited_stock
+                            ? 'Ilimitado'
+                            : props.row.inventoryProduct.stock
+                    }}
                 </b-table-column>
 
                 <b-table-column
@@ -142,10 +146,7 @@
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
-                            <b-icon
-                                icon="package-variant"
-                                size="is-large"
-                            />
+                            <b-icon icon="package-variant" size="is-large" />
                         </p>
                         <p>No hay productos para mostrar.</p>
                     </div>
@@ -179,8 +180,7 @@ export default {
             if (!event.target.value) {
                 setTimeout(() => {
                     this.focusSelect(event)
-                    
-                }, 100);
+                }, 100)
             }
         },
 

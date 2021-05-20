@@ -201,9 +201,11 @@ export default {
         setInventoryProductBuyQty(index, event, stock) {
             let quantity = Number(event.target.value) || 1
 
+            const { inventoryProduct } = this.shoppingCart[index]
+
             // Check maximum
             // When input quantity reach stock limit, alert to user and fix input
-            if (quantity > stock) {
+            if (quantity > stock && !inventoryProduct.unlimited_stock) {
                 quantity = stock
                 event.target.value = stock
                 this.$buefy.toast.open({
@@ -288,10 +290,16 @@ export default {
 
         reduceInventoryQuantity() {
             this.shoppingCart.map(item => {
-                const totalStock = item.inventoryProduct.stock - item.quantity
-                Database.inventory_product.update(item.inventoryProduct.id, {
-                    stock: totalStock
-                })
+                if (!item.inventoryProduct.unlimited_stock) {
+                    const totalStock =
+                        item.inventoryProduct.stock - item.quantity
+                    Database.inventory_product.update(
+                        item.inventoryProduct.id,
+                        {
+                            stock: totalStock
+                        }
+                    )
+                }
             })
         },
 

@@ -21,7 +21,8 @@ function createWindow() {
         width: 1440,
         height: 800,
         webPreferences: {
-            nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+            nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+            enableRemoteModule: true
         },
         icon: path.join(__static, 'icon.png')
     })

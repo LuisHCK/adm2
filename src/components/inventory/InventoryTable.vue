@@ -51,13 +51,14 @@
                     @submit="emitUpdateValue($event, props.row.id, 'price')"
                 >
                     <b-tag type="is-info" class="has-text-weight-bold" rounded>
-                        {{ currency }}{{ props.row.price }}
+                        {{ props.row.price | money }}
                     </b-tag>
                 </content-editable>
             </b-table-column>
 
             <b-table-column v-slot="props" field="stock" label="Existencias">
                 <content-editable
+                    v-if="!props.row.unlimited_stock"
                     :input-value="props.row.stock"
                     input-type="number"
                     @submit="emitUpdateValue($event, props.row.id, 'stock')"
@@ -70,6 +71,15 @@
                         {{ props.row.stock }}
                     </b-tag>
                 </content-editable>
+
+                <b-tag
+                    type="is-warning"
+                    class="has-text-weight-bold"
+                    rounded
+                    v-else
+                >
+                    Ilimitado
+                </b-tag>
             </b-table-column>
 
             <b-table-column v-slot="props" field="lot" label="Lote">
@@ -167,7 +177,9 @@ export default {
         },
 
         emitUpdateValue(value, id, field) {
-            this.$emit('update-price', { [field]: value, id })
+            if (value && value > 0) {
+                this.$emit('update-price', { [field]: value, id })
+            }
         }
     }
 }
