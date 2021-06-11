@@ -79,3 +79,7 @@ $modal-card-title-color: $light;
 .justify-content-end {
     justify-content: flex-end;
 }
+
+.tab-item:focus {
+    outline: none;
+}

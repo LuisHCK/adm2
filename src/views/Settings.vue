@@ -6,6 +6,10 @@
                     <store />
                 </b-tab-item>
 
+                <b-tab-item label="Punto de venta">
+                    <pos />
+                </b-tab-item>
+
                 <b-tab-item label="Base de datos">
                     <database />
                 </b-tab-item>
@@ -17,24 +21,30 @@
 <script>
 import EventBus from '@/event-bus'
 import Store from '../components/settings/Store.vue'
+import Pos from '@/components/settings/Pos'
 import Database from '../components/settings/Database.vue'
+import { loadSettings } from '@/controllers/settings'
 
 export default {
-    components: { Store, Database },
+    components: { Store, Database, Pos },
 
     name: 'settings',
 
     data() {
         return {
             removeLogo: false,
-            store: {},
             exporting: false,
             progress: 0,
             activeTab: 0
         }
     },
 
-    methods: {},
+    methods: {
+        async setStoreState() {
+            const data = await loadSettings()
+            this.$store.commit('SET_STORE', data.value)
+        }
+    },
 
     mounted() {
         EventBus.$on('EXPORTING_DB', progress => {
@@ -46,6 +56,8 @@ export default {
             this.exporting = false
             this.progress = 0
         })
+
+        this.setStoreState()
     }
 }
 </script>

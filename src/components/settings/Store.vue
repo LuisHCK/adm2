@@ -65,7 +65,6 @@
                     icon-left="content-save"
                     type="is-success"
                     native-type="submit"
-                    expanded
                 >
                     Guardar
                 </b-button>
@@ -75,6 +74,7 @@
 </template>
 
 <script>
+import { addOrUpdateSettings } from '@/controllers/settings'
 import { fileToBase64 } from '../../lib/filesys'
 
 export default {
@@ -96,16 +96,7 @@ export default {
 
             const payload = { name: 'store', value: this.store }
 
-            let updatedStore
-
-            if (this.settingsId) {
-                updatedStore = await Database.settings.update(
-                    this.settingsId,
-                    payload
-                )
-            } else {
-                updatedStore = await Database.settings.add(payload)
-            }
+            await addOrUpdateSettings(payload)
 
             this.showSuccess()
 

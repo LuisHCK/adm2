@@ -7,7 +7,7 @@ database.version(0.1).stores({
     user: '++id,name,email,username,role,created_at,updated_at',
     provider: '++id,name,email,phone_number,created_at,updated_at',
     customer: '++id,name,email,phone_number,created_at,updated_at',
-    settings: '++id,name,value,active',
+    settings: '++id,&name,value,active',
     product:
         '++id,name,description,brand,&codebar,user_id,*providers,created_at,updated_at',
     product_provider:
