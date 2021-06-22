@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getUserCount } from './lib/auth'
+import { getUserCount } from '../lib/auth'
 import VuexPersistence from 'vuex-persist'
-import Maths from './lib/maths'
+import Maths from '../lib/maths'
 
 Vue.use(Vuex)
 
@@ -121,6 +121,10 @@ export default new Vuex.Store({
 
         SET_ACTION_BUTTONS(state, payload) {
             state.actionButtons = payload
+        },
+
+        SET_POS_SETTINGS(state, payload) {
+            state.pos = payload
         }
     },
 
