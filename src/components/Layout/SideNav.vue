@@ -83,7 +83,7 @@ export default {
     items() {
       return [
         { label: 'Inicio', path: 'home', icon: 'view-dashboard' },
-        { label: 'POS', path: 'pos', icon: 'point-of-sale' },
+        { label: 'Punto de venta', path: 'pos', icon: 'point-of-sale' },
         { label: 'Productos', path: 'products', icon: 'package-variant' },
         { label: 'Clientes', path: 'customers', icon: 'account-group' },
         {
