@@ -2,7 +2,7 @@
     <form @submit.prevent="submitStoreForm">
         <div class="columns is-mobile is-multiline">
             <!-- Name -->
-            <div class="column is-half">
+            <div class="column is-half-tablet is-full-mobile">
                 <b-field
                     label="Nombre"
                     :type="{ 'is-danger': errors.has('name') }"
@@ -18,33 +18,33 @@
             </div>
 
             <!-- Address -->
-            <div class="column is-half">
+            <div class="column is-half-tablet is-full-mobile">
                 <b-field label="Dirección">
                     <b-input v-model="store.address" icon="routes" />
                 </b-field>
             </div>
 
             <!-- Phone number -->
-            <div class="column is-half">
+            <div class="column is-half-tablet is-full-mobile">
                 <b-field label="Teléfono">
                     <b-input v-model="store.phone" icon="phone" />
                 </b-field>
             </div>
 
-            <div class="column is-half">
+            <div class="column is-half-tablet is-full-mobile">
                 <b-field label="ID Legal">
                     <b-input v-model="store.legal_id" icon="id-card" />
                 </b-field>
             </div>
 
-            <div class="column is-half">
+            <div class="column is-half-tablet is-full-mobile">
                 <b-field label="Moneda">
                     <b-input v-model="store.currency" icon="currency-usd" />
                 </b-field>
             </div>
 
             <!-- Logo -->
-            <div class="column is-half">
+            <div class="column is-half-tablet is-full-mobile">
                 <b-field label="Logo">
                     <b-upload @input="handleLogo" class="file-label">
                         <span class="file-cta">

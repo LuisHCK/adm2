@@ -256,7 +256,7 @@ export default {
                 }
             }
 
-            this.$store.commit('SET_ACTION_BUTTONS', [printReport, addCustomer])
+            this.$store.commit('SET_ACTION_BUTTONS', [addCustomer, printReport])
         }
     },
 

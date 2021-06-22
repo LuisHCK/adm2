@@ -97,6 +97,7 @@ import {
     cashBoxRefGen,
     registerCashboxLog
 } from '../controllers/cashbox'
+import { getSettings } from '@/controllers/settings'
 
 export default {
     components: {
@@ -138,7 +139,8 @@ export default {
             showCustomerForm: false,
             saleType: 1,
             saleInvoice: {},
-            showSaleInvoice: false
+            showSaleInvoice: false,
+            posSettings: {}
         }
     },
 
@@ -265,8 +267,10 @@ export default {
             this.reduceInventoryQuantity()
             // Clear the sale form
             this.cancelSale()
-            // Open detail retult
-            this.showSaleInvoice = true
+            // Show invoice popup if is enabled
+            this.showSaleInvoice = this.posSettings
+                ? this.posSettings.show_invoice_popup
+                : false
             // Register cashbox log
             this.createCashBoxLog()
         },
@@ -342,12 +346,18 @@ export default {
         openPrintInvoice() {
             const report = printInvoice(this.saleInvoice)
             printContentent(report, `Factura #${this.saleInvoice}`, '')
+        },
+
+        async loadSettings() {
+            const settings = await await getSettings('pos')
+            this.posSettings = settings && settings.value ? settings.value : {}
         }
     },
 
     mounted() {
         this.getCustomers()
         this.initShortCuts()
+        this.loadSettings()
     }
 }
 </script>

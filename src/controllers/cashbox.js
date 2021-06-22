@@ -3,21 +3,7 @@ import * as moment from 'moment'
 import renderReport from '../reports/generic-report'
 import store from '../store'
 import { formatNumber } from '../filters/money-format.filter'
-
-/**
- * @typedef CashBoxLog
- * @type {Object}
- * @property {Number} id
- * @property {Number} amount
- * @property {String} concept
- * @property {('add'|'subtract'|'close'|'balance')} type
- * @property {String} reference
- * @property {String} notes
- * @property {Number} user_id
- * @property {String} date
- * @property {String} created_at
- * @property {String} updated_at
- */
+import '@/types'
 
 /**
  * Get a list of CashBox logs filtered by date or current cut

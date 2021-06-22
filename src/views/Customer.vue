@@ -203,6 +203,8 @@ import PaymentForm from '@/components/customers/PaymentForm.vue'
 import { customerDetailReport } from '@/reports/customers-report'
 import { months, daysAbr } from '@/lib/locale'
 import { mapGetters } from 'vuex'
+import { getCustomerById, getCustomerPayments } from '@/controllers/customers'
+import { getSalesWithFilters } from '@/controllers/sales'
 
 export default {
     name: 'customer',
@@ -259,12 +261,10 @@ export default {
 
     methods: {
         /** Get customter object by ID param */
-        getCustomer() {
+        async getCustomer() {
             const id = Number(this.$route.params.id)
 
-            Database.customer.get({ id }, data => {
-                this.customer = data
-            })
+            this.customer = await getCustomerById(id)
         },
 
         /**
@@ -281,7 +281,7 @@ export default {
             }
 
             // Filter by selected Customer Id
-            let query = Database.sale.where(filters)
+            let query = getSalesWithFilters(filters)
 
             // Get date range
             if (this.dateRange) {
@@ -320,7 +320,7 @@ export default {
          */
         getPayments() {
             const id = Number(this.$route.params.id)
-            let query = Database.customer_payment.where({ customer_id: id })
+            let query = getCustomerPayments(id)
 
             // Get date range
             if (this.dateRange) {
@@ -396,8 +396,8 @@ export default {
                 }
             }
             this.$store.commit('SET_ACTION_BUTTONS', [
-                printReport,
-                registerPayment
+                registerPayment,
+                printReport
             ])
         }
     },
