@@ -49,7 +49,7 @@ export function printContentent(
  * @param {Function} callback Callback funtion
  */
 function webPrint(renderedTemplate, callback = null) {
-    var printWindow = window.open('_blank', "Title")
+    const printWindow = window.open('_blank', 'Title')
     printWindow.document.body.innerHTML = renderedTemplate
     printWindow.focus()
     printWindow.print()
@@ -66,8 +66,12 @@ function webPrint(renderedTemplate, callback = null) {
  * @param {String} renderedTemplate Rendered template
  * @param {Function} callback Callback function
  */
-function printElectron(renderedTemplate, title = 'Reporte ADM2', styles = '') {
-    const win = new BrowserWindow({ width: 750, height: 900 })
+const printElectron = (
+    renderedTemplate,
+    title = 'Reporte ADM2',
+    styles = ''
+) => {
+    const win = new BrowserWindow({ width: 650, height: 900 })
     const file =
         'data:text/html;charset=UTF-8,' + encodeURIComponent(renderedTemplate)
     win.loadURL(file, { title: title })
@@ -77,7 +81,7 @@ function printElectron(renderedTemplate, title = 'Reporte ADM2', styles = '') {
         // Merge styles
         const winStyles = mergeStyles(styles)
         win.webContents.insertCSS(winStyles)
-        win.webContents.print({}, success => {
+        win.webContents.print({ silent: true, footer: 'Hello world' }, () => {
             // close window after print order.
             win.close()
             win.destroy()

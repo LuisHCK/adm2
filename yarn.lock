@@ -3972,6 +3972,11 @@ electron-devtools-installer@^3.1.1:
     semver "^7.2.1"
     unzip-crx-3 "^0.2.0"
 
+electron-pos-printer@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/electron-pos-printer/-/electron-pos-printer-1.2.4.tgz#f57a5fac2b4f189eed42afb4479303ccb82116bd"
+  integrity sha512-cO4wF3KhrE/6aAokZmPPlLMkCygsPfNv0/CkBsAXYaeN5TlfbQ9MF99P5UHxF++JBPcB6TCuog2DzNW0UF21sQ==
+
 electron-publish@22.10.5:
   version "22.10.5"
   resolved "https://registry.yarnpkg.com/electron-publish/-/electron-publish-22.10.5.tgz#9cbe46266b6c79d8c6e99840755682e2262d3543"
@@ -6025,6 +6030,11 @@ js-yaml@^4.0.0:
   integrity sha512-pqon0s+4ScYUvX30wxQi3PogGFAlUyH0awepWvwkj4jD4v+ova3RiYw8bmA6x2rDrEaj8i/oWKoRxpVNW+Re8Q==
   dependencies:
     argparse "^2.0.1"
+
+jsbarcode@^3.11.4:
+  version "3.11.4"
+  resolved "https://registry.yarnpkg.com/jsbarcode/-/jsbarcode-3.11.4.tgz#00dfe90329af94269ac0808b0858206aa3a71416"
+  integrity sha512-PHtad17lOl6LOLGK20k5I6P7MabiyHaJY5u5N5TlzC6ZunOR+yFnFnRUoqqOefrYPqO2nuJ1weHzG8B7YYEnHg==
 
 jsbn@~0.1.0:
   version "0.1.1"

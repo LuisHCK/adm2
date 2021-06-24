@@ -3,6 +3,11 @@ import Vuex from 'vuex'
 import { getUserCount } from '../lib/auth'
 import VuexPersistence from 'vuex-persist'
 import Maths from '../lib/maths'
+import {
+    SET_STORE,
+    TOGGLE_SIDENAV,
+    ADD_PRODUCT_TO_SHOPPING_CART
+} from '@/constants'
 
 Vue.use(Vuex)
 
@@ -32,11 +37,11 @@ export default new Vuex.Store({
             state.user = user
         },
 
-        SET_STORE(state, store) {
+        [SET_STORE](state, store) {
             state.store = store
         },
 
-        TOGGLE_SIDENAV(state) {
+        [TOGGLE_SIDENAV](state) {
             state.sidenavVisible = !state.sidenavVisible
         },
 
@@ -45,7 +50,7 @@ export default new Vuex.Store({
          * @param {*} state
          * @param {*} inventoryProduct
          */
-        ADD_PRODUCT_TO_SHOPPING_CART(state, payload) {
+        [ADD_PRODUCT_TO_SHOPPING_CART](state, payload) {
             state.shoppingCart = [...state.shoppingCart, payload]
         },
 

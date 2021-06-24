@@ -13,6 +13,7 @@
                         name="name"
                         v-validate="'required'"
                         icon="text"
+                        rounded
                     />
                 </b-field>
             </div>
@@ -20,26 +21,30 @@
             <!-- Address -->
             <div class="column is-half-tablet is-full-mobile">
                 <b-field label="Dirección">
-                    <b-input v-model="store.address" icon="routes" />
+                    <b-input v-model="store.address" icon="routes" rounded />
                 </b-field>
             </div>
 
             <!-- Phone number -->
             <div class="column is-half-tablet is-full-mobile">
                 <b-field label="Teléfono">
-                    <b-input v-model="store.phone" icon="phone" />
+                    <b-input v-model="store.phone" icon="phone" rounded />
                 </b-field>
             </div>
 
             <div class="column is-half-tablet is-full-mobile">
                 <b-field label="ID Legal">
-                    <b-input v-model="store.legal_id" icon="id-card" />
+                    <b-input v-model="store.legal_id" icon="id-card" rounded />
                 </b-field>
             </div>
 
             <div class="column is-half-tablet is-full-mobile">
                 <b-field label="Moneda">
-                    <b-input v-model="store.currency" icon="currency-usd" />
+                    <b-input
+                        v-model="store.currency"
+                        icon="currency-usd"
+                        rounded
+                    />
                 </b-field>
             </div>
 

@@ -23,14 +23,50 @@
                 />
             </b-field>
         </div>
+
+        <div class="column is-full">
+            <div class="mb-5">
+                <b-field label="Diseño de factura">
+                    <b-select
+                        placeholder="Seleccione un diseño"
+                        :value="posSettings.value.invoice_design || ''"
+                        @input="handleinvoiceDesign"
+                        rounded
+                    >
+                        <option value="full-page">
+                            Página completa
+                        </option>
+
+                        <option value="text-only">
+                            Recibo sencillo
+                        </option>
+                    </b-select>
+                </b-field>
+            </div>
+
+            <template v-if="posSettings.value.invoice_design === 'full-page'">
+                <large-invoice-preview />
+            </template>
+
+            <template v-if="posSettings.value.invoice_design === 'text-only'">
+                <receipt-preview />
+            </template>
+        </div>
     </div>
 </template>
 
 <script>
 import { addOrUpdateSettings, getSettings } from '@/controllers/settings'
+import LargeInvoicePreview from '@/components/invoices/large-invoice-preview.vue'
+import ReceiptPreview from '@/components/invoices/receipt-preview.vue'
 
 export default {
     name: 'pos',
+
+    components: {
+        LargeInvoicePreview,
+        ReceiptPreview
+    },
 
     data() {
         return {
@@ -49,6 +85,17 @@ export default {
             await addOrUpdateSettings({
                 name: 'pos',
                 value: { ...this.posSettings.value, [name]: value }
+            })
+            this.loadSettings()
+        },
+
+        async handleinvoiceDesign(value) {
+            await addOrUpdateSettings({
+                name: 'pos',
+                value: {
+                    ...this.posSettings.value,
+                    invoice_design: value
+                }
             })
             this.loadSettings()
         }
