@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Recibo #<%= sale.id %></title>
+    </head>
+    <body>
+        <div style="font-family: monospace; max-width: 320px">
+            <div class="has-text-centered">
+                <div>
+                    <table
+                        style="
+                            border-collapse: collapse;
+                            width: 100%;
+                        "
+                    >
+                        <tbody>
+                            <tr style="height: 18px">
+                                <td
+                                    style="
+                                        width: 100%;
+                                        text-align: center;
+                                        padding-bottom: 8px;
+                                        font-size: 18px;
+                                    "
+                                >
+                                    <strong>
+                                        <%= store.name %>
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr style="height: 54px">
+                                <td
+                                    style="
+                                        width: 100%;
+                                        text-align: center;
+                                        height: 54px;
+                                    "
+                                >
+                                    <div>
+                                        <%= store.address %>
+                                    </div>
+                                    <div>
+                                        <%= store.phone %>
+                                    </div>
+                                    <div>
+                                        <%= store.legal_id %>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <table
+                    style="
+                        width: 100%;
+                        border-top: 1px dashed gray;
+                        border-bottom: 1px dashed gray;
+                        padding-top: 8px;
+                        padding-bottom: 8px;
+                        margin-top: 8px;
+                        margin-bottom: 8px;
+                    "
+                >
+                    <tbody>
+                        <tr>
+                            <td
+                                style="
+                                    text-align: center;
+                                    font-weight: bold;
+                                    font-size: 14px;
+                                "
+                            >
+                                Recibo de compra
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; font-size: 14px">
+                                #<%= invoiceFormatId(sale.id) %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center">
+                                <%=
+                                moment(sale.created_at).format('DD.MM.YYYY.h:mma')
+                                %>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+                <table style="border-collapse: collapse; width: 100%">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left; padding: 8px 0px">
+                                PROD
+                            </th>
+                            <th style="text-align: right; padding: 8px 0px">
+                                PREC
+                            </th>
+                            <th style="text-align: right; padding: 8px 0px">
+                                DESC
+                            </th>
+                            <th style="text-align: right; padding: 8px 0px">
+                                SUB TOT
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% sale.shoppingCart.filter(s =>
+                        !s.refunded).forEach(item => { %>
+                        <tr>
+                            <td style="padding: 8px 0px">
+                                <%= item.quantity %>x <%=
+                                item.inventoryProduct.product.name %> <%=
+                                item.inventoryProduct.product.content %><%=
+                                item.inventoryProduct.product.unit %>
+                            </td>
+                            <td style="text-align: right; padding: 8px 0px">
+                                <%= currency %><%= item.inventoryProduct.price
+                                %>
+                            </td>
+                            <td style="text-align: right; padding: 8px 0px">
+                                <% if(item.discount && item.discounted){ %> <%=
+                                currency %><%= item.discounted %> <% } else{ %>
+                                -- <% } %>
+                            </td>
+                            <td style="text-align: right; padding: 8px 0px">
+                                <% if(item.discount && item.discounted){ %> <%=
+                                currency %><%= item.subTotal - (item.discounted
+                                || 0) %> <% } else{ %> <%= currency %><%=
+                                item.subTotal %> <% } %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                    <tfoot>
+                        <tr
+                            style="
+                                border-top: 1px dashed gray;
+                                border-bottom: 1px dashed gray;
+                            "
+                        >
+                            <td
+                                colspan="3"
+                                style="
+                                    text-align: left;
+                                    font-weight: bold;
+                                    padding-top: 8px;
+                                    padding-bottom: 8px;
+                                "
+                            >
+                                TOTAL
+                            </td>
+                            <td
+                                style="
+                                    text-align: right;
+                                    padding-top: 8px;
+                                    padding-bottom: 8px;
+                                    font-weight: bold;
+                                "
+                            >
+                                <%= currency %><%= sale.total %>
+                            </td>
+                        </tr>
+                        <tr class="payment-row">
+                            <td colspan="3" style="padding: 8px 0px">
+                                EFECTIVO
+                            </td>
+                            <td style="text-align: right; padding: 8px 0px">
+                                <% if(sale.pay_with) { %> <%= currency %><%=
+                                sale.pay_with %> <% } else { %> -- <% } %>
+                            </td>
+                        </tr>
+                        <tr class="change-row">
+                            <td colspan="3">CAMBIO</td>
+                            <td style="text-align: right">
+                                <% if(sale.pay_with && sale.total) { %> <%=
+                                currency %><%= Number(sale.pay_with) -
+                                Number(sale.total) %> <% } else { %> -- <% } %>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div>
+                    <table
+                        style="
+                            width: 100%;
+                            border-top: 1px dashed gray;
+                            border-bottom: 1px dashed gray;
+                            margin-top: 18px;
+                            padding: 24px 0px;
+                        "
+                    >
+                        <tbody>
+                            <tr>
+                                <td
+                                    style="
+                                        text-align: center;
+                                        font-weight: bold;
+                                        font-size: 14px;
+                                    "
+                                >
+                                    Gracias por su compra!
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;">
+                                <img
+                                    src="<%= barCode %>"
+                                    style="width: auto; height: 55px"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

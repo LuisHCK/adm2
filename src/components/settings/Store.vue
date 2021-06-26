@@ -70,6 +70,7 @@
                     icon-left="content-save"
                     type="is-success"
                     native-type="submit"
+                    rounded
                 >
                     Guardar
                 </b-button>

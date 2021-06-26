@@ -45,7 +45,10 @@
                 placeholder="Filtrar por fecha"
                 v-model="dateRange"
                 locale="es-NI"
+                :month-names="months"
+                :day-names="daysAbr"
                 @input="submitDateChange"
+                :mobile-native="false"
                 range
             />
             <b-button
@@ -67,12 +70,15 @@
                 icon-right-clickable
                 :icon-right="searchValue ? 'close' : null"
                 @icon-right-click="emitCleanFilter"
+                rounded
             />
         </b-field>
     </div>
 </template>
 
 <script>
+import { months, daysAbr } from '@/lib/locale'
+
 /**
  * LogFilters component
  * @emits onDateChange Emited when a date range is selected
@@ -88,6 +94,11 @@ export default {
             dateRange: [],
             searchTimeout: null
         }
+    },
+
+    computed: {
+        months: () => months,
+        daysAbr: () => daysAbr
     },
 
     methods: {

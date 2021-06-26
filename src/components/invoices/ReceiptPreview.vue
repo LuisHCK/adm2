@@ -15,9 +15,7 @@
                 Recibo de compra
             </span>
             <br />
-            <span>
-                #00007
-            </span>
+            <span class="is-size-6"> #{{ invoiceFormatId(sale.id) }} </span>
         </div>
 
         <div class="receipt-table-wrapper mt-4">
@@ -25,23 +23,29 @@
                 <thead>
                     <tr>
                         <th>PROD</th>
-                        <th class="has-text-right">PREC UNIT</th>
+                        <th class="has-text-right">PREC</th>
                         <th class="has-text-right">DESC</th>
                         <th class="has-text-right">SUB TOT</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1x Soda 14ml</td>
-                        <td class="has-text-right">15.00</td>
-                        <td class="has-text-right">0.00</td>
-                        <td class="has-text-right">15.00</td>
-                    </tr>
-                    <tr>
-                        <td>2x Chocolate 26gr</td>
-                        <td class="has-text-right">22.00</td>
-                        <td class="has-text-right">5.00</td>
-                        <td class="has-text-right">17.00</td>
+                    <tr
+                        v-for="item in sale.shoppingCart"
+                        :key="'sale-item-' + item.inventoryProduct.id"
+                    >
+                        <td>
+                            {{ item.quantity }}x
+                            {{ getProductName(item.inventoryProduct) }}
+                        </td>
+                        <td class="has-text-right">
+                            {{ item.inventoryProduct.price | money }}
+                        </td>
+                        <td class="has-text-right">
+                            {{ item.discounted || 0 | money }}
+                        </td>
+                        <td class="has-text-right">
+                            {{ (item.subTotal - item.discounted) | money }}
+                        </td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -53,7 +57,7 @@
                         </td>
                         <td class="has-text-right">
                             <span class="has-text-weight-bold">
-                                32.00
+                                {{ sale.total | money }}
                             </span>
                         </td>
                     </tr>
@@ -62,8 +66,13 @@
                             EFECTIVO
                         </td>
                         <td class="has-text-right">
-                            <span class="has-text-weight-bold">
-                                100.00
+                            <span>
+                                <template v-if="sale.pay_with">
+                                    {{ Number(sale.pay_with) | money }}
+                                </template>
+                                <template v-else>
+                                    --
+                                </template>
                             </span>
                         </td>
                     </tr>
@@ -72,8 +81,17 @@
                             CAMBIO
                         </td>
                         <td class="has-text-right">
-                            <span class="has-text-weight-bold">
-                                68.00
+                            <span>
+                                <template v-if="sale.pay_with && sale.total">
+                                    {{
+                                        (Number(sale.pay_with) -
+                                            Number(sale.total))
+                                            | money
+                                    }}
+                                </template>
+                                <template v-else>
+                                    --
+                                </template>
                             </span>
                         </td>
                     </tr>
@@ -81,11 +99,17 @@
             </table>
 
             <div class="has-text-centered footer-message p-4 mt-4">
-                <span class="is-size-5">¡Gracias por su compra!</span>
+                <span class="is-size-5">
+                    {{
+                        posSettings
+                            ? posSettings.invoice_message
+                            : '¡Gracias por su compra!'
+                    }}
+                </span>
             </div>
 
             <div class="has-text-centered">
-                <svg id="demoBarcode" />
+                <svg id="saleBarcode" />
             </div>
         </div>
     </div>
@@ -94,19 +118,54 @@
 <script>
 import { mapGetters } from 'vuex'
 import JsBarcode from 'jsbarcode'
+import { getSettings } from '@/controllers/settings'
+import { invoiceFormatId } from '@/reports/invoice'
 
 export default {
     name: 'receipt-preview',
+
+    props: {
+        sale: {
+            type: Object,
+            default: () => {}
+        }
+    },
 
     computed: {
         ...mapGetters(['store'])
     },
 
+    data() {
+        return {
+            posSettings: {}
+        }
+    },
+
+    methods: {
+        getProductName(inventoryProduct) {
+            const prod = inventoryProduct.product
+            return `${prod.name} ${prod.content}${prod.unit}`
+        },
+
+        async getPosSettings() {
+            const settings = await getSettings('pos')
+
+            if (settings && settings.value) {
+                this.posSettings = settings.value
+            }
+        },
+
+        // Wire up external function
+        invoiceFormatId
+    },
+
     mounted() {
-        JsBarcode('#demoBarcode', '0021327', {
+        this.getPosSettings()
+
+        JsBarcode('#saleBarcode', this.sale.id, {
             displayValue: false,
             height: 35,
-            lineColor: "#2c3e50",
+            lineColor: '#2c3e50'
         })
     }
 }
@@ -123,6 +182,7 @@ export default {
 
     * {
         font-size: 0.8rem;
+        font-family: monospace;
     }
 
     .receipt-heading {
@@ -136,6 +196,10 @@ export default {
 
     table.receipt-table {
         width: 100%;
+
+        th {
+            white-space: nowrap;
+        }
 
         td,
         th {

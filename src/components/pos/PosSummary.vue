@@ -45,7 +45,7 @@
             </div>
             <!-- Exchange -->
             <div class="column is-half">
-                <span>Vuelto</span>
+                <span>Cambio</span>
             </div>
 
             <div class="column is-half has-text-right">
@@ -245,6 +245,7 @@ export default {
 .complete-sale-button {
     display: flex;
     justify-content: center;
+    z-index: 10;
 
     .field {
         width: 100%;

@@ -23,6 +23,7 @@
         icon="calendar-today"
         :month-names="months"
         :day-names="weekDays"
+        :mobile-native="false"
         v-model="form.date"
       >
       </b-datepicker>

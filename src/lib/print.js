@@ -49,11 +49,16 @@ export function printContentent(
  * @param {Function} callback Callback funtion
  */
 function webPrint(renderedTemplate, callback = null) {
-    const printWindow = window.open('_blank', 'Title')
+    const printWindow = window.open('about:blank', '')
     printWindow.document.body.innerHTML = renderedTemplate
-    printWindow.focus()
-    printWindow.print()
-    printWindow.close()
+
+    printWindow.addEventListener('load', () => {
+        printWindow.print()
+    })
+
+    printWindow.addEventListener('afterprint', () => {
+        printWindow.close()
+    })
 
     // Execute callback if given
     if (callback) {

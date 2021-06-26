@@ -59,6 +59,7 @@
         <b-modal
             :active.sync="showSaleInvoice"
             @close="saleInvoice = undefined"
+            width="850"
             has-modal-card
         >
             <div v-if="showSaleInvoice" class="modal-card" style="width: auto">
@@ -73,7 +74,9 @@
                     </b-button>
                 </header>
                 <section class="modal-card-body">
-                    <SaleDetails :sale="saleInvoice" />
+                    <template v-if="saleInvoice">
+                        <receipt-preview :sale="saleInvoice" />
+                    </template>
                 </section>
             </div>
         </b-modal>
@@ -85,19 +88,16 @@ import 'vue-select/dist/vue-select.css'
 import ProductSearch from '../components/pos/ProductSearch.vue'
 import CustomerForm from '../components/customers/CustomerForm.vue'
 import ProductsTable from '../components/pos/ProductsTable.vue'
-import SaleDetails from '../components/sales/SaleDetails.vue'
 import PosSummary from '../components/pos/PosSummary.vue'
 import vSelect from 'vue-select'
 import { mapState, mapGetters } from 'vuex'
 import { printContentent } from '../lib/print'
+import { invoiceFormatId } from '@/reports/invoice'
 import { printInvoice } from '../reports/invoice'
 import Maths from '../lib/maths'
-import {
-    cashBoxDateFormat,
-    cashBoxRefGen,
-    registerCashboxLog
-} from '../controllers/cashbox'
+import { registerCashboxLog } from '../controllers/cashbox'
 import { getSettings } from '@/controllers/settings'
+import ReceiptPreview from '@/components/invoices/ReceiptPreview.vue'
 
 export default {
     components: {
@@ -105,8 +105,8 @@ export default {
         vSelect,
         CustomerForm,
         ProductsTable,
-        SaleDetails,
-        PosSummary
+        PosSummary,
+        ReceiptPreview
     },
 
     computed: {
@@ -280,12 +280,7 @@ export default {
                 amount: this.saleInvoice.total,
                 concept: `Venta POS cont #${this.saleInvoice.id}`,
                 type: 'add',
-                reference: cashBoxRefGen(
-                    'sale',
-                    `${this.saleInvoice.id}-${cashBoxDateFormat(
-                        this.saleInvoice.created_at
-                    )}`
-                ),
+                reference: `VENT-${invoiceFormatId(this.saleInvoice.id)}`,
                 notes: '',
                 user_id: this.user,
                 date: this.saleInvoice.created_at

@@ -14,6 +14,7 @@
                         @input="emitChange()"
                         :month-names="months"
                         :day-names="daysAbr"
+                        :mobile-native="false"
                         range
                         rounded
                     >

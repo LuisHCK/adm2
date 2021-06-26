@@ -231,7 +231,7 @@ export default {
         border-end-start-radius: 6px;
         overflow-y: scroll;
         transition: 0.3s;
-        z-index: 1;
+        z-index: 99;
 
         li {
             padding: 8px 10px;
