@@ -50,6 +50,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        margin-left: auto;
 
         button {
             margin-right: 6px;
@@ -61,7 +62,7 @@ export default {
 }
 .navbar-brand {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 100%;
 }
 .navbar-toggle-menu {
