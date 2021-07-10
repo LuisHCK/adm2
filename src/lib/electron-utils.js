@@ -1,4 +1,6 @@
-const userAgent = navigator.userAgent.toLowerCase();
-const onElectron = userAgent.indexOf(' electron/') > -1
+const onElectron =
+    typeof window !== 'undefined' &&
+    typeof window.process === 'object' &&
+    window.process.type === 'renderer'
 
 export { onElectron }
