@@ -86,7 +86,7 @@ const printElectron = (
         // Merge styles
         const winStyles = mergeStyles(styles)
         win.webContents.insertCSS(winStyles)
-        win.webContents.print({ silent: true, footer: 'Hello world' }, () => {
+        win.webContents.print({ silent: false, footer: 'Hello world' }, () => {
             // close window after print order.
             win.close()
             win.destroy()
