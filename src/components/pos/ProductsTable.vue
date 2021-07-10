@@ -85,7 +85,7 @@
 
                 <b-table-column
                     field="inventoryProduct"
-                    label="Descuento"
+                    label="Descuento%"
                     v-slot="props"
                 >
                     <b-field>

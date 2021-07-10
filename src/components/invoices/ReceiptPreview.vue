@@ -1,5 +1,5 @@
 <template>
-    <div class="ReceiptPreview">
+    <div class="ReceiptPreview" id="receipt-preview">
         <div class="has-text-centered has-text-weight-bold is-size-6 mb-3">
             {{ store.name }}
         </div>
@@ -41,10 +41,13 @@
                             {{ item.inventoryProduct.price | money }}
                         </td>
                         <td class="has-text-right">
-                            {{ item.discounted || 0 | money }}
+                            {{ Number(item.discounted || 0) | money }}
                         </td>
                         <td class="has-text-right">
-                            {{ (item.subTotal - item.discounted) | money }}
+                            {{
+                                (item.subTotal - Number(item.discounted))
+                                    | money
+                            }}
                         </td>
                     </tr>
                 </tbody>
@@ -57,7 +60,7 @@
                         </td>
                         <td class="has-text-right">
                             <span class="has-text-weight-bold">
-                                {{ sale.total | money }}
+                                {{ Number(sale.total) | money }}
                             </span>
                         </td>
                     </tr>

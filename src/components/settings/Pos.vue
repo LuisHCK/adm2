@@ -57,7 +57,7 @@ export default {
             posSettings: {
                 value: {}
             },
-            inputTimeout: undefined
+            inputTimeout: null
         }
     },
 
@@ -71,7 +71,7 @@ export default {
 
             this.inputTimeout = setTimeout(() => {
                 this.saveValue(name, value)
-            }, 300)
+            }, 1000)
         },
 
         async saveValue(name, value) {
@@ -89,7 +89,8 @@ export default {
                 duration: 3000,
                 message: `Ajustes guardados`,
                 position: 'is-bottom',
-                type: 'is-success'
+                type: 'is-success',
+                queue: false
             })
         }
     },

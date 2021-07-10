@@ -132,7 +132,7 @@
             <tfoot>
                 <tr style="border-top: 1px solid black;" v-if="sale.discount">
                     <td colspan="3" align="right" style="padding: 6px;">
-                        <b>Descuento</b>
+                        <b>Descuento%</b>
                     </td>
                     <td align="right" style="padding: 6px;">
                         <b> {{ currency }}{{ sale.discounted }} </b>

@@ -34,14 +34,22 @@
                 <span>Paga con</span>
             </div>
             <div class="column is-two-thirds has-text-right">
-                <b-input
-                    ref="payWithInput"
-                    @focus="focusSelect"
-                    type="number"
-                    v-model="payWith"
-                    :min="1"
-                    rounded
-                />
+                <b-field>
+                    <p class="control">
+                        <span
+                            class="button is-static is-rounded has-text-weight-bold"
+                            v-text="currency"
+                        />
+                    </p>
+                    <b-input
+                        ref="payWithInput"
+                        @focus="focusSelect"
+                        type="number"
+                        v-model="payWith"
+                        :min="1"
+                        rounded
+                    />
+                </b-field>
             </div>
             <!-- Exchange -->
             <div class="column is-half">
@@ -148,6 +156,7 @@
 <script>
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'pos-summary',
@@ -179,6 +188,8 @@ export default {
     },
 
     computed: {
+        ...mapGetters(['currency']),
+
         exchange() {
             return this.finalTotal > 0 && this.payWith
                 ? this.payWith - this.finalTotal
@@ -255,7 +266,7 @@ export default {
         flex-grow: 1;
     }
 
-    @media only screen and (max-width: 770px) {
+    @media only screen and (max-width: 981px) {
         position: fixed;
         background-color: white;
         width: 100%;

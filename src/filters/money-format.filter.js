@@ -7,7 +7,7 @@ Vue.filter('money', value => formatNumber(value))
 
 /**
  * Generates a localized number
- * @param {string} value
+ * @param {number} value
  * @returns string
  */
 export const formatNumber = value => {

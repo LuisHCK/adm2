@@ -8,8 +8,8 @@
             </div>
         </div>
 
-        <div class="columns">
-            <div class="column">
+        <div class="columns is-mobile is-multiline">
+            <div class="column is-two-thirds-desktop is-full-mobile">
                 <div class="panel">
                     <h2
                         class="is-size-5-mobile is-size-4-desktop has-text-weight-bold mb-4"
@@ -23,7 +23,8 @@
                     />
                 </div>
             </div>
-            <div class="column is-one-third">
+
+            <div class="column is-one-third-desktop is-full-mobile">
                 <pos-summary
                     :shoppingCartTotal="shoppingCartTotal"
                     :shoppingCartCustomer="shoppingCartCustomer"
@@ -74,9 +75,12 @@
                     </b-button>
                 </header>
                 <section class="modal-card-body">
-                    <template v-if="saleInvoice">
+                    <div
+                        v-if="saleInvoice"
+                        class="is-flex is-justify-content-center is-flex-direction-column is-align-items-center"
+                    >
                         <receipt-preview :sale="saleInvoice" />
-                    </template>
+                    </div>
                 </section>
             </div>
         </b-modal>
