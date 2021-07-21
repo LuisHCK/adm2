@@ -27,6 +27,8 @@ Doesn't require internet connection, everything is stored on device using [Index
 
 ![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/master/public/screenshots/71c31d91-5a99-44ff-911a-4ca07f1e87c6.jpeg)
 
+![screenshot](https://raw.githubusercontent.com/LuisHCK/adm2/develop/public/screenshots/Screenshot%20from%202021-07-20%2021-06-42.png)
+
 ## Project setup
 ```
 yarn install
