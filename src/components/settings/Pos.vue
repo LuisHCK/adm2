@@ -7,7 +7,7 @@
             >
                 <b-switch
                     :value="posSettings.value.show_invoice_popup"
-                    @input="saveValue($event, 'show_invoice_popup')"
+                    @input="saveValue('show_invoice_popup', $event)"
                 />
             </b-field>
         </div>
@@ -20,7 +20,7 @@
             >
                 <b-switch
                     :value="posSettings.value.auto_print_invoice"
-                    @input="saveValue($event, 'auto_print_invoice')"
+                    @input="saveValue('auto_print_invoice', $event)"
                 />
             </b-field>
         </div>
@@ -34,8 +34,28 @@
                     placeholder="Ej: Gracias por su compra"
                     :value="posSettings.value.invoice_message"
                     @input="handleInput('invoice_message', $event)"
+                    icon="text"
                     rounded
                 />
+            </b-field>
+        </div>
+
+        <div class="column is-half">
+            <b-field label="Impresora principal">
+                <b-select
+                    @input="saveValue('default_printer', $event)"
+                    :value="posSettings.value.default_printer"
+                    placeholder="Seleccionar impresora"
+                    icon="printer"
+                    rounded
+                >
+                    <option
+                        v-for="printer in printers"
+                        :key="'printer-' + printer.name"
+                        :value="printer.name"
+                        v-text="printer.displayName"
+                    />
+                </b-select>
             </b-field>
         </div>
     </div>
@@ -44,6 +64,7 @@
 <script>
 import { addOrUpdateSettings, getSettings } from '@/controllers/settings'
 import LargeInvoicePreview from '@/components/invoices/large-invoice-preview.vue'
+import { getPrintersList } from '@/lib/print'
 
 export default {
     name: 'pos',
@@ -57,7 +78,8 @@ export default {
             posSettings: {
                 value: {}
             },
-            inputTimeout: null
+            inputTimeout: null,
+            printers: getPrintersList()
         }
     },
 

@@ -38,3 +38,14 @@
  * @proptery {string} created_at
  * @proptery {string} updated_at
  */
+
+/**
+ * @typedef PrinterInfo
+ * @type {Object}
+ * @property {string} name
+ * @property {string} displayName
+ * @property {string} description
+ * @property {string} status
+ * @property {boolean} isDefault
+ * @property {Object.<string, string>} options
+ */

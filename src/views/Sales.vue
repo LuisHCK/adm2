@@ -283,7 +283,7 @@
 <script>
 import SaleDetails from '@/components/sales/SaleDetails.vue'
 import Invoice from '@/components/sales/Invoice.vue'
-import { printContentent } from '@/lib/print'
+import { printContentent, receiptPrint } from '@/lib/print'
 import { salesReport } from '@/reports/sales-report'
 import { printInvoice, invoiceFormatId } from '../reports/invoice'
 import RefundModal from '../components/sales/RefundModal.vue'
@@ -400,8 +400,9 @@ export default {
         },
 
         openPrintInvoice(sale) {
-            const report = printInvoice(sale)
-            printContentent(report, `Factura #${sale.id}`, '')
+            // const report = printInvoice(sale)
+            // printContentent(report, `Factura #${sale.id}`, '')
+            receiptPrint(sale)
         },
 
         /** Optinally load a sale */

@@ -387,8 +387,12 @@ export default {
             this.showDetailModal = true
         },
 
-        getInventories() {
-            Database.inventory.toArray(data => (this.inventories = data))
+        async getInventories() {
+            this.inventories = await Database.inventory.toArray()
+
+            if (this.inventories.length === 1) {
+                this.selectedInventory = this.inventories[0]
+            }
         },
 
         /**
@@ -502,7 +506,6 @@ export default {
         },
 
         openInventorySelection() {
-            this.getInventories()
             this.showInventorySelect = true
         },
 
@@ -553,6 +556,7 @@ export default {
         this.setActionButtons()
         this.getProducts()
         this.handlePreselectedInventory()
+        this.getInventories()
     },
 
     beforeDestroy() {

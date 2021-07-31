@@ -4055,10 +4055,9 @@ electron-devtools-installer@^3.1.1:
     semver "^7.2.1"
     unzip-crx-3 "^0.2.0"
 
-electron-pos-printer@^1.2.4:
+"electron-pos-printer@https://github.com/LuisHCK/electron-pos-printer.git":
   version "1.2.4"
-  resolved "https://registry.yarnpkg.com/electron-pos-printer/-/electron-pos-printer-1.2.4.tgz#f57a5fac2b4f189eed42afb4479303ccb82116bd"
-  integrity sha512-cO4wF3KhrE/6aAokZmPPlLMkCygsPfNv0/CkBsAXYaeN5TlfbQ9MF99P5UHxF++JBPcB6TCuog2DzNW0UF21sQ==
+  resolved "https://github.com/LuisHCK/electron-pos-printer.git#afca432a3bb1f61090307f6ade3c1e90e86d4aeb"
 
 electron-publish@22.10.5:
   version "22.10.5"

@@ -150,6 +150,12 @@
                 </div>
             </div>
         </div>
+
+        <b-modal v-model="showCustomerForm" has-modal-card trap-focus>
+            <modal-card @close="showCustomerForm = false">
+                <customer-form @onSave="handleCustomerSave()" />
+            </modal-card>
+        </b-modal>
     </div>
 </template>
 
@@ -157,34 +163,38 @@
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
 import { mapGetters } from 'vuex'
+import CustomerForm from '@/components/customers/CustomerForm.vue'
+import ModalCard from '@/components/ui/ModalCard.vue'
 
 export default {
     name: 'pos-summary',
 
     components: {
-        vSelect
+        vSelect,
+        CustomerForm,
+        ModalCard,
     },
 
     props: {
         shoppingCartTotal: {
             type: Number,
-            default: 0
+            default: 0,
         },
 
         shoppingCartCustomer: {
             type: Object,
-            default: () => {}
+            default: () => {},
         },
 
         shoppingCart: {
             type: Array,
-            default: () => []
+            default: () => [],
         },
 
         finalTotal: {
             type: Number,
-            default: 0
-        }
+            default: 0,
+        },
     },
 
     computed: {
@@ -194,7 +204,7 @@ export default {
             return this.finalTotal > 0 && this.payWith
                 ? this.payWith - this.finalTotal
                 : 0
-        }
+        },
     },
 
     watch: {
@@ -204,7 +214,7 @@ export default {
 
         saleType(newVal, oldVal) {
             if (newVal !== oldVal) this.$emit('changeSaleType', newVal)
-        }
+        },
     },
 
     data() {
@@ -213,7 +223,8 @@ export default {
             discount: 0,
             payWith: undefined,
             saleType: 1,
-            customers: []
+            customers: [],
+            showCustomerForm: false,
         }
     },
 
@@ -230,6 +241,7 @@ export default {
          * Set customer for of this shopping cart
          */
         setCustomer(event) {
+            console.log(event)
             this.$emit('setCustomer', event)
         },
 
@@ -239,12 +251,18 @@ export default {
 
         completeSale() {
             this.$emit('submit')
-        }
+        },
+
+        async handleCustomerSave() {
+            this.showCustomerForm = false
+            await this.getCustomers()
+            this.setCustomer(this.customers.pop())
+        },
     },
 
     mounted() {
         this.getCustomers()
-    }
+    },
 }
 </script>
 

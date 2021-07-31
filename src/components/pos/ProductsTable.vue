@@ -236,5 +236,9 @@ export default {
         font-size: 18px;
         font-weight: bolder;
     }
+
+    .table-wrapper {
+        height: 100% !important;
+    }
 }
 </style>

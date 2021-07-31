@@ -21,7 +21,12 @@ export const loadSettings = async () => {
 }
 
 export const getSettings = async name => {
-    return await database.settings.get({ name })
+    try {
+        return await database.settings.get({ name })
+    } catch (error) {
+        console.error(error)
+        return {}
+    }
 }
 
 /**
@@ -34,7 +39,7 @@ export const addOrUpdateSettings = async data => {
 
     if (existingSetting && existingSetting.id) {
         await database.settings.update(existingSetting.id, {
-            value: data.value
+            value: data.value,
         })
     } else {
         await database.settings.add(data)

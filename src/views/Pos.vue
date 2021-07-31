@@ -110,7 +110,7 @@ export default {
         CustomerForm,
         ProductsTable,
         PosSummary,
-        ReceiptPreview
+        ReceiptPreview,
     },
 
     computed: {
@@ -131,7 +131,7 @@ export default {
             } else {
                 return 0
             }
-        }
+        },
     },
 
     data() {
@@ -144,7 +144,7 @@ export default {
             saleType: 1,
             saleInvoice: {},
             showSaleInvoice: false,
-            posSettings: {}
+            posSettings: {},
         }
     },
 
@@ -173,9 +173,9 @@ export default {
                     discount: inventoryProduct.discount || 0,
                     discounted: Maths.percentOfNum(
                         subTotal,
-                        inventoryProduct.discount || 0
+                        inventoryProduct.discount || 0,
                     ),
-                    subTotal
+                    subTotal,
                 })
             }
             setTimeout(() => {
@@ -197,7 +197,7 @@ export default {
             this.$buefy.toast.open({
                 message: 'Se quitó el producto',
                 type: 'is-success',
-                position: 'is-bottom'
+                position: 'is-bottom',
             })
         },
 
@@ -217,13 +217,13 @@ export default {
                 this.$buefy.toast.open({
                     message: 'Supera el máximo de existencias',
                     type: 'is-warning',
-                    position: 'is-bottom'
+                    position: 'is-bottom',
                 })
             }
 
             this.$store.commit('SET_PRODUCT_QTY_SHOPPING_CART', {
                 index,
-                quantity: quantity
+                quantity: quantity,
             })
         },
 
@@ -232,7 +232,7 @@ export default {
             const inventoryProduct = this.shoppingCart[index]
             this.$store.commit('SET_PRODUCT_DISCOUNT_SHOPPING_CART', {
                 index,
-                discount: event
+                discount: event,
             })
         },
 
@@ -251,6 +251,10 @@ export default {
          * Finalice shopping cart and store the info in db
          */
         async completeSale() {
+            if (!this.shoppingCart.length) {
+                return
+            }
+
             const saleId = await Database.sale.add({
                 shoppingCart: this.shoppingCart,
                 discount: this.discount,
@@ -261,7 +265,7 @@ export default {
                 pay_with: this.payWith,
                 customer_id: this.shoppingCartCustomer.id,
                 created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
+                updated_at: new Date().toISOString(),
             })
 
             this.saleInvoice = await Database.sale.get(saleId)
@@ -287,7 +291,7 @@ export default {
                 reference: `VENT-${invoiceFormatId(this.saleInvoice.id)}`,
                 notes: '',
                 user_id: this.user,
-                date: this.saleInvoice.created_at
+                date: this.saleInvoice.created_at,
             })
         },
 
@@ -299,8 +303,8 @@ export default {
                     Database.inventory_product.update(
                         item.inventoryProduct.id,
                         {
-                            stock: totalStock
-                        }
+                            stock: totalStock,
+                        },
                     )
                 }
             })
@@ -310,15 +314,19 @@ export default {
             this.$buefy.toast.open({
                 message: message,
                 type: 'is-danger',
-                position: 'is-bottom'
+                position: 'is-bottom',
             })
         },
 
         showToast(message, type = 'is-success') {
-            this.$buefy.toast.open({
+            this.$buefy.snackbar.open({
                 message: message,
                 type: type,
-                position: 'is-bottom'
+                position: 'is-bottom-right',
+                duration: 10000,
+                actionText: 'Imprimir',
+                cancelText: 'OK',
+                onAction: () => {},
             })
         },
 
@@ -326,20 +334,22 @@ export default {
             Database.customer.toArray().then(data => (this.customers = data))
         },
 
-        initShortCuts() {
-            window.addEventListener('keydown', e => {
-                // CTRL + 1 = Focus on search
-                if (e.which == 49 && e.ctrlKey) {
-                    console.log('CTRL + 1')
-                    document.getElementById('searchInput').focus()
-                }
+        handleShortcuts(event) {
+            // CTRL + 1 = Focus on search
+            if (event.which == 49 && event.ctrlKey || event.which === 113) {
+                console.log('CTRL + 1')
+                document.getElementById('searchInput').focus()
+            }
 
-                // CTRL + 2 = Finish the sale
-                if (e.which == 50 && e.ctrlKey) {
-                    console.log('CTRL + 2')
-                    this.completeSale()
-                }
-            })
+            // CTRL + 2 = Finish the sale
+            if (event.which == 50 && event.ctrlKey) {
+                console.log('CTRL + 2')
+                this.completeSale()
+            }
+        },
+
+        initShortCuts() {
+            window.addEventListener('keydown', this.handleShortcuts)
         },
 
         openPrintInvoice() {
@@ -350,14 +360,18 @@ export default {
         async loadSettings() {
             const settings = await await getSettings('pos')
             this.posSettings = settings && settings.value ? settings.value : {}
-        }
+        },
     },
 
     mounted() {
         this.getCustomers()
         this.initShortCuts()
         this.loadSettings()
-    }
+    },
+
+    beforeDestroy() {
+        window.removeEventListener('keydown', this.handleShortcuts)
+    },
 }
 </script>
 
