@@ -11,7 +11,14 @@ Vue.filter('money', value => formatNumber(value))
  * @returns string
  */
 export const formatNumber = value => {
-    const formatedNumber = value
+    const safeNumber = Number(value)
+
+    if (isNaN(safeNumber)) {
+        return `${currency}${0.00}`
+    }
+
+
+    const formatedNumber = safeNumber
         .toFixed(2)
         .replace(/\d(?=(\d{3})+\.)/g, '$&,')
         .replace('.00', '')

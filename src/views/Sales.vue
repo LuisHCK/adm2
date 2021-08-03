@@ -102,11 +102,12 @@
                         label="Sub Total"
                     >
                         <b-tag
-                            v-text="currency + props.row.subTotal"
                             class="has-text-weight-bold"
                             type="is-info"
                             rounded
-                        />
+                        >
+                            {{ props.row.subTotal | money }}
+                        </b-tag>
                     </b-table-column>
 
                     <b-table-column
@@ -125,10 +126,9 @@
                     <b-table-column v-slot="props" field="total" label="TOTAL">
                         <b-tag
                             type="is-success"
-                            v-text="currency + props.row.total"
                             class="has-text-weight-bold"
                             rounded
-                        />
+                        >{{props.row.total | money}}</b-tag>
                     </b-table-column>
 
                     <b-table-column
@@ -231,7 +231,9 @@
                         <b>TOTAL</b>
                     </th>
 
-                    <th colspan="3">{{ currency }}{{ salesTotal }}</th>
+                    <th colspan="3">
+                        {{ salesTotal | money }}
+                    </th>
                 </template>
 
                 <template slot="empty">
@@ -265,7 +267,7 @@
                     />
                 </header>
                 <section class="modal-card-body">
-                    <sale-details :sale="selectedSale"></sale-details>
+                    <sale-details :sale="selectedSale"/>
                 </section>
             </div>
         </b-modal>

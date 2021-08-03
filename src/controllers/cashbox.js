@@ -4,6 +4,7 @@ import renderReport from '../reports/generic-report'
 import store from '../store'
 import { formatNumber } from '../filters/money-format.filter'
 import '@/types'
+import {getUserById} from './users'
 
 /**
  * Get a list of CashBox logs filtered by date or current cut
@@ -48,7 +49,7 @@ export const getCashBoxLogs = async ({
             await Promise.all(
                 data.map(async log => {
                     // Get only needed values
-                    const { id, name } = await database.user.get(log.user_id)
+                    const { id, name } = await getUserById(log.user_id)
                     log.created_by = { id, name }
                 })
             )
@@ -79,7 +80,7 @@ export const searchCashBoxLog = async searchValue => {
             await Promise.all(
                 data.map(async log => {
                     // Get only needed values
-                    const { id, name } = await database.user.get(log.user_id)
+                    const { id, name } = await getUserById(log.user_id)
                     log.created_by = { id, name }
                 })
             )
@@ -114,7 +115,7 @@ export const getLastCashBoxClose = async () => {
  * @returns {Number}
  */
 export const getMoneyInCashBox = async () => {
-    const latestLogClose = (await getLastCashBoxClose()) || {
+    const latestLogClose = await getLastCashBoxClose() || {
         date: new Date('1970-01-01Z00:00:00:000').toISOString()
     }
 
@@ -126,7 +127,7 @@ export const getMoneyInCashBox = async () => {
         .and(log => logTypes.includes(log.type))
         .toArray()
 
-    return query.reduce((prev, next) => prev + next.amount, 0)
+    return query.reduce((prev, next) => prev + Number(next.amount), 0)
 }
 
 /**

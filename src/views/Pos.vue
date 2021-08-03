@@ -290,7 +290,7 @@ export default {
                 type: 'add',
                 reference: `VENT-${invoiceFormatId(this.saleInvoice.id)}`,
                 notes: '',
-                user_id: this.user,
+                user_id: this.user.id,
                 date: this.saleInvoice.created_at,
             })
         },

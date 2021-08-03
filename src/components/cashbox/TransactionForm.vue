@@ -41,10 +41,11 @@
                                     v-text="currency"
                                 />
                             </p>
-                            <b-numberinput
-                                :controls="false"
+                            <b-input
                                 :value="balance"
                                 :editable="false"
+                                :readonly="true"
+                                custom-class="balance-input"
                                 expanded
                                 rounded
                             />
@@ -103,7 +104,7 @@ export default {
         ...mapState(['user']),
 
         balance() {
-            return this.totalCash - this.form.withdrawalAmount
+            return Number(this.totalCash - this.form.withdrawalAmount).toFixed(2)
         },
 
         calendar() {
@@ -144,6 +145,11 @@ export default {
         async onSubmitForm() {
             const date = this.$moment()
             const isoString = date.toISOString()
+
+            if (!this.form.withdrawalAmount) {
+                return this.notifyError()
+            }
+
             // Register the close
             await registerCashboxLog({
                 amount: -Math.abs(this.form.withdrawalAmount),
@@ -154,7 +160,7 @@ export default {
                     cashBoxDateFormat(date.toDate())
                 ),
                 notes: this.form.notes,
-                user_id: this.user,
+                user_id: this.user.id,
                 date: isoString,
                 created_at: isoString,
                 updated_at: isoString
@@ -163,19 +169,21 @@ export default {
             // Register balance after close
             if (this.balance > 0) {
                 await registerCashboxLog({
-                    amount: this.balance,
+                    amount: Number(this.balance),
                     concept: 'Saldo en caja',
                     type: 'balance',
                     reference: cashBoxRefGen(
                         'balance',
                         cashBoxDateFormat(date.toDate())
                     ),
-                    user_id: this.user,
+                    user_id: this.user.id,
                     date: isoString,
                     created_at: isoString,
                     updated_at: isoString
                 })
             }
+
+            this.$emit('onSave')
 
             this.notifySuccess()
 
@@ -188,6 +196,14 @@ export default {
                 position: 'is-bottom',
                 type: 'is-success'
             })
+        },
+
+        notifyError() {
+            this.$buefy.toast.open({
+                message: 'Ocurrió un error al guardar, revise el formulario',
+                position: 'is-bottom',
+                type: 'is-error',
+            })
         }
     },
 
@@ -195,4 +211,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+    .balance-input {
+        text-align: center;
+    }
+</style>
