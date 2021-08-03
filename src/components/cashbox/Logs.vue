@@ -86,7 +86,7 @@ import {
     searchCashBoxLog
 } from '../../controllers/cashbox'
 import eventBus from '../../event-bus'
-import { PRINT_CASH_BOX_REPORT } from '../../event-bus/events'
+import { PRINT_CASH_BOX_REPORT, CASHBOX_LOG_SAVE } from '@/event-bus/events'
 import Card from '../ui/Card.vue'
 import LogFilters from './LogFilters.vue'
 
@@ -172,6 +172,7 @@ export default {
         this.getLogs()
 
         eventBus.$on(PRINT_CASH_BOX_REPORT, () => this.printReport())
+        eventBus.$on(CASHBOX_LOG_SAVE, () => this.getLogs())
     }
 }
 </script>

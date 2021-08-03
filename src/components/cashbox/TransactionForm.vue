@@ -75,13 +75,15 @@
 </template>
 
 <script>
+import EventBus from '@/event-bus'
+import { CASHBOX_LOG_SAVE } from '@/event-bus/events'
 import { months, daysAbr } from '@/lib/locale'
 import { mapGetters, mapState } from 'vuex'
 import {
     cashBoxDateFormat,
     cashBoxRefGen,
     registerCashboxLog
-} from '../../controllers/cashbox'
+} from '@/controllers/cashbox'
 
 export default {
     name: 'transaction-form',
@@ -184,10 +186,9 @@ export default {
             }
 
             this.$emit('onSave')
-
             this.notifySuccess()
-
             this.onClose()
+            EventBus.$emit(CASHBOX_LOG_SAVE)
         },
 
         notifySuccess() {

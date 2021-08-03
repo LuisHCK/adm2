@@ -17,8 +17,10 @@
 </template>
 
 <script>
-import { getMoneyInCashBox } from '../../controllers/cashbox'
-import Card from '../ui/Card.vue'
+import EventBus from '@/event-bus'
+import { CASHBOX_LOG_SAVE } from '@/event-bus/events'
+import { getMoneyInCashBox } from '@/controllers/cashbox'
+import Card from '@/components/ui/Card.vue'
 export default {
     components: { Card },
 
@@ -33,11 +35,16 @@ export default {
     methods: {
         getTotalClass(value) {
             return value <= 0 ? 'has-text-danger' : 'has-text-success'
+        },
+
+        async getTotalCash() {
+            this.totalCash = await getMoneyInCashBox()
         }
     },
 
     async mounted() {
-        this.totalCash = await getMoneyInCashBox()
+        this.getTotalCash()
+        EventBus.$on(CASHBOX_LOG_SAVE, () => this.getTotalCash())
     }
 }
 </script>
