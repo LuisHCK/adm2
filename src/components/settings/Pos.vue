@@ -6,8 +6,8 @@
                 message="Cuando se complete una venta, mostrar el recibo en un popup"
             >
                 <b-switch
-                    :value="posSettings.value.show_invoice_popup"
-                    @input="saveValue('show_invoice_popup', $event)"
+                    :value="posSettings.value.show_receipt_popup"
+                    @input="saveValue('show_receipt_popup', $event)"
                 />
             </b-field>
         </div>
@@ -19,8 +19,8 @@
                 (requiere configurar una impresora)"
             >
                 <b-switch
-                    :value="posSettings.value.auto_print_invoice"
-                    @input="saveValue('auto_print_invoice', $event)"
+                    :value="posSettings.value.auto_print_receipt"
+                    @input="saveValue('auto_print_receipt', $event)"
                 />
             </b-field>
         </div>

@@ -42,9 +42,6 @@ function createWindow() {
     })
 }
 
-// Note, this is a temporal fix for node-canvas
-app.allowRendererProcessReuse = false
-
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
     // On macOS it is common for applications and their menu bar

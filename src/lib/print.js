@@ -48,8 +48,6 @@ export const printContentent = async (
         const printerName = posSettings.value.default_printer || ''
 
         return receiptPrint()
-
-        printElectron(htmlString, title, styles, printerName)
     } else {
         webPrint(htmlString, callback)
     }
@@ -146,15 +144,14 @@ export const receiptPrint = async sale => {
         : undefined
 
     const options = {
-        preview: false,
         width: '180px',
         margin: '0 0 0 0',
         copies: 1,
         printerName: posSettings?.value?.default_printer,
         timeOutPerLine: 400,
-        preview: true,
-        pageSize: { height: 301000, width: 71000 },
+        preview: !!posSettings?.value?.show_receipt_popup,
         windowHeight: 480,
+        silent: true,
     }
 
     const familyMonospace = { 'font-family': 'monospace' }
@@ -170,6 +167,17 @@ export const receiptPrint = async sale => {
             margin: '6px 0px',
         },
     }
+
+    const greetingMessage = {
+            type: 'text',
+            value: posSettings?.value?.invoice_message,
+            css: {
+                'text-align': 'center',
+                'font-size': 14,
+                ...familyMonospace,
+            },
+        }
+
 
     const data = [
         {
@@ -334,16 +342,8 @@ export const receiptPrint = async sale => {
             ],
             tableBodyStyle: 'border-top: 1px dashed',
         }, 
-        { ...divider },
-        {
-            type: 'text',
-            value: posSettings?.value?.invoice_message,
-            css: {
-                'text-align': 'center',
-                'font-size': 14,
-                ...familyMonospace,
-            },
-        },
+        posSettings?.value?.invoice_message? {...divider} : null,
+        posSettings?.value?.invoice_message? greetingMessage : null,
         { ...divider },
         {
             type: 'barCode',

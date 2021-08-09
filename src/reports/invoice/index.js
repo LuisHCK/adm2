@@ -1,8 +1,6 @@
 import * as moment from 'moment'
 import { render } from 'ejs'
 import store from '../../store'
-import JsBarcode from 'jsbarcode'
-import { createCanvas } from 'canvas'
 import receiptTemplate from './template.ejs'
 
 /**
@@ -13,12 +11,6 @@ import receiptTemplate from './template.ejs'
 export const printInvoice = sale => {
     const storeData = store.getters.store
     const currency = store.getters.currency
-    let barCode = createCanvas(480, 55, 'svg')
-
-    JsBarcode(barCode, invoiceFormatId(sale.id), {
-        displayValue: false,
-        height: 45
-    })
 
     const htmlData = render(
         receiptTemplate,
@@ -27,7 +19,7 @@ export const printInvoice = sale => {
             store: storeData,
             moment,
             currency,
-            barCode: barCode.toDataURL('image/jpg', 'best'),
+            barCode: "",
             invoiceFormatId
         },
         { beautify: false, rmWhitespace: true }

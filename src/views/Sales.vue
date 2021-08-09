@@ -402,8 +402,6 @@ export default {
         },
 
         openPrintInvoice(sale) {
-            // const report = printInvoice(sale)
-            // printContentent(report, `Factura #${sale.id}`, '')
             receiptPrint(sale)
         },
 

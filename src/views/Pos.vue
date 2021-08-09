@@ -95,7 +95,7 @@ import ProductsTable from '../components/pos/ProductsTable.vue'
 import PosSummary from '../components/pos/PosSummary.vue'
 import vSelect from 'vue-select'
 import { mapState, mapGetters } from 'vuex'
-import { printContentent } from '../lib/print'
+import { printContentent, receiptPrint } from '@/lib/print'
 import { invoiceFormatId } from '@/reports/invoice'
 import { printInvoice } from '../reports/invoice'
 import Maths from '../lib/maths'
@@ -275,12 +275,13 @@ export default {
             this.reduceInventoryQuantity()
             // Clear the sale form
             this.cancelSale()
-            // Show invoice popup if is enabled
-            this.showSaleInvoice = this.posSettings
-                ? this.posSettings.show_invoice_popup
-                : false
             // Register cashbox log
             this.createCashBoxLog()
+
+            // Print automatically if is enabled
+            if (this.posSettings && this.posSettings.auto_print_receipt) {
+                receiptPrint(this.saleInvoice)
+            }
         },
 
         async createCashBoxLog() {
@@ -326,7 +327,7 @@ export default {
                 duration: 10000,
                 actionText: 'Imprimir',
                 cancelText: 'OK',
-                onAction: () => {},
+                onAction: () => receiptPrint(this.saleInvoice),
             })
         },
 
