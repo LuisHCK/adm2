@@ -1,18 +1,22 @@
 import { onElectron } from './electron-utils'
 import { getSettings } from '@/controllers/settings'
-const { PosPrinter } = require('electron').remote.require(
-    'electron-pos-printer',
-)
 import * as moment from 'moment'
 import '@/types'
 import { invoiceFormatId } from '@/reports/invoice'
 
 let electron
 let BrowserWindow
+let PosPrinter
 
 if (onElectron) {
     electron = require('electron')
     BrowserWindow = electron.remote.BrowserWindow
+
+    const { PosPrinter: pPrinter } = require('electron').remote.require(
+        'electron-pos-printer',
+    )
+
+    PosPrinter = pPrinter
 }
 
 const globalStyles = `
