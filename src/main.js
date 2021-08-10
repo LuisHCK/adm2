@@ -4,6 +4,8 @@ import router from './router'
 import store from './store'
 import Buefy from 'buefy'
 import VeeValidate from 'vee-validate'
+import { Plugins } from '@capacitor/core'
+const { SplashScreen } = Plugins
 import './db'
 import './assets/materialdesignicons.css'
 import moment from 'moment'
@@ -23,7 +25,10 @@ Vue.use(require('vue-moment'), {
 })
 
 window.app = new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    mounted() {
+        SplashScreen.hide()
+    },
+    render: h => h(App)
 }).$mount('#app')

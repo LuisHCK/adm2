@@ -5,6 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "capacitor:build": "vue-cli-service capacitor:build",
+    "capacitor:serve": "vue-cli-service capacitor:serve",
     "electron:build": "vue-cli-service electron:build",
     "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
     "electron:serve": "vue-cli-service electron:serve",
@@ -13,6 +15,9 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@capacitor/android": "^2.0.0",
+    "@capacitor/cli": "^2.0.0",
+    "@capacitor/core": "^2.0.0",
     "bcryptjs": "^2.4.3",
     "buefy": "^0.9.5",
     "chart.js": "^2.8.0",
@@ -46,6 +51,7 @@
     "raw-loader": "^4.0.2",
     "sass": "^1.32.8",
     "sass-loader": "^10.1.1",
+    "vue-cli-plugin-capacitor": "~2.0.1",
     "vue-cli-plugin-electron-builder": "~2.1.1",
     "vue-template-compiler": "^2.6.11"
   }
