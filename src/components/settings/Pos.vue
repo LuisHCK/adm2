@@ -1,6 +1,6 @@
 <template>
     <div class="columns is-mobile is-multiline">
-        <div class="column is-half">
+        <div class="column is-half-tablet is-full-mobile">
             <b-field
                 label="Mostar recibo al finalizar"
                 message="Cuando se complete una venta, mostrar el recibo en un popup"
@@ -12,7 +12,7 @@
             </b-field>
         </div>
 
-        <div class="column is-half">
+        <div class="column is-half-tablet is-full-mobile" v-if="!isCapacitor">
             <b-field
                 label="Imprimir recibo automáticamente"
                 message="Imprime el recibo luego de completar la venta
@@ -25,7 +25,7 @@
             </b-field>
         </div>
 
-        <div class="column is-half">
+        <div class="column is-half-tablet is-full-mobile">
             <b-field
                 label="Mensaje del recibo"
                 message="Mensaje personalizado al final del recibo"
@@ -40,7 +40,7 @@
             </b-field>
         </div>
 
-        <div class="column is-half">
+        <div class="column is-half-tablet is-full-mobile" v-if="!isCapacitor">
             <b-field label="Impresora principal">
                 <b-select
                     @input="saveValue('default_printer', $event)"
@@ -65,22 +65,29 @@
 import { addOrUpdateSettings, getSettings } from '@/controllers/settings'
 import LargeInvoicePreview from '@/components/invoices/large-invoice-preview.vue'
 import { getPrintersList } from '@/lib/print'
+import { Capacitor } from '@capacitor/core'
 
 export default {
     name: 'pos',
 
     components: {
-        LargeInvoicePreview
+        LargeInvoicePreview,
     },
 
     data() {
         return {
             posSettings: {
-                value: {}
+                value: {},
             },
             inputTimeout: null,
-            printers: getPrintersList()
+            printers: getPrintersList(),
         }
+    },
+
+    computed: {
+        isCapacitor() {
+            return Capacitor.isNative
+        },
     },
 
     methods: {
@@ -99,7 +106,7 @@ export default {
         async saveValue(name, value) {
             await addOrUpdateSettings({
                 name: 'pos',
-                value: { ...this.posSettings.value, [name]: value }
+                value: { ...this.posSettings.value, [name]: value },
             })
             this.loadSettings()
 
@@ -112,13 +119,13 @@ export default {
                 message: `Ajustes guardados`,
                 position: 'is-bottom',
                 type: 'is-success',
-                queue: false
+                queue: false,
             })
-        }
+        },
     },
 
     mounted() {
         this.loadSettings()
-    }
+    },
 }
 </script>

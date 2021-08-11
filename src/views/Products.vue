@@ -208,7 +208,7 @@
                         >Importar multiples productos</span
                     >
                 </header>
-                <section class="modal-card-body" style="overflow: hidden">
+                <section class="modal-card-body multi-import-card-body">
                     <import-products
                         :products="checkedProducts"
                         :selectedInventory="selectedInventory"
@@ -248,7 +248,7 @@ export default {
         ProductForm,
         ProductDetail,
         ImportProducts,
-        InventorySelect
+        InventorySelect,
     },
 
     data() {
@@ -267,7 +267,7 @@ export default {
             showInventoryModal: false,
             selectedInventory: undefined,
             showInventorySelect: false,
-            searchTimeout: undefined
+            searchTimeout: undefined,
         }
     },
 
@@ -326,7 +326,7 @@ export default {
                 message,
                 type: 'is-danger',
                 hasIcon: true,
-                icon: 'alert-circle-outline'
+                icon: 'alert-circle-outline',
             })
         },
 
@@ -341,7 +341,7 @@ export default {
                     this.$buefy.toast.open({
                         message: 'Se actualizó el producto',
                         type: 'is-success',
-                        position: 'is-bottom'
+                        position: 'is-bottom',
                     })
                 })
                 .catch(err => {
@@ -405,7 +405,7 @@ export default {
                     this.inventories = data
                     // set selected inventory
                     this.selectedInventory = this.inventories.find(
-                        i => i.id === this.$route.query.selectedInventory
+                        i => i.id === this.$route.query.selectedInventory,
                     )
                 })
             }
@@ -421,7 +421,7 @@ export default {
                     inventory_id: this.selectedInventory.id,
                     stock: product.stock,
                     unlimited_stock: product.unlimited_stock,
-                    price: product.price
+                    price: product.price,
                 }
             })
 
@@ -440,7 +440,7 @@ export default {
             })
 
             this.showToast(
-                `Se agregaron ${inventoryProducts.length} al inventario: ${this.selectedInventory.name}`
+                `Se agregaron ${inventoryProducts.length} al inventario: ${this.selectedInventory.name}`,
             )
 
             // Import cleanup
@@ -454,7 +454,7 @@ export default {
             this.$buefy.toast.open({
                 message: message,
                 type: type,
-                position: 'is-bottom'
+                position: 'is-bottom',
             })
         },
 
@@ -478,11 +478,11 @@ export default {
                             iconPack: 'mdi',
                             icon: 'alert',
                             ariaRole: 'alertdialog',
-                            ariaModal: true
+                            ariaModal: true,
                         })
                     }
                     this.showInventoryModal = !this.showInventoryModal
-                }
+                },
             }
 
             const addProductBtn = {
@@ -492,12 +492,12 @@ export default {
                 description: 'Crea un nuevo producto',
                 action: () => {
                     this.showForm = true
-                }
+                },
             }
 
             this.$store.commit('SET_ACTION_BUTTONS', [
                 addProductBtn,
-                addInventoryBtn
+                addInventoryBtn,
             ])
         },
 
@@ -546,10 +546,10 @@ export default {
                     serán actualizados a los valores que indicaste en el paso anterior.</b>`,
                     onConfirm: () => this.addProducts(),
                     confirmText: 'Si, guardar',
-                    cancelText: 'Cancelar'
+                    cancelText: 'Cancelar',
                 })
             }
-        }
+        },
     },
 
     mounted() {
@@ -561,16 +561,29 @@ export default {
 
     beforeDestroy() {
         this.removeActionButtions()
-    }
+    },
 }
 </script>
 
 <style lang="scss" scoped>
+@import '~bulma/sass/utilities/_all';
+
 .tag {
     margin-right: 2px;
 }
+
 .search-form {
     width: 200px;
     margin-bottom: 8px;
+}
+
+.multi-import-card-body {
+    overflow: hidden;
+}
+
+@include mobile {
+    .multi-import-card-body {
+        overflow: auto;
+    }
 }
 </style>

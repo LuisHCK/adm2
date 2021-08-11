@@ -114,31 +114,39 @@
 
         <!-- Submit -->
 
-        <div class="options">
-            <div class="buttons">
-                <b-button
-                    :type="selectedInventory ? 'is-success' : 'is-primary'"
-                    icon-left="content-save"
-                    @click="$emit('save')"
-                >
-                    {{ selectedInventory ? 'Guardar' : 'Continuar' }}
-                </b-button>
-
-                <b-button @click="$emit('close')">
-                    Cancelar
-                </b-button>
+        <div class="columns is-mobile is-multiline mt-4">
+            <div class="column is-half-tablet is-full-mobile">
+                <span>
+                    <b>Inventario: </b>
+                    <span
+                        class="inventory-name"
+                        @click="$emit('select-inventory')"
+                    >
+                        {{
+                            selectedInventory
+                                ? selectedInventory.name
+                                : 'Sin seleccionar'
+                        }}
+                    </span>
+                </span>
             </div>
 
-            <span>
-                <b>Inventario: </b>
-                <span class="inventory-name" @click="$emit('select-inventory')">
-                    {{
-                        selectedInventory
-                            ? selectedInventory.name
-                            : 'Sin seleccionar'
-                    }}
-                </span>
-            </span>
+            <div class="column is-half-tablet is-full-mobile">
+                <div class="is-flex is-justify-content-flex-end">
+                    <b-button
+                        class="mr-2"
+                        :type="selectedInventory ? 'is-success' : 'is-primary'"
+                        icon-left="content-save"
+                        @click="$emit('save')"
+                    >
+                        {{ selectedInventory ? 'Guardar' : 'Continuar' }}
+                    </b-button>
+
+                    <b-button @click="$emit('close')">
+                        Cancelar
+                    </b-button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -151,23 +159,23 @@ export default {
     props: {
         products: {
             type: Array,
-            default: () => []
+            default: () => [],
         },
         selectedInventory: {
             type: Object,
-            default: () => {}
-        }
+            default: () => {},
+        },
     },
 
     data() {
         return {
             loading: false,
-            perPage: 100
+            perPage: 100,
         }
     },
 
     computed: {
-        ...mapGetters(['currency'])
+        ...mapGetters(['currency']),
     },
 
     methods: {
@@ -185,8 +193,8 @@ export default {
                 updatedProducts[index].stock = 0
                 this.$emit('onUpdate', updatedProducts)
             }
-        }
-    }
+        },
+    },
 }
 </script>
 

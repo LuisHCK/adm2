@@ -129,13 +129,17 @@ function mergeStyles(customStyles) {
  * @returns {PrinterInfo[]} Attached Printers
  */
 export const getPrintersList = () => {
-    const printWindow = new BrowserWindow({
-        'auto-hide-menu-bar': true,
-        show: false,
-    })
+    if (BrowserWindow) {
+        const printWindow = new BrowserWindow({
+            'auto-hide-menu-bar': true,
+            show: false,
+        })
 
-    printWindow.loadURL('about:blank')
-    return printWindow.webContents.getPrinters()
+        printWindow.loadURL('about:blank')
+        return printWindow.webContents.getPrinters()
+    } else {
+        return []
+    }
 }
 
 export const receiptPrint = async sale => {
@@ -143,8 +147,8 @@ export const receiptPrint = async sale => {
     const storeSettings = await getSettings('store')
     const saleDate = moment(sale.created_at).format('DD.MM.YYYY.h:mma')
     const currency = storeSettings?.value?.currency || '$'
-    const change = sale.pay_with?
-        (Number(sale.pay_with) - Number(sale.total)).toFixed(2)
+    const change = sale.pay_with
+        ? (Number(sale.pay_with) - Number(sale.total)).toFixed(2)
         : undefined
 
     const options = {
@@ -173,15 +177,14 @@ export const receiptPrint = async sale => {
     }
 
     const greetingMessage = {
-            type: 'text',
-            value: posSettings?.value?.invoice_message,
-            css: {
-                'text-align': 'center',
-                'font-size': 14,
-                ...familyMonospace,
-            },
-        }
-
+        type: 'text',
+        value: posSettings?.value?.invoice_message,
+        css: {
+            'text-align': 'center',
+            'font-size': 14,
+            ...familyMonospace,
+        },
+    }
 
     const data = [
         {
@@ -295,59 +298,59 @@ export const receiptPrint = async sale => {
                     {
                         type: 'text',
                         value: 'Descuento',
-                        style: 'text-align: left'
+                        style: 'text-align: left',
                     },
                     {
                         type: 'text',
-                        value: sale.pay_with? `${currency}${sale.pay_with}` : '--',
-                        style: 'text-align: right'
-
-                    }
+                        value: sale.pay_with
+                            ? `${currency}${sale.pay_with}`
+                            : '--',
+                        style: 'text-align: right',
+                    },
                 ],
                 [
                     {
                         type: 'text',
                         value: 'TOTAL',
-                        style: 'font-weight: bold; text-align: left'
+                        style: 'font-weight: bold; text-align: left',
                     },
                     {
                         type: 'text',
                         value: `${currency}${Number(sale.total).toFixed(2)}`,
-                        style: 'font-weight: bold; text-align: right'
+                        style: 'font-weight: bold; text-align: right',
                     },
                 ],
                 [
                     {
                         type: 'text',
                         value: 'Paga con',
-                        style: 'text-align: left'
+                        style: 'text-align: left',
                     },
                     {
                         type: 'text',
-                        value: sale.pay_with? `${currency}${sale.pay_with}` : '--',
-                        style: 'text-align: right'
-
-                    }
+                        value: sale.pay_with
+                            ? `${currency}${sale.pay_with}`
+                            : '--',
+                        style: 'text-align: right',
+                    },
                 ],
                 [
                     {
                         type: 'text',
                         value: 'Cambio',
-                        style: 'text-align: left'
+                        style: 'text-align: left',
                     },
                     {
                         type: 'text',
-                        value: change? `${currency}${change}` : '--',
-                        style: 'text-align: right'
-
-                    }
-                ]
-
+                        value: change ? `${currency}${change}` : '--',
+                        style: 'text-align: right',
+                    },
+                ],
             ],
             tableBodyStyle: 'border-top: 1px dashed',
-        }, 
-        posSettings?.value?.invoice_message? {...divider} : null,
-        posSettings?.value?.invoice_message? greetingMessage : null,
+        },
+        posSettings?.value?.invoice_message ? { ...divider } : null,
+        posSettings?.value?.invoice_message ? greetingMessage : null,
         { ...divider },
         {
             type: 'barCode',

@@ -1,20 +1,26 @@
 <template>
     <div class="product-search">
         <form autocomplete="off" @submit.prevent="submit">
-            <input
-                autocomplete="off"
-                id="searchInput"
-                type="text"
-                class="input"
-                required
-                v-model="searchValue"
-                placeholder="Buscar producto"
-                @blur="blurredInput"
-                @input="changeInput"
-                @focus="focusInput"
-            />
+            <b-field>
+                <b-input
+                    type="search"
+                    v-model="searchValue"
+                    placeholder="Buscar..."
+                    id="searchInput"
+                    icon="magnify"
+                    @blur="onBlurInput"
+                    rounded
+                />
+                <!-- <p class="control">
+                    <b-button
+                        type="is-primary"
+                        icon-right="qrcode-scan"
+                        rounded
+                    />
+                </p> -->
+            </b-field>
             <div class="search-result" v-if="showResults && loadComplete">
-                <ul v-if="results.length">
+                <ul v-if="results && results.length">
                     <li
                         v-for="(inventoryProduct, i) in results"
                         :key="`res-${i}`"
@@ -67,6 +73,7 @@
 
 <script>
 import { getAllInventoryProducts } from '@/controllers/inventories'
+import { normalizeText } from '@/lib/locale'
 
 export default {
     name: 'product-search',
@@ -76,42 +83,34 @@ export default {
             searchValue: undefined,
             inventoryProducts: [],
             showResults: false,
-            loadComplete: false
+            loadComplete: false,
+            inputTimeout: undefined,
         }
     },
 
     computed: {
         results() {
             return this.searchProduct()
-        }
+        },
+    },
+
+    watch: {
+        searchValue() {
+            clearTimeout(this.inputTimeout)
+
+            this.inputTimeout = setTimeout(() => {
+                this.showResults = true
+            }, 500)
+        },
     },
 
     methods: {
         submit() {
-            if (this.inventoryProducts.length) {
+            if (this.inventoryProducts?.length) {
                 if (this.results && this.results.length) {
                     this.selectInventoryProduct(this.results[0])
                 }
                 this.blurredInput()
-            }
-        },
-
-        /**
-         * Hide results on blur
-         */
-        blurredInput() {
-            setTimeout(() => {
-                this.showResults = false
-            }, 300)
-        },
-
-        changeInput() {
-            this.showResults = true
-        },
-
-        focusInput() {
-            if (this.searchValue) {
-                this.showResults = true
             }
         },
 
@@ -127,7 +126,7 @@ export default {
          * Filter Inventory Products by search input value
          */
         searchProduct() {
-            if (this.loadComplete && this.searchValue.length) {
+            if (this.loadComplete && this.searchValue?.length) {
                 return this.inventoryProducts.filter(inventoryProduct => {
                     // If product codebar match instantly return
                     if (this.codebarMatch(inventoryProduct.product.codebar)) {
@@ -137,19 +136,19 @@ export default {
                     return (
                         this.compare(
                             inventoryProduct.product.name,
-                            this.searchValue
+                            this.searchValue,
                         ) ||
                         this.compare(
                             inventoryProduct.product.codebar,
-                            this.searchValue
+                            this.searchValue,
                         ) ||
                         this.compare(
                             inventoryProduct.product.brand,
-                            this.searchValue
+                            this.searchValue,
                         ) ||
                         this.compare(
                             inventoryProduct.product.brand,
-                            this.searchValue
+                            this.searchValue,
                         )
                     )
                 })
@@ -168,8 +167,9 @@ export default {
          * Normalize and compare 2 values
          */
         compare(val1, val2) {
-            const source = String(val1).toLowerCase()
-            return source.search(val2.toLowerCase()) !== -1
+            const source = normalizeText(String(val1).toLowerCase())
+            const target = normalizeText(String(val2).toLowerCase())
+            return source.search(target) !== -1
         },
 
         /**
@@ -199,16 +199,20 @@ export default {
                 hasIcon: true,
                 onConfirm: () => {
                     this.$emit('input', inventoryProduct)
-                }
+                },
             })
-        }
+        },
+
+        onBlurInput() {
+            this.showResults = false
+        },
     },
 
     mounted() {
         this.getInventoryProducts()
         // Focus search box
-        const searchInput = document.getElementById('searchInput').focus()
-    }
+        document.getElementById('searchInput').focus()
+    },
 }
 </script>
 
@@ -221,7 +225,7 @@ export default {
     }
     .search-result {
         position: absolute;
-        max-height: 200px;
+        max-height: 340px;
         min-height: 100px;
         width: 100%;
         background-color: rgb(255, 255, 255);
@@ -232,6 +236,7 @@ export default {
         overflow-y: scroll;
         transition: 0.3s;
         z-index: 99;
+        box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.295);
 
         li {
             padding: 8px 10px;
