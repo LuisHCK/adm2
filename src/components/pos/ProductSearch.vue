@@ -1,23 +1,15 @@
 <template>
-    <div class="product-search">
+    <div class="product-search" v-click-outside="onBlurInput">
         <form autocomplete="off" @submit.prevent="submit">
             <b-field>
                 <b-input
                     type="search"
-                    v-model="searchValue"
                     placeholder="Buscar..."
                     id="searchInput"
                     icon="magnify"
-                    @blur="onBlurInput"
+                    @input="handleSearchInput"
                     rounded
                 />
-                <!-- <p class="control">
-                    <b-button
-                        type="is-primary"
-                        icon-right="qrcode-scan"
-                        rounded
-                    />
-                </p> -->
             </b-field>
             <div class="search-result" v-if="showResults && loadComplete">
                 <ul v-if="results && results.length">
@@ -73,7 +65,7 @@
 
 <script>
 import { getAllInventoryProducts } from '@/controllers/inventories'
-import { normalizeText } from '@/lib/locale'
+import { compareText } from '../../lib/text-utils'
 
 export default {
     name: 'product-search',
@@ -82,26 +74,11 @@ export default {
         return {
             searchValue: undefined,
             inventoryProducts: [],
+            results: [],
             showResults: false,
             loadComplete: false,
             inputTimeout: undefined,
         }
-    },
-
-    computed: {
-        results() {
-            return this.searchProduct()
-        },
-    },
-
-    watch: {
-        searchValue() {
-            clearTimeout(this.inputTimeout)
-
-            this.inputTimeout = setTimeout(() => {
-                this.showResults = true
-            }, 500)
-        },
     },
 
     methods: {
@@ -109,8 +86,8 @@ export default {
             if (this.inventoryProducts?.length) {
                 if (this.results && this.results.length) {
                     this.selectInventoryProduct(this.results[0])
+                    this.showResults = false
                 }
-                this.blurredInput()
             }
         },
 
@@ -123,37 +100,59 @@ export default {
         },
 
         /**
+         * handleSearchInput.
+         *
+         * @param {string} value
+         */
+        handleSearchInput(value) {
+            clearTimeout(this.inputTimeout)
+
+            this.inputTimeout = setTimeout(() => {
+                this.searchValue = value
+                this.searchProduct()
+
+                if (value.length) {
+                    this.showResults = true
+                }
+            }, 300)
+        },
+
+        /**
          * Filter Inventory Products by search input value
          */
         searchProduct() {
             if (this.loadComplete && this.searchValue?.length) {
-                return this.inventoryProducts.filter(inventoryProduct => {
-                    // If product codebar match instantly return
-                    if (this.codebarMatch(inventoryProduct.product.codebar)) {
-                        this.selectInventoryProduct(inventoryProduct)
-                        return true
-                    }
-                    return (
-                        this.compare(
-                            inventoryProduct.product.name,
-                            this.searchValue,
-                        ) ||
-                        this.compare(
-                            inventoryProduct.product.codebar,
-                            this.searchValue,
-                        ) ||
-                        this.compare(
-                            inventoryProduct.product.brand,
-                            this.searchValue,
-                        ) ||
-                        this.compare(
-                            inventoryProduct.product.brand,
-                            this.searchValue,
+                this.results = this.inventoryProducts.filter(
+                    inventoryProduct => {
+                        // If product codebar match instantly return
+                        if (
+                            this.codebarMatch(inventoryProduct.product.codebar)
+                        ) {
+                            this.selectInventoryProduct(inventoryProduct)
+                            return true
+                        }
+                        return (
+                            compareText(
+                                inventoryProduct.product.name,
+                                this.searchValue,
+                            ) ||
+                            compareText(
+                                inventoryProduct.product.codebar,
+                                this.searchValue,
+                            ) ||
+                            compareText(
+                                inventoryProduct.product.brand,
+                                this.searchValue,
+                            ) ||
+                            compareText(
+                                inventoryProduct.product.brand,
+                                this.searchValue,
+                            )
                         )
-                    )
-                })
+                    },
+                )
             } else {
-                return []
+                this.results = []
             }
         },
 
@@ -161,15 +160,6 @@ export default {
             return (
                 String(codebar).toLowerCase() == this.searchValue.toLowerCase()
             )
-        },
-
-        /**
-         * Normalize and compare 2 values
-         */
-        compare(val1, val2) {
-            const source = normalizeText(String(val1).toLowerCase())
-            const target = normalizeText(String(val2).toLowerCase())
-            return source.search(target) !== -1
         },
 
         /**
@@ -185,7 +175,6 @@ export default {
                 this.confirmAdd(inventoryProduct)
             }
             this.searchValue = ''
-            this.blurredInput()
         },
 
         /** Add with warning */

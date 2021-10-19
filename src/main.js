@@ -13,6 +13,7 @@ import 'moment/locale/es'
 import '@/styles.scss'
 import './registerServiceWorker'
 import './filters/money-format.filter'
+import './directives'
 
 Vue.use(Buefy)
 
