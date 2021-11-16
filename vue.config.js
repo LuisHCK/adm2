@@ -2,9 +2,16 @@ module.exports = {
     /* ... other config ... */
     transpileDependencies: ['vuex-persist'],
     pluginOptions: {
-        electronBuilder: {
-            nodeIntegration: true
-        }
+      electronBuilder: {
+        nodeIntegration: true
+      },
+      i18n: {
+        locale: 'es',
+        fallbackLocale: 'en',
+        localeDir: 'locales',
+        enableInSFC: true,
+        enableBridge: false
+      }
     },
     configureWebpack: {
         devtool: 'source-map'

@@ -14,6 +14,7 @@ import '@/styles.scss'
 import './registerServiceWorker'
 import './filters/money-format.filter'
 import './directives'
+import i18n from './i18n'
 
 Vue.use(Buefy)
 
@@ -28,8 +29,11 @@ Vue.use(require('vue-moment'), {
 window.app = new Vue({
     router,
     store,
+
     mounted() {
         SplashScreen.hide()
     },
+
+    i18n,
     render: h => h(App)
 }).$mount('#app')
