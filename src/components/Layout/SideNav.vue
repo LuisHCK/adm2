@@ -117,8 +117,11 @@ export default {
 
         setRoute(item) {
             this.to(item.path)
-            this.toggleSidenav()
             this.currentPath = item.path
+
+            if (this.sidenavVisible) {
+                this.toggleSidenav()
+            }
         },
         logOut() {
             this.$buefy.dialog.confirm({
