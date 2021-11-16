@@ -60,7 +60,7 @@ export default {
         .then(inventories => {
           this.inventories = inventories
         })
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
     },
 
     saveInventory(data) {
@@ -75,7 +75,7 @@ export default {
           this.getInventories()
           this.showForm = false
         })
-        .catch(err => console.log(err))
+        .catch(err => console.error(err))
     },
 
     setActionButtons() {

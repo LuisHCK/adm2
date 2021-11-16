@@ -334,8 +334,6 @@ export default {
             Database.product
                 .update(data.id, data)
                 .then(updated => {
-                    console.log(updated)
-
                     this.showUpdateForm = false
                     this.getProducts()
                     this.$buefy.toast.open({
@@ -349,7 +347,7 @@ export default {
 
                     if (error) this.handleSaveError(error)
 
-                    return console.log(err)
+                    return console.error(err)
                 })
         },
 

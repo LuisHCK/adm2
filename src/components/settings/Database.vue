@@ -60,13 +60,13 @@ export default {
                 product.subcategories = product.subcategories.split('&')
                 // Insert into db (Oh God halp plz)
                 Database.product.add(product).then(() => {
-                    console.log('success')
+                    console.debug('success')
                 })
             })
             this.$buefy.toast.open({
                 message: 'Success',
                 type: 'is-success',
-                position: 'is-bottom'
+                position: 'is-bottom',
             })
         },
 
@@ -77,8 +77,8 @@ export default {
 
         importDatabase(file) {
             restoreDatabase(Database, file)
-        }
-    }
+        },
+    },
 }
 </script>
 

@@ -222,9 +222,6 @@ export const printChashboxReport = (cashboxLog, notes) => {
     const { name } = store.getters.currentUser
     const shop = { ...store.getters.store }
     const created_at = moment().format('DD/MM/YYYY, h:mm a')
-
-    console.log(notes)
-
     const columns = [
         { label: '#', value: 'id' },
         { label: 'Cantidad', value: 'amount' },

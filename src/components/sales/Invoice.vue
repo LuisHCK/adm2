@@ -175,8 +175,8 @@ export default {
     props: {
         sale: {
             type: Object,
-            default: () => {}
-        }
+            default: () => {},
+        },
     },
 
     computed: {
@@ -191,12 +191,12 @@ export default {
             } else {
                 return 'ADM2'
             }
-        }
+        },
     },
 
     data() {
         return {
-            logo: localStorage.getItem('company_logo')
+            logo: localStorage.getItem('company_logo'),
         }
     },
 
@@ -211,7 +211,7 @@ export default {
                 .innerHTML
             printContentent(renderedHTML, `factura_#${this.sale.id}`)
             this.$emit('on-close')
-        }
+        },
     },
 
     mounted() {
@@ -220,10 +220,6 @@ export default {
             this.printInvoice()
         }, 500)
     },
-
-    beforeDestroy() {
-        console.log('Destroy')
-    }
 }
 </script>
 <style lang="scss" scoped></style>

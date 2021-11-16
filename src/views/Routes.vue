@@ -74,7 +74,6 @@ export default {
       Database.route
         .toArray()
         .then(routes => {
-          console.log(routes)
           this.routes = routes
         })
         .catch(err => console.error(err))

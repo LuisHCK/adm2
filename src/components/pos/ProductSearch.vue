@@ -84,8 +84,10 @@ export default {
     methods: {
         submit() {
             if (this.inventoryProducts?.length) {
-                if (this.results && this.results.length) {
+                if (this.results && this.results.length > 0) {
                     this.selectInventoryProduct(this.results[0])
+                    this.showResults = false
+                } else {
                     this.showResults = false
                 }
             }
@@ -121,7 +123,11 @@ export default {
          * Filter Inventory Products by search input value
          */
         searchProduct() {
-            if (this.loadComplete && this.searchValue?.length) {
+            if (
+                this.loadComplete &&
+                this.searchValue &&
+                this.searchValue.trim().length
+            ) {
                 this.results = this.inventoryProducts.filter(
                     inventoryProduct => {
                         // If product codebar match instantly return
@@ -171,6 +177,7 @@ export default {
                 inventoryProduct.unlimited_stock
             ) {
                 this.$emit('input', inventoryProduct)
+                this.showResults = false
             } else {
                 this.confirmAdd(inventoryProduct)
             }
@@ -188,6 +195,7 @@ export default {
                 hasIcon: true,
                 onConfirm: () => {
                     this.$emit('input', inventoryProduct)
+                    this.showResults = false
                 },
             })
         },

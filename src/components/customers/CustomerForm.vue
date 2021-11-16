@@ -60,7 +60,7 @@ export default {
                         this.$emit('onSave')
                     })
                     .catch(err => {
-                        console.log(err)
+                        console.error(err)
                     })
             } else {
                 this.showToast('El nombre es requerido', 'is-danger')

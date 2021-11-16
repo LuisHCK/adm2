@@ -194,10 +194,6 @@ export default {
                         true
                     )
                     .toArray()
-                // .count(count => {
-                //     console.log(count)
-                //     datasets[0].data.push(count)
-                // })
 
                 const cashSales = sales.filter(sale =>
                     sale ? sale.sale_type === 'cash' : false

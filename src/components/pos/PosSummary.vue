@@ -241,7 +241,6 @@ export default {
          * Set customer for of this shopping cart
          */
         setCustomer(event) {
-            console.log(event)
             this.$emit('setCustomer', event)
         },
 

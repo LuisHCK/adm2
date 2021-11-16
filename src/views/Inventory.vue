@@ -70,7 +70,7 @@ import {
     deleteProductFromInventory,
     getInventoryById,
     getInventoryProducts,
-    updateInventoryProduct
+    updateInventoryProduct,
 } from '../controllers/inventories'
 import { getProductById } from '../controllers/products'
 
@@ -79,7 +79,7 @@ export default {
         ImportProducts,
         InventoryProductForm,
         InventoryTable,
-        InventorySummary
+        InventorySummary,
     },
 
     computed: {
@@ -88,7 +88,7 @@ export default {
         grossProfit() {
             if (this.inventoryProducts.length) {
                 let subTotal = this.inventoryProducts.map(
-                    item => Number(item.price || 0) * Number(item.stock || 0)
+                    item => Number(item.price || 0) * Number(item.stock || 0),
                 )
 
                 return subTotal.reduce((acc, curr) => acc + curr, 0)
@@ -99,7 +99,7 @@ export default {
 
         totalProducts() {
             return this.inventoryProducts ? this.inventoryProducts.length : 0
-        }
+        },
     },
 
     data() {
@@ -110,7 +110,7 @@ export default {
             showUpdateForm: false,
             selectedInventoryProduct: undefined,
             loading: false,
-            showBulkImportModal: false
+            showBulkImportModal: false,
         }
     },
 
@@ -119,7 +119,7 @@ export default {
             this.loading = true
 
             this.inventoryProducts = await getInventoryProducts(
-                this.inventoryId
+                this.inventoryId,
             )
 
             this.loading = false
@@ -152,7 +152,7 @@ export default {
             this.$buefy.toast.open({
                 message: message,
                 type: error ? 'is-danger' : 'is-success',
-                position: 'is-bottom'
+                position: 'is-bottom',
             })
         },
 
@@ -190,9 +190,9 @@ export default {
                     this.handleDelete(inventoryProduct.id)
 
                     this.$buefy.toast.open(
-                        'Se quitó el producto del inventario'
+                        'Se quitó el producto del inventario',
                     )
-                }
+                },
             })
         },
 
@@ -215,24 +215,20 @@ export default {
                     this.$router.push({
                         path: '/products',
                         query: {
-                            selectedInventory: this.inventory.id
-                        }
+                            selectedInventory: this.inventory.id,
+                        },
                     })
-                }
+                },
             }
             this.$store.commit('SET_ACTION_BUTTONS', [addInventory])
         },
-
-        toggleModal() {
-            console.log('Cancel')
-        }
     },
 
     mounted() {
         this.inventoryId = Number(this.$route.params.id)
         this.getInventory()
         this.setActionButtons()
-    }
+    },
 }
 </script>
 

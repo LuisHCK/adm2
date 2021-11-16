@@ -270,7 +270,6 @@ export default {
 
             this.saleInvoice = await Database.sale.get(saleId)
 
-            this.showToast('Se completó la venta')
             // Reduce inventory stock
             this.reduceInventoryQuantity()
             // Clear the sale form
@@ -281,6 +280,9 @@ export default {
             // Print automatically if is enabled
             if (this.posSettings && this.posSettings.auto_print_receipt) {
                 receiptPrint(this.saleInvoice)
+                this.showSuccessToast('Se completó la venta')
+            } else {
+                this.showPrintToast('Se completó la venta')
             }
         },
 
@@ -319,7 +321,7 @@ export default {
             })
         },
 
-        showToast(message, type = 'is-success') {
+        showPrintToast(message, type = 'is-success') {
             this.$buefy.snackbar.open({
                 message: message,
                 type: type,
@@ -331,20 +333,26 @@ export default {
             })
         },
 
+        showSuccessToast(message) {
+            this.$buefy.toast.open({
+                message: message,
+                type: 'is-success',
+                position: 'is-bottom',
+            })
+        },
+
         getCustomers() {
             Database.customer.toArray().then(data => (this.customers = data))
         },
 
         handleShortcuts(event) {
             // CTRL + 1 = Focus on search
-            if (event.which == 49 && event.ctrlKey || event.which === 113) {
-                console.log('CTRL + 1')
+            if ((event.which == 49 && event.ctrlKey) || event.which === 113) {
                 document.getElementById('searchInput').focus()
             }
 
             // CTRL + 2 = Finish the sale
             if (event.which == 50 && event.ctrlKey) {
-                console.log('CTRL + 2')
                 this.completeSale()
             }
         },
