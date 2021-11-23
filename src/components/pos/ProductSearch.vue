@@ -112,10 +112,6 @@ export default {
             this.inputTimeout = setTimeout(() => {
                 this.searchValue = value
                 this.searchProduct()
-
-                if (value.length) {
-                    this.showResults = true
-                }
             }, 300)
         },
 
@@ -128,6 +124,8 @@ export default {
                 this.searchValue &&
                 this.searchValue.trim().length
             ) {
+                let matchedByCodebar = false
+
                 this.results = this.inventoryProducts.filter(
                     inventoryProduct => {
                         // If product codebar match instantly return
@@ -135,6 +133,8 @@ export default {
                             this.codebarMatch(inventoryProduct.product.codebar)
                         ) {
                             this.selectInventoryProduct(inventoryProduct)
+                            matchedByCodebar = true
+
                             return true
                         }
                         return (
@@ -157,6 +157,7 @@ export default {
                         )
                     },
                 )
+                this.showResults = matchedByCodebar ? false : true
             } else {
                 this.results = []
             }

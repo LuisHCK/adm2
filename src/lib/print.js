@@ -151,6 +151,13 @@ export const receiptPrint = async sale => {
         ? (Number(sale.pay_with) - Number(sale.total)).toFixed(2)
         : undefined
 
+    const discounted = sale.shoppingCart.reduce(
+        (prev, next) => Number(prev) + Number(next.discounted),
+        0,
+    )
+
+    console.log(discounted)
+
     const options = {
         width: '180px',
         margin: '0 0 0 0',
@@ -302,8 +309,8 @@ export const receiptPrint = async sale => {
                     },
                     {
                         type: 'text',
-                        value: sale.pay_with
-                            ? `${currency}${sale.pay_with}`
+                        value: discounted
+                            ? `${currency}${Number(discounted)}`
                             : '--',
                         style: 'text-align: right',
                     },
