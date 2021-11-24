@@ -1,10 +1,12 @@
 import database from '../db'
-import * as moment from 'moment'
+import moment from 'moment'
 import renderReport from '../reports/generic-report'
 import store from '../store'
 import { formatNumber } from '../filters/money-format.filter'
+import { getUserById } from './users'
 import '@/types'
-import {getUserById} from './users'
+
+const CashBoxModel = database.table('cash_box')
 
 /**
  * Get a list of CashBox logs filtered by date or current cut
@@ -19,9 +21,9 @@ export const getCashBoxLogs = async ({
     start_date,
     finish_date,
     reference,
-    limit
+    limit,
 } = {}) => {
-    let query = database.cash_box
+    let query = CashBoxModel
 
     // Check if start date and finish date is present
     if (start_date && finish_date) {
@@ -36,7 +38,7 @@ export const getCashBoxLogs = async ({
     } else {
         // Fetch the latest cashbox close and start filtering from it
         const latestLogClose = (await getLastCashBoxClose()) || {
-            date: new Date('1970-01-01Z00:00:00:000').toISOString()
+            date: new Date('1970-01-01Z00:00:00:000').toISOString(),
         }
 
         query = query.where('date').aboveOrEqual(latestLogClose.date)
@@ -51,7 +53,7 @@ export const getCashBoxLogs = async ({
                     // Get only needed values
                     const { id, name } = await getUserById(log.user_id)
                     log.created_by = { id, name }
-                })
+                }),
             )
             return data
         })
@@ -63,7 +65,7 @@ export const getCashBoxLogs = async ({
  * @returns {CashBoxLog[]}
  */
 export const searchCashBoxLog = async searchValue => {
-    let query = database.cash_box
+    let query = CashBoxModel
 
     return query
         .filter(log => {
@@ -82,7 +84,7 @@ export const searchCashBoxLog = async searchValue => {
                     // Get only needed values
                     const { id, name } = await getUserById(log.user_id)
                     log.created_by = { id, name }
-                })
+                }),
             )
             return data
         })
@@ -94,16 +96,15 @@ export const searchCashBoxLog = async searchValue => {
  * @param {CashBoxLog} data
  */
 export const registerCashboxLog = async data => {
-    return await database.cash_box.add(data)
+    return await CashBoxModel.add(data)
 }
 
 /**
  * Returns latest cashbox log if exists
- * @returns {CashBoxLog | null}
+ * @returns {Promise<CashBoxLog | null>}
  */
 export const getLastCashBoxClose = async () => {
-    const log = await database.cash_box
-        .where('type')
+    const log = await CashBoxModel.where('type')
         .equals('close')
         .last()
 
@@ -112,17 +113,16 @@ export const getLastCashBoxClose = async () => {
 
 /**
  * Return the current amount of money in cash box
- * @returns {Number}
+ * @returns {Promise<Number>}
  */
 export const getMoneyInCashBox = async () => {
-    const latestLogClose = await getLastCashBoxClose() || {
-        date: new Date('1970-01-01Z00:00:00:000').toISOString()
+    const latestLogClose = (await getLastCashBoxClose()) || {
+        date: new Date('1970-01-01Z00:00:00:000').toISOString(),
     }
 
     const logTypes = ['add', 'subtract', 'balance']
 
-    const query = await database.cash_box
-        .where('date')
+    const query = await CashBoxModel.where('date')
         .aboveOrEqual(latestLogClose.date)
         .and(log => logTypes.includes(log.type))
         .toArray()
@@ -183,31 +183,31 @@ export const getLogType = type => {
         case 'add':
             return {
                 label: 'Ingreso',
-                className: 'is-success'
+                className: 'is-success',
             }
 
         case 'subtract':
             return {
                 label: 'Egreso',
-                className: 'is-warning'
+                className: 'is-warning',
             }
 
         case 'close':
             return {
                 label: 'Cierre',
-                className: 'is-danger'
+                className: 'is-danger',
             }
 
         case 'balance':
             return {
                 label: 'Saldo',
-                className: 'is-info'
+                className: 'is-info',
             }
 
         default:
             return {
                 label: 'Tipo inválido',
-                className: 'is-dark'
+                className: 'is-dark',
             }
     }
 }
@@ -229,7 +229,7 @@ export const printChashboxReport = (cashboxLog, notes) => {
         { label: 'Concepto', value: 'concept' },
         { label: 'Referencia', value: 'reference' },
         { label: 'Creado por', value: 'created_by_name' },
-        { label: 'Fecha', value: 'date' }
+        { label: 'Fecha', value: 'date' },
     ]
 
     const data = cashboxLog.map(log => {
@@ -248,6 +248,6 @@ export const printChashboxReport = (cashboxLog, notes) => {
         title,
         created_at,
         created_by: name,
-        notes
+        notes,
     })
 }
