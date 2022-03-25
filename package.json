@@ -48,7 +48,7 @@
     "@vue/cli-service": "~4.5.0",
     "babel-core": "^6.26.3",
     "babel-jest": "^23.6.0",
-    "electron": "^11.5.0",
+    "electron": "^13.6.6",
     "electron-devtools-installer": "^3.1.1",
     "eslint-plugin-vue": "^6.2.2",
     "raw-loader": "^4.0.2",
