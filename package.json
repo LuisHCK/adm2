@@ -23,7 +23,7 @@
     "buefy": "^0.9.5",
     "chart.js": "^2.8.0",
     "core-js": "^3.10.0",
-    "dexie": "^3.0.3",
+    "dexie": "^3.2.2",
     "dexie-export-import": "^1.0.0",
     "ejs": "^3.1.5",
     "electron-pos-printer": "https://github.com/LuisHCK/electron-pos-printer.git",
