@@ -25,7 +25,7 @@
     "core-js": "^3.10.0",
     "dexie": "^3.2.2",
     "dexie-export-import": "^1.0.0",
-    "ejs": "^3.1.5",
+    "ejs": "^3.1.7",
     "electron-pos-printer": "https://github.com/LuisHCK/electron-pos-printer.git",
     "file-saver": "^2.0.5",
     "html2canvas": "^1.0.0",
