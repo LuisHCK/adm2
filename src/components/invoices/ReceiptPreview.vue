@@ -130,7 +130,7 @@ export default {
     props: {
         sale: {
             type: Object,
-            default: () => {}
+            default: () => ({})
         }
     },
 

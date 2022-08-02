@@ -123,7 +123,7 @@ export default {
     height: 100%;
     min-height: 680px;
 
-    padding: 20px;
+    padding: 20px 50px;
 
     background-size: cover;
     background-repeat: no-repeat;

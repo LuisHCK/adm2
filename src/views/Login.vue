@@ -93,6 +93,7 @@ export default {
             if (!count) {
                 return this.$router.push('/registration')
             }
+            return this.$router.push('/home')
         })
     }
 }

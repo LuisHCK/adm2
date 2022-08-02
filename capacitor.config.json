@@ -3,6 +3,5 @@
     "appName": "ADM2",
     "bundledWebRuntime": false,
     "webDir": "dist",
-    "linuxAndroidStudioPath": "/usr/local/bin/studio"
+    "linuxAndroidStudioPath": "/usr/bin/android-studio"
 }
-
