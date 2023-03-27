@@ -156,8 +156,6 @@ export const receiptPrint = async sale => {
         0,
     )
 
-    console.log(discounted)
-
     const options = {
         width: '180px',
         margin: '0 0 0 0',

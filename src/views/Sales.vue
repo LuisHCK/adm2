@@ -128,7 +128,8 @@
                             type="is-success"
                             class="has-text-weight-bold"
                             rounded
-                        >{{props.row.total | money}}</b-tag>
+                            >{{ props.row.total | money }}</b-tag
+                        >
                     </b-table-column>
 
                     <b-table-column
@@ -267,7 +268,7 @@
                     />
                 </header>
                 <section class="modal-card-body">
-                    <sale-details :sale="selectedSale"/>
+                    <sale-details :sale="selectedSale" />
                 </section>
             </div>
         </b-modal>
@@ -279,6 +280,12 @@
             @close="selectedSale = undefined"
             @success="getSales"
         />
+
+        <b-modal :active.sync="showInvoiceModal" has-modal-card>
+            <div v-if="selectedSale" class="modal-card">
+                <receipt-preview :sale="selectedSale" />
+            </div>
+        </b-modal>
     </div>
 </template>
 
@@ -291,6 +298,9 @@ import { printInvoice, invoiceFormatId } from '../reports/invoice'
 import RefundModal from '../components/sales/RefundModal.vue'
 import { months, daysAbr } from '@/lib/locale'
 import { mapGetters } from 'vuex'
+import { isCapacitorNative } from '@/lib/platform'
+import InvoiceModal from '@/components/invoices/InvoiceModal.vue'
+import ReceiptPreview from '@/components/invoices/ReceiptPreview.vue'
 
 export default {
     name: 'sales-page',
@@ -298,7 +308,9 @@ export default {
     components: {
         SaleDetails,
         Invoice,
-        RefundModal
+        RefundModal,
+        InvoiceModal,
+        ReceiptPreview,
     },
 
     data() {
@@ -314,7 +326,7 @@ export default {
             refundModalIsOpen: false,
             searchValue: undefined,
             searchDebounce: undefined,
-            isMobile: false
+            isMobile: false,
         }
     },
 
@@ -325,7 +337,9 @@ export default {
         ...mapGetters(['currency']),
 
         months: () => months,
-        daysAbr: () => daysAbr
+        daysAbr: () => daysAbr,
+
+        isCapacitorNative,
     },
 
     methods: {
@@ -336,7 +350,7 @@ export default {
             // FILTER BY PAYMENT TYPE
             if (this.paymentTypeFilter) {
                 query = Database.sale.where({
-                    sale_type: this.paymentTypeFilter
+                    sale_type: this.paymentTypeFilter,
                 })
             }
 
@@ -352,7 +366,7 @@ export default {
                     hour: 23,
                     minute: 59,
                     second: 59,
-                    milisecond: 999
+                    milisecond: 999,
                 })
 
                 // Update query
@@ -367,7 +381,7 @@ export default {
             if (this.searchValue) {
                 query = query.filter(item => {
                     const searchValueString = String(
-                        this.searchValue
+                        this.searchValue,
                     ).toLowerCase()
                     const searchValueNumber = parseInt(this.searchValue)
 
@@ -402,7 +416,12 @@ export default {
         },
 
         openPrintInvoice(sale) {
-            receiptPrint(sale)
+            if (isCapacitorNative) {
+                this.selectedSale = sale
+                this.showInvoiceModal = true
+            } else {
+                receiptPrint(sale)
+            }
         },
 
         /** Optinally load a sale */
@@ -432,7 +451,7 @@ export default {
         getSaleType(item) {
             let type = {
                 color: '',
-                text: ''
+                text: '',
             }
 
             switch (item) {
@@ -474,7 +493,7 @@ export default {
             let report = salesReport(
                 this.sales,
                 'Reporte de Ventas',
-                this.dateRange
+                this.dateRange,
             )
             printContentent(report, 'Reporte de Ventas', tableCss)
         },
@@ -486,7 +505,7 @@ export default {
                 label: 'Imprimir Reporte',
                 action: () => {
                     this.printReport()
-                }
+                },
             }
 
             const goToPOS = {
@@ -495,7 +514,7 @@ export default {
                 label: 'Nueva Venta',
                 action: () => {
                     this.$router.push('/pos')
-                }
+                },
             }
             this.$store.commit('SET_ACTION_BUTTONS', [printReport, goToPOS])
         },
@@ -519,7 +538,7 @@ export default {
         },
 
         // Wireup
-        invoiceFormatId
+        invoiceFormatId,
     },
 
     mounted() {
@@ -532,7 +551,7 @@ export default {
 
     beforeUnmount() {
         window.removeEventListener('resize', this.checkIsMobile)
-    }
+    },
 }
 </script>
 

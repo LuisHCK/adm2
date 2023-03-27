@@ -6,7 +6,7 @@
                 :style="{ backgroundImage: `url('${image}')` }"
             >
                 <span
-                    class="value has-text-white is-size-2-desktop is-size-3-mobile has-text-weight-bold"
+                    class="value has-text-white is-size-2-tablet is-size-3-mobile has-text-weight-bold"
                 >
                     {{ total }}
                 </span>
