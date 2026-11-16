@@ -1,11 +1,11 @@
 # ADM2 → Vue 3 Migration Tracker
 
 - **Plan:** [`PLAN.md`](./PLAN.md)
-- **Started:** —
+- **Started:** 2026-11-16
 - **Toolchain:** Node 26 LTS (legacy baseline: Node 18)
 - **Current phase:** Phase 0 — Baseline
-- **Current step:** 0.1 — Reproducible baseline
-- **Overall status:** ☐ Not started
+- **Current step:** 0.2 — Characterization tests
+- **Overall status:** ◐ In progress
 
 > A step may only be marked `✅ Done` after its tests, build, and manual checklist pass.
 > See the completion protocol below. Update this file in the same commit as the work.
@@ -59,12 +59,12 @@ A step is **Done** only when all of the following are true:
 
 | Phase | Steps | Done | Status |
 |---|---|---|---|
-| Phase 0 — Baseline | 3 | 0 | ☐ Not started |
+| Phase 0 — Baseline | 3 | 1 | ◐ In progress |
 | Phase 1 — De-risk on Vue 2 | 5 | 0 | ☐ Not started |
 | Phase 2 — Framework/tooling cutover | 5 | 0 | ☐ Not started |
 | Phase 3 — Feature verticals | 9 | 0 | ☐ Not started |
 | Phase 4 — Hardening and release | 6 | 0 | ☐ Not started |
-| **Total** | **28** | **0** | |
+| **Total** | **28** | **1** | |
 
 ---
 
@@ -74,15 +74,15 @@ A step is **Done** only when all of the following are true:
 
 | ID | Step | Effort | Status | Started | Done | Tests | Evidence |
 |---|---|---|---|---|---|---|---|
-| 0.1 | Reproducible baseline + `pre-vue3` tag | S | ☐ | | | Build + `/login` loads | |
+| 0.1 | Reproducible baseline + `pre-vue3` tag | S | ✅ | 2026-11-16 | 2026-11-16 | Node 18 build + `/login` HTTP 200 | `pre-vue3` → `12f88eb`; build OK |
 | 0.2 | Characterization tests (pure logic) | S | ☐ | | | `yarn test` green on Vue 2 | |
 | 0.3 | DB contract fixture (fake-indexeddb) | S | ☐ | | | Fixture restore + controller queries | |
 
 **Phase 0 exit criteria**
 
-- [ ] `pre-vue3` tag exists.
-- [ ] Node 18 baseline version and Node 26 target version documented.
-- [ ] `.nvmrc` / `engines.node` pinned to Node 26.
+- [x] `pre-vue3` tag exists.
+- [x] Node 18 baseline version and Node 26 target version documented.
+- [ ] `.nvmrc` / `engines.node` pinned to Node 26. *(deferred to Step 2.1)*
 - [ ] Characterization tests cover money, invoice IDs, dates, and normalization.
 - [ ] DB fixture restores all tables and query assertions pass.
 
@@ -171,7 +171,7 @@ Record commands, test counts, CI links, screenshots, or notes. Newest first.
 
 | Date | Step | Evidence |
 |---|---|---|
-| — | — | — |
+| 2026-11-16 | 0.1 | Tag `pre-vue3` → `12f88eb`; branch `migration/vue3`; Node `18.20.8` baseline; Yarn `1.22.22` via corepack (`packageManager` pinned in `package.json`); `NODE_OPTIONS=--openssl-legacy-provider yarn build` succeeded; `serve -s dist` → `/login` HTTP `200`, title and `<div id="app">` present. |
 
 ### Running commands
 
@@ -253,6 +253,21 @@ the evidence log.
   Vite 8 needs `^20.19 || >=22.12`; Vitest 5 needs `^22.12 || ^24 || >=26`.
 - **The legacy baseline runs on Node 18 only.** Vue CLI 4 / webpack 4 will not build
   reliably on Node 26; do not try.
+- **Legacy baseline build recipe (Node 18):**
+
+  ```bash
+  source ~/.nvm/nvm.sh && nvm use 18
+  yarn install --ignore-scripts --frozen-lockfile
+  node node_modules/electron/install.js   # the Electron CLI plugin loads even for a web build
+  NODE_OPTIONS=--openssl-legacy-provider yarn build
+  npx serve -s dist -l 4173               # verify /login returns 200
+  ```
+
+  `--openssl-legacy-provider` is required because webpack 4 uses MD4.
+  `--ignore-scripts` avoids the Electron download during install, but the web build still
+  loads `vue-cli-plugin-electron-builder`, which requires the Electron binary.
+- **Yarn is pinned to `1.22.22`** via corepack (`packageManager` in `package.json`).
+  Run `corepack enable` on a fresh machine.
 - **Bun was evaluated and dropped.** No LTS policy; no benefit for a browser-only app.
 - **Node 27 is Alpha**, not LTS. It becomes LTS in Oct 2027.
 - **IndexedDB is origin-scoped.** Preview deployments need a real backup import before
