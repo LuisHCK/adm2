@@ -1,4 +1,4 @@
-import * as moment from 'moment'
+import moment from 'moment'
 
 /**
  * Get an array with latests N days

@@ -1,6 +1,6 @@
 import { importDB, exportDB, importInto } from 'dexie-export-import'
 import FileSaver from 'file-saver'
-import * as moment from 'moment'
+import moment from 'moment'
 import EventBus from '../event-bus'
 
 let progress = 0

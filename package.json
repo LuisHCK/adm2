@@ -11,6 +11,8 @@
     "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
     "electron:serve": "vue-cli-service electron:serve",
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
@@ -55,6 +57,7 @@
     "raw-loader": "^4.0.2",
     "sass": "^1.32.8",
     "sass-loader": "^10.1.1",
+    "vitest": "2.1.9",
     "vue-cli-plugin-capacitor": "~2.0.1",
     "vue-cli-plugin-electron-builder": "~2.1.1",
     "vue-cli-plugin-i18n": "~2.3.1",

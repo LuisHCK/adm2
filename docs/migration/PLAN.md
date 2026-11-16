@@ -148,6 +148,8 @@ Replacement is decided in Step 3.4:
 - **Node 27 is Alpha** (Oct 2026–Mar 2027) and is not used. It becomes LTS in Oct 2027.
 - **Package manager: keep Yarn** (the existing `yarn.lock`) for the migration. Do not
   introduce a second package manager or lockfile during the rewrite.
+- **Phase 0 test runner: Vitest 2.1.9 + Vite 5.4.21**, the last line that supports Node
+  18. Step 2.1 upgrades to Vitest 5 + Vite 8 with the rest of the toolchain.
 
 ---
 
@@ -208,17 +210,20 @@ version documented.
 
 #### Step 0.2 — Characterization tests for pure logic `S`
 
-- Add Vitest only. No application-code changes.
+- Add a Node-18-compatible test runner. **Vitest 2.1.9 + Vite 5.4.21** is used in Phase 0;
+  upgrade to Vitest 5 + Vite 8 in Step 2.1.
+- No behavior changes. Minimal import-interop fixes are allowed if a test exposes a
+  Vite/Node incompatibility; record them.
 - Cover:
   - `Maths.percentOfNum` / `Maths.getPercent`
   - `invoiceFormatId`
   - `formatNumber` (money filter logic)
-  - `normalizeText`
+  - `normalizeText` / `compareText`
   - `lastXdays`
   - `enumerateDaysBetweenDates`
-  - Cashbox date formatting helpers
+  - Cashbox reference, date, and log-type helpers
 
-**Test:** `yarn test` green on the Vue 2 codebase.
+**Test:** `yarn test` green on the Vue 2 codebase (15 tests at time of writing).
 
 **Done:** these behaviors are pinned before any change.
 
@@ -531,3 +536,4 @@ D1–D5 are decided. D6 is deferred to Step 3.4.
 | 2026-11-16 | Initial plan created |
 | 2026-11-16 | D5 decided: Node 26 LTS toolchain, Node 18 legacy baseline, Bun dropped |
 | 2026-11-16 | D1–D4 decided: VeeValidate 4, JS-first, full Phase 1 de-risk, port all screens |
+| 2026-11-16 | Step 0.2: Phase 0 test runner pinned to Vitest 2.1.9 + Vite 5.4.21 (Node 18) |

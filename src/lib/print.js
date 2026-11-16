@@ -1,6 +1,6 @@
 import { onElectron } from './electron-utils'
 import { getSettings } from '@/controllers/settings'
-import * as moment from 'moment'
+import moment from 'moment'
 import '@/types'
 import { invoiceFormatId } from '@/reports/invoice'
 

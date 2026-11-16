@@ -4,7 +4,7 @@
 - **Started:** 2026-11-16
 - **Toolchain:** Node 26 LTS (legacy baseline: Node 18)
 - **Current phase:** Phase 0 — Baseline
-- **Current step:** 0.2 — Characterization tests
+- **Current step:** 0.3 — DB contract fixture
 - **Overall status:** ◐ In progress
 
 > A step may only be marked `✅ Done` after its tests, build, and manual checklist pass.
@@ -59,12 +59,12 @@ A step is **Done** only when all of the following are true:
 
 | Phase | Steps | Done | Status |
 |---|---|---|---|
-| Phase 0 — Baseline | 3 | 1 | ◐ In progress |
+| Phase 0 — Baseline | 3 | 2 | ◐ In progress |
 | Phase 1 — De-risk on Vue 2 | 5 | 0 | ☐ Not started |
 | Phase 2 — Framework/tooling cutover | 5 | 0 | ☐ Not started |
 | Phase 3 — Feature verticals | 9 | 0 | ☐ Not started |
 | Phase 4 — Hardening and release | 6 | 0 | ☐ Not started |
-| **Total** | **28** | **1** | |
+| **Total** | **28** | **2** | |
 
 ---
 
@@ -75,7 +75,7 @@ A step is **Done** only when all of the following are true:
 | ID | Step | Effort | Status | Started | Done | Tests | Evidence |
 |---|---|---|---|---|---|---|---|
 | 0.1 | Reproducible baseline + `pre-vue3` tag | S | ✅ | 2026-11-16 | 2026-11-16 | Node 18 build + `/login` HTTP 200 | `pre-vue3` → `12f88eb`; build OK |
-| 0.2 | Characterization tests (pure logic) | S | ☐ | | | `yarn test` green on Vue 2 | |
+| 0.2 | Characterization tests (pure logic) | S | ✅ | 2026-11-16 | 2026-11-16 | `yarn test` 15/15 green | Vitest 2.1.9 + Vite 5.4.21 (Node 18) |
 | 0.3 | DB contract fixture (fake-indexeddb) | S | ☐ | | | Fixture restore + controller queries | |
 
 **Phase 0 exit criteria**
@@ -83,7 +83,7 @@ A step is **Done** only when all of the following are true:
 - [x] `pre-vue3` tag exists.
 - [x] Node 18 baseline version and Node 26 target version documented.
 - [ ] `.nvmrc` / `engines.node` pinned to Node 26. *(deferred to Step 2.1)*
-- [ ] Characterization tests cover money, invoice IDs, dates, and normalization.
+- [x] Characterization tests cover money, invoice IDs, dates, and normalization.
 - [ ] DB fixture restores all tables and query assertions pass.
 
 ### Phase 1 — De-risk on Vue 2
@@ -171,6 +171,7 @@ Record commands, test counts, CI links, screenshots, or notes. Newest first.
 
 | Date | Step | Evidence |
 |---|---|---|
+| 2026-11-16 | 0.2 | `vitest@2.1.9` + transitive `vite@5.4.21` (Node 18 compatible; Vitest 5 requires Node 22.12+/26). Added `test` / `test:watch` scripts, `vitest.config.js` (`@` alias + `.ejs` raw transform), and 6 characterization specs. `yarn test` → **15/15 passed**. `yarn build` green; `serve -s dist` → `/login` HTTP `200`. Minimal interop fix: all `import * as moment` → `import moment` (6 files). |
 | 2026-11-16 | 0.1 | Tag `pre-vue3` → `12f88eb`; branch `migration/vue3`; Node `18.20.8` baseline; Yarn `1.22.22` via corepack (`packageManager` pinned in `package.json`); `NODE_OPTIONS=--openssl-legacy-provider yarn build` succeeded; `serve -s dist` → `/login` HTTP `200`, title and `<div id="app">` present. |
 
 ### Running commands
@@ -268,6 +269,12 @@ the evidence log.
   loads `vue-cli-plugin-electron-builder`, which requires the Electron binary.
 - **Yarn is pinned to `1.22.22`** via corepack (`packageManager` in `package.json`).
   Run `corepack enable` on a fresh machine.
+- **Phase 0 test runner is Vitest `2.1.9` + Vite `5.4.21`.** Vitest 5 requires Node
+  22.12+/26, so it cannot run on the Node 18 baseline. Upgrade both in Step 2.1.
+- **`yarn add --ignore-scripts` removes the Electron binary.** Re-run
+  `node node_modules/electron/install.js` before the next legacy build.
+- **`moment` must use a default import** (`import moment from 'moment'`) under Vite.
+  The legacy `import * as moment` form is not callable after ESM interop.
 - **Bun was evaluated and dropped.** No LTS policy; no benefit for a browser-only app.
 - **Node 27 is Alpha**, not LTS. It becomes LTS in Oct 2027.
 - **IndexedDB is origin-scoped.** Preview deployments need a real backup import before

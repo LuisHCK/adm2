@@ -1,4 +1,4 @@
-import * as moment from 'moment'
+import moment from 'moment'
 import { render } from 'ejs'
 import store from '../../store'
 import receiptTemplate from './template.ejs'
