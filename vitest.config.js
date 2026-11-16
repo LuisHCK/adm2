@@ -24,6 +24,7 @@ export default defineConfig({
     ],
     test: {
         environment: 'node',
+        setupFiles: ['./tests/unit/characterization/setup.js'],
         include: ['tests/unit/characterization/**/*.spec.js'],
     },
 })

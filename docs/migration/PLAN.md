@@ -229,15 +229,22 @@ version documented.
 
 #### Step 0.3 — DB contract fixture `S`
 
-- Vitest + fake-indexeddb: open `adm_2` with the current schema, seed every table, assert
-  the queries used by controllers.
-- Save a real exported backup JSON as a fixture (manual export from a running install).
-- Verify whether `Dexie.defineClass` still works on Dexie 4. If not, plan to drop the
-  class mapping but keep the stored object shape unchanged.
+- Vitest + `fake-indexeddb@6.2.8`: open `adm_2` with the current schema, seed every table,
+  assert the queries used by controllers.
+- Cover schema/indexes, unique constraints, auth lookup, product search, settings lookup,
+  sale filters + compound index, inventory product lookup, customer payments, and cashbox
+  close lookup.
+- Export the seeded DB with `exportDB`, rewrite the dump's database name, and re-import it
+  with `importDB` to prove backup compatibility.
+- Save a real exported backup JSON as a fixture when user data is available.
+- `Dexie.defineClass` was verified present in Dexie `4.4.7`; keep the class mappings and
+  stored object shape unchanged.
 
-**Test:** fixture restores and all controller queries return expected rows.
+**Test:** fixture seeds all tables, controller queries return expected rows, and the
+export/import round-trip preserves counts (13 DB tests; 28 total at time of writing).
 
-**Done:** schema and data contract locked; regressions fail here.
+**Done:** schema and data contract locked; regressions fail here. A real backup fixture is
+still pending user data; the synthetic round-trip locks the format.
 
 ---
 
@@ -537,3 +544,4 @@ D1–D5 are decided. D6 is deferred to Step 3.4.
 | 2026-11-16 | D5 decided: Node 26 LTS toolchain, Node 18 legacy baseline, Bun dropped |
 | 2026-11-16 | D1–D4 decided: VeeValidate 4, JS-first, full Phase 1 de-risk, port all screens |
 | 2026-11-16 | Step 0.2: Phase 0 test runner pinned to Vitest 2.1.9 + Vite 5.4.21 (Node 18) |
+| 2026-11-16 | Step 0.3: DB contract + export/import fixture added; `defineClass` confirmed on Dexie 4.4.7 |

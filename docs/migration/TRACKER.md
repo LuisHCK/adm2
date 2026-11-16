@@ -3,8 +3,8 @@
 - **Plan:** [`PLAN.md`](./PLAN.md)
 - **Started:** 2026-11-16
 - **Toolchain:** Node 26 LTS (legacy baseline: Node 18)
-- **Current phase:** Phase 0 — Baseline
-- **Current step:** 0.3 — DB contract fixture
+- **Current phase:** Phase 1 — De-risk on Vue 2
+- **Current step:** 1.1 — moment → date-fns
 - **Overall status:** ◐ In progress
 
 > A step may only be marked `✅ Done` after its tests, build, and manual checklist pass.
@@ -59,12 +59,16 @@ A step is **Done** only when all of the following are true:
 
 | Phase | Steps | Done | Status |
 |---|---|---|---|
-| Phase 0 — Baseline | 3 | 2 | ◐ In progress |
+| Phase 0 — Baseline | 3 | 3 | ✅ Complete* |
 | Phase 1 — De-risk on Vue 2 | 5 | 0 | ☐ Not started |
 | Phase 2 — Framework/tooling cutover | 5 | 0 | ☐ Not started |
 | Phase 3 — Feature verticals | 9 | 0 | ☐ Not started |
 | Phase 4 — Hardening and release | 6 | 0 | ☐ Not started |
-| **Total** | **28** | **2** | |
+| **Total** | **28** | **3** | |
+
+\* Node 26 pin (`.nvmrc` / `engines.node`) intentionally deferred to Step 2.1. A real
+user backup fixture will be added when available; the synthetic export/import round-trip
+already locks the format.
 
 ---
 
@@ -76,7 +80,7 @@ A step is **Done** only when all of the following are true:
 |---|---|---|---|---|---|---|---|
 | 0.1 | Reproducible baseline + `pre-vue3` tag | S | ✅ | 2026-11-16 | 2026-11-16 | Node 18 build + `/login` HTTP 200 | `pre-vue3` → `12f88eb`; build OK |
 | 0.2 | Characterization tests (pure logic) | S | ✅ | 2026-11-16 | 2026-11-16 | `yarn test` 15/15 green | Vitest 2.1.9 + Vite 5.4.21 (Node 18) |
-| 0.3 | DB contract fixture (fake-indexeddb) | S | ☐ | | | Fixture restore + controller queries | |
+| 0.3 | DB contract fixture (fake-indexeddb) | S | ✅ | 2026-11-16 | 2026-11-16 | `yarn test` 28/28; export/import round-trip | 13 DB tests; Dexie 4 `defineClass` verified |
 
 **Phase 0 exit criteria**
 
@@ -84,7 +88,9 @@ A step is **Done** only when all of the following are true:
 - [x] Node 18 baseline version and Node 26 target version documented.
 - [ ] `.nvmrc` / `engines.node` pinned to Node 26. *(deferred to Step 2.1)*
 - [x] Characterization tests cover money, invoice IDs, dates, and normalization.
-- [ ] DB fixture restores all tables and query assertions pass.
+- [x] DB fixture restores all tables and query assertions pass.
+- [x] Export/import round-trip preserves all tables.
+- [ ] Real user backup JSON captured as a committed fixture *(pending user data; synthetic round-trip covers the format)*
 
 ### Phase 1 — De-risk on Vue 2
 
@@ -171,6 +177,7 @@ Record commands, test counts, CI links, screenshots, or notes. Newest first.
 
 | Date | Step | Evidence |
 |---|---|---|
+| 2026-11-16 | 0.3 | Added `fake-indexeddb@6.2.8`; `setup.js` installs `window`/`self`/`FileReader` shims; `db-contract.spec.js` (13 tests) seeds all 14 tables, asserts schema/indexes, auth lookup, product search, settings lookup, sale filters + compound index, inventory product lookup, customer payments, cashbox close, unique constraints, and a full `exportDB` → `importDB` round-trip under a new DB name. **28/28 tests pass.** Verified `defineClass` still exists in Dexie `4.4.7` via a throwaway install. `yarn build` green. |
 | 2026-11-16 | 0.2 | `vitest@2.1.9` + transitive `vite@5.4.21` (Node 18 compatible; Vitest 5 requires Node 22.12+/26). Added `test` / `test:watch` scripts, `vitest.config.js` (`@` alias + `.ejs` raw transform), and 6 characterization specs. `yarn test` → **15/15 passed**. `yarn build` green; `serve -s dist` → `/login` HTTP `200`. Minimal interop fix: all `import * as moment` → `import moment` (6 files). |
 | 2026-11-16 | 0.1 | Tag `pre-vue3` → `12f88eb`; branch `migration/vue3`; Node `18.20.8` baseline; Yarn `1.22.22` via corepack (`packageManager` pinned in `package.json`); `NODE_OPTIONS=--openssl-legacy-provider yarn build` succeeded; `serve -s dist` → `/login` HTTP `200`, title and `<div id="app">` present. |
 
@@ -271,6 +278,15 @@ the evidence log.
   Run `corepack enable` on a fresh machine.
 - **Phase 0 test runner is Vitest `2.1.9` + Vite `5.4.21`.** Vitest 5 requires Node
   22.12+/26, so it cannot run on the Node 18 baseline. Upgrade both in Step 2.1.
+- **DB tests polyfill browser globals.** `setup.js` provides `window`, `self`, and a minimal
+  `FileReader`; `dexie-export-import@1.0.0` needs the latter. Revisit when it is upgraded
+  to `4.4.2` in Step 2.1.
+- **`Dexie.defineClass` exists in Dexie 4.4.7.** The class mappings can stay; no data-shape
+  change is required for the upgrade.
+- **A real user backup fixture is still pending.** The synthetic export/import test locks
+  the dump format; attach a real backup when available.
+- **`dexie-export-import` is `1.0.0` on the baseline.** It requires Dexie 3; upgrade it
+  together with Dexie 4 in Step 2.1.
 - **`yarn add --ignore-scripts` removes the Electron binary.** Re-run
   `node node_modules/electron/install.js` before the next legacy build.
 - **`moment` must use a default import** (`import moment from 'moment'`) under Vite.
