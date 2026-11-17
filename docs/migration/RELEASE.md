@@ -112,3 +112,6 @@ There has been no schema bump in this migration.
   sub-dependencies (`ejs > jake`), plus an unpatched `picomatch` in the build
   graph. No vulnerable package appears in `dist/`. See `TRACKER.md`.
 - Desktop (Electron) and native (Capacitor) shells are out of scope.
+
+The prioritized follow-up backlog lives in
+[`POST-UPGRADE.md`](./POST-UPGRADE.md). Nothing in it blocks a deploy.
