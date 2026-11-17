@@ -1,7 +1,9 @@
 import { spawn } from 'node:child_process'
 import { setTimeout as sleep } from 'node:timers/promises'
+import { fileURLToPath } from 'node:url'
 
 const baseUrl = process.env.SMOKE_URL || 'http://127.0.0.1:4173'
+const repoRoot = fileURLToPath(new URL('../../', import.meta.url))
 const scripts = [
     'boot-gate.mjs',
     'auth-backup.mjs',
@@ -28,7 +30,7 @@ const preview = spawn(
         '4173',
         '--strictPort',
     ],
-    { stdio: 'ignore' },
+    { stdio: 'ignore', cwd: repoRoot },
 )
 
 function stopPreview() {
@@ -57,10 +59,15 @@ async function waitForPreview() {
 
 function runScript(script) {
     return new Promise(resolve => {
-        const child = spawn('node', [`tests/e2e/${script}`], {
-            stdio: 'inherit',
-            env: { ...process.env, SMOKE_URL: baseUrl },
-        })
+        const child = spawn(
+            'node',
+            [fileURLToPath(new URL(script, import.meta.url))],
+            {
+                stdio: 'inherit',
+                cwd: repoRoot,
+                env: { ...process.env, SMOKE_URL: baseUrl },
+            },
+        )
         child.on('exit', code => resolve(code ?? 1))
     })
 }

@@ -1,6 +1,10 @@
 import { launchBrowser } from './browser.mjs'
+import { fileURLToPath } from 'node:url'
 
 const baseUrl = process.env.SMOKE_URL || 'http://127.0.0.1:4173'
+const iconPath = fileURLToPath(
+    new URL('../../public/icon.png', import.meta.url),
+)
 const browser = await launchBrowser()
 const context = await browser.newContext({
     viewport: { width: 1440, height: 900 },
@@ -46,9 +50,7 @@ await textInputs.nth(4).fill('€')
 
 await storeTab
     .locator('input[type=file]')
-    .setInputFiles(
-        '/Users/luisjcenteno/Projects/adm2/public/icon.png',
-    )
+    .setInputFiles(iconPath)
 await page.waitForTimeout(600)
 await storeTab.locator('button[type=submit]').click()
 await page.waitForTimeout(1200)

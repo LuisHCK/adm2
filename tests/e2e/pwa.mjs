@@ -1,7 +1,11 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { launchBrowser } from './browser.mjs'
 
 const baseUrl = process.env.SMOKE_URL || 'http://127.0.0.1:4173'
+const repoRoot = fileURLToPath(new URL('../../', import.meta.url))
+const distDir = join(repoRoot, 'dist')
 const browser = await launchBrowser()
 const context = await browser.newContext({
     viewport: { width: 1440, height: 900 },
@@ -27,18 +31,20 @@ const check = (name, value) => {
 // --- Static PWA artifacts ---
 check(
     'service worker generated',
-    existsSync('dist/sw.js') && existsSync('dist/registerSW.js'),
+    existsSync(join(distDir, 'sw.js')) &&
+        existsSync(join(distDir, 'registerSW.js')),
 )
 check(
     'auto-update service worker',
-    readFileSync('dist/sw.js', 'utf8').includes('skipWaiting'),
+    readFileSync(join(distDir, 'sw.js'), 'utf8').includes('skipWaiting'),
 )
 
-const indexFile = readdirSync('dist/assets').find(file =>
+const assetsDir = join(distDir, 'assets')
+const indexFile = readdirSync(assetsDir).find(file =>
     /^index-.*\.js$/.test(file),
 )
 const bundleSize = indexFile
-    ? statSync(`dist/assets/${indexFile}`).size
+    ? statSync(join(assetsDir, indexFile)).size
     : Number.MAX_SAFE_INTEGER
 console.log(
     `[bundle] ${indexFile} = ${(bundleSize / 1024).toFixed(1)} kB`,
