@@ -28,6 +28,7 @@ web-first version.
 - Product, provider, and customer management
 - Multiple inventories with stock, price, lot, and unlimited-stock support
 - POS with barcode/search, cart, discounts, cash/credit sales, and customer credit
+  (products must be added to an inventory before they appear in the POS)
 - Receipt and invoice printing through the browser
 - Sales history, partial/full refunds, and sales reports
 - Cashbox with add/close/balance transactions, filters, and reports

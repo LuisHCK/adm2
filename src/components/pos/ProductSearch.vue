@@ -56,7 +56,22 @@
                 </ul>
                 <div class="no-results" v-else>
                     <i class="mdi mdi-file-outline"></i>
-                    <span>No hay resultados</span>
+                    <span v-if="!loadComplete">Cargando productos...</span>
+                    <template v-else-if="!inventoryProducts.length">
+                        <span>No hay productos en el inventario.</span>
+                        <small>
+                            Primero agrega productos a un inventario para
+                            venderlos en el POS.
+                        </small>
+                        <router-link
+                            class="button is-small is-link mt-2"
+                            to="/inventories"
+                            @click="showResults = false"
+                        >
+                            Ir a inventarios
+                        </router-link>
+                    </template>
+                    <span v-else>No hay resultados</span>
                 </div>
             </div>
         </form>
@@ -264,6 +279,9 @@ export default {
             align-items: center;
             justify-content: center;
             flex-direction: column;
+            gap: 0.35rem;
+            padding: 12px;
+            text-align: center;
 
             .mdi {
                 font-size: 26pt;

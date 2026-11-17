@@ -84,6 +84,18 @@ await visibleModal().locator('button[type=submit]').click()
 await waitModalClosed()
 await page.waitForTimeout(500)
 
+// --- POS guidance before the product is stocked ---
+await page.goto(`${baseUrl}/pos`, { waitUntil: 'domcontentloaded' })
+await page.waitForTimeout(800)
+await page.locator('#searchInput input').fill('POS Producto')
+await page.waitForTimeout(700)
+check(
+    'POS explains missing inventory',
+    (await page.locator('body').innerText()).includes(
+        'No hay productos en el inventario.',
+    ),
+)
+
 // --- Create inventory ---
 await page.goto(`${baseUrl}/inventories`, { waitUntil: 'domcontentloaded' })
 await page.waitForTimeout(800)
