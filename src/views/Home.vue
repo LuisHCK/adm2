@@ -5,7 +5,7 @@
                 <!-- card 1 -->
                 <info-card
                     title="Dinero en caja"
-                    :total="totalMoney | money"
+                    :total="$money(totalMoney)"
                     linkTo="cashbox"
                     linkLabel="Ir a caja"
                     image="/10.jpg"
@@ -85,6 +85,7 @@
 </template>
 
 <script>
+import database from "@/db"
 import LineChart from '../components/charts/LineChart.vue'
 import SalesList from '../components/sales/SalesList.vue'
 import CustomersList from '../components/customers/CustomersList.vue'
@@ -92,9 +93,12 @@ import InventoryStatus from '../components/dashboard/InventoryStatus.vue'
 import {
     lastXdays,
     setHourTo,
-    enumerateDaysBetweenDates
+    enumerateDaysBetweenDates,
+    endOfDayDate,
+    startOfDayDate,
 } from '../lib/datetime'
 import { getMoneyInCashBox } from '../controllers/cashbox'
+import { buildSalesGraph } from '../lib/dashboard'
 import InfoCard from '../components/dashboard/InfoCard.vue'
 
 const TODAY = new Date()
@@ -131,15 +135,11 @@ export default {
 
     methods: {
         async getSales() {
-            const sales = Database.sale
+            const sales = database.sale
 
             // Set date filters
-            const start_date = this.$moment()
-                .startOf('day')
-                .toISOString()
-            const finish_date = this.$moment()
-                .endOf('day')
-                .toISOString()
+            const start_date = startOfDayDate(new Date()).toISOString()
+            const finish_date = endOfDayDate(new Date()).toISOString()
 
             // Count total sales
             sales
@@ -159,68 +159,34 @@ export default {
                 .then(data => (this.salesList = data))
         },
 
-        getSalesGraph() {
-            let labels = []
-            let datasets = [
-                {
-                    label: 'Ventas al contado',
-                    borderColor: '#90CAF9',
-                    fill: false,
-                    pointRadius: 5,
-                    pointBackgroundColor: '#64B5F6',
-                    data: []
-                },
-                {
-                    label: 'Ventas al crédito',
-                    borderColor: '#ef9a9a',
-                    fill: false,
-                    pointRadius: 5,
-                    pointBackgroundColor: '#e57373',
-                    data: []
-                }
-            ]
+        async getSalesGraph() {
+            const dates = [...this.dates].reverse()
 
-            this.dates.reverse().map(async date => {
-                // Add label
-                labels.push(this.$moment(date).format('ddd D MMM'))
+            const salesByDate = await Promise.all(
+                dates.map(date =>
+                    database.sale
+                        .where('created_at')
+                        .between(
+                            date.toISOString(),
+                            setHourTo(date, 'end').toISOString(),
+                            true,
+                            true,
+                        )
+                        .toArray(),
+                ),
+            )
 
-                // add datasets
-                const sales = await Database.sale
-                    .where('created_at')
-                    .between(
-                        date.toISOString(),
-                        setHourTo(date, 'end').toISOString(),
-                        true,
-                        true
-                    )
-                    .toArray()
+            this.salesGraph = buildSalesGraph(dates, salesByDate)
 
-                const cashSales = sales.filter(sale =>
-                    sale ? sale.sale_type === 'cash' : false
-                ).length
-
-                const creditSales = sales.filter(sale =>
-                    sale ? sale.sale_type === 'credit' : false
-                ).length
-
-                datasets[0].data.push(cashSales)
-                datasets[1].data.push(creditSales)
-            })
-
-            // set graph
-            this.salesGraph = {
-                labels,
-                datasets
-            }
-
-            // Update chart
             setTimeout(() => {
-                this.$refs.lineChart.fillData()
-            }, 500)
+                if (this.$refs.lineChart) {
+                    this.$refs.lineChart.fillData()
+                }
+            }, 300)
         },
 
         getTotalProviders() {
-            Database.provider
+            database.provider
                 .count()
                 .then(count => (this.totalProviders = count))
         },

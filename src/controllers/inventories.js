@@ -1,5 +1,6 @@
 import database from '../db'
 import { getProductById } from './products'
+import { toPlain } from '../lib/serialization'
 
 /**
  * Get all inventories
@@ -62,11 +63,12 @@ export const countInventoryProducts = async inventoryId => {
  * @returns {Promise}
  */
 export const updateInventoryProduct = data => {
-    return database.inventory_product.update(data.id, data)
+    const payload = toPlain(data)
+    return database.inventory_product.update(payload.id, payload)
 }
 
 export const createInventoryProduct = data => {
-    return database.inventory_product.add(data)
+    return database.inventory_product.add(toPlain(data))
 }
 
 /**

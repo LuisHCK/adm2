@@ -21,7 +21,7 @@
     </section>
 
     <!-- inventory modal form -->
-    <b-modal :active.sync="showForm" has-modal-card>
+    <b-modal v-model="showForm" has-modal-card>
       <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">Nuevo inventario</p>
@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import database from "@/db"
+import { toPlain } from '@/lib/serialization'
 import InventoryCard from '@/components/inventory/InventoryCard.vue'
 import InventoryForm from '@/components/inventory/InventoryForm.vue'
 
@@ -55,7 +57,7 @@ export default {
 
   methods: {
     getInventories() {
-      Database.inventory
+      database.inventory
         .toArray()
         .then(inventories => {
           this.inventories = inventories
@@ -69,8 +71,8 @@ export default {
       data.created_at = now.toISOString()
       data.updated_at = now.toISOString()
 
-      Database.inventory
-        .add(data)
+      database.inventory
+        .add(toPlain(data))
         .then(res => {
           this.getInventories()
           this.showForm = false

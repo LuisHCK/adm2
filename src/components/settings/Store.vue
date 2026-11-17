@@ -5,15 +5,15 @@
             <div class="column is-half-tablet is-full-mobile">
                 <b-field
                     label="Nombre"
-                    :type="{ 'is-danger': errors.has('name') }"
-                    :message="errors.first('name')"
+                    :type="nameError ? 'is-danger' : ''"
+                    :message="nameError"
                 >
                     <b-input
                         v-model="store.name"
                         name="name"
-                        v-validate="'required'"
                         icon="text"
                         rounded
+                        @update:model-value="nameError = ''"
                     />
                 </b-field>
             </div>
@@ -51,7 +51,7 @@
             <!-- Logo -->
             <div class="column is-half-tablet is-full-mobile">
                 <b-field label="Logo">
-                    <b-upload @input="handleLogo" class="file-label">
+                    <b-upload @update:model-value="handleLogo" class="file">
                         <span class="file-cta">
                             <b-icon class="file-icon" icon="upload"></b-icon>
                             <span class="file-label"
@@ -80,8 +80,10 @@
 </template>
 
 <script>
+import database from "@/db"
 import { addOrUpdateSettings } from '@/controllers/settings'
 import { fileToBase64 } from '../../lib/filesys'
+import { validate } from '@/lib/validation'
 
 export default {
     name: 'store',
@@ -90,13 +92,20 @@ export default {
         return {
             store: {},
             settingsId: undefined,
-            logo: undefined
+            logo: undefined,
+            nameError: ''
         }
     },
 
     methods: {
         async submitStoreForm() {
-            if (!this.store.name) {
+            const { valid, errors } = await validate(
+                this.store.name,
+                'required',
+            )
+            this.nameError = valid ? '' : errors[0]
+
+            if (!valid) {
                 return
             }
 
@@ -115,7 +124,7 @@ export default {
         },
 
         async getStoreData() {
-            const settings = await Database.settings.get({ name: 'store' })
+            const settings = await database.settings.get({ name: 'store' })
 
             if (settings) {
                 this.settingsId = settings.id

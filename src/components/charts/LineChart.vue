@@ -11,7 +11,7 @@
                         position="is-bottom-left"
                         v-model="dateRange"
                         icon="calendar-today"
-                        @input="emitChange()"
+                        @update:model-value="emitChange()"
                         :month-names="months"
                         :day-names="daysAbr"
                         :mobile-native="false"
@@ -66,7 +66,10 @@ export default {
 
     data() {
         return {
-            datacollection: {},
+            datacollection: {
+                labels: [],
+                datasets: []
+            },
             options: {
                 responsive: true,
                 maintainAspectRatio: false

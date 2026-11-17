@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs"
 import db from "../db"
-import store from "../store"
+import { pinia, useAppStore } from "../store"
 
 const salt = bcrypt.genSaltSync(10)
 
@@ -40,7 +40,7 @@ export async function logIn(auth, password) {
   let success
 
   if (user && compareSync(password, user.password_digest)) {
-    store.commit("setUser", user)
+    useAppStore(pinia).setUser(user)
     success = true
   } else {
     success = false

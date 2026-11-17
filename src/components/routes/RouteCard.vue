@@ -23,7 +23,7 @@ export default {
   props: {
     route: {
       type: Object,
-      default: {}
+      default: () => ({})
     }
   }
 }

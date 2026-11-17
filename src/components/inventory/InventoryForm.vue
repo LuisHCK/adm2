@@ -20,8 +20,12 @@
 </template>
 
 <script>
+import { toPlain } from '@/lib/serialization'
+
 export default {
   name: "product-form",
+
+  emits: ['submit'],
 
   data() {
     return {
@@ -37,7 +41,7 @@ export default {
   methods: {
     submit() {
       if (this.form.name) {
-        this.$emit("submit", this.form);
+        this.$emit("submit", toPlain(this.form));
       } else {
         this.notifyError("Por favor revise el formulario");
         this.showMessages();

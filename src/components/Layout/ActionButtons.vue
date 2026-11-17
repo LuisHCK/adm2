@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from '@/store/vuex-compat'
 export default {
     name: 'action-buttons',
 
@@ -73,7 +73,7 @@ export default {
         })
     },
 
-    beforeDestroy() {
+    beforeUnmount() {
         window.removeEventListener('resize', this.onResize)
     }
 }

@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import database from "@/db"
 import AuthLayout from './layouts/AuthLayout.vue'
 import MainLayout from './layouts/MainLayout.vue'
 
@@ -14,13 +15,15 @@ export default {
 
     computed: {
         layout() {
-            return this.$route.meta.layout
+            return this.$route.meta.layout === 'auth-layout'
+                ? 'AuthLayout'
+                : 'MainLayout'
         }
     },
 
     methods: {
         async getStoreData() {
-            const storeData = await Database.settings.get({ name: 'store' })
+            const storeData = await database.settings.get({ name: 'store' })
 
             if (storeData) {
                 this.$store.commit('SET_STORE', storeData.value)
@@ -34,9 +37,6 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '@/buefy.scss';
-@import url('./assets/_fonts.scss');
-
 html {
     font-size: 11pt !important;
 }
@@ -75,7 +75,7 @@ body {
 }
 
 .page {
-    @media only screen and (max-width: $sidenav-break-point) {
+    @media only screen and (max-width: 1300px) {
         padding: 8px;
     }
 }

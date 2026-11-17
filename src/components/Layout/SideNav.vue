@@ -7,7 +7,7 @@
             <div class="store-logo">
                 <div class="store-cover has-text-centered">
                     <img
-                        :src="store.logo || require('@/assets/logo.png')"
+                        :src="store.logo || defaultLogo"
                         alt=""
                         class="logo"
                     />
@@ -21,6 +21,10 @@
                 <div
                     v-for="(item, i) in items"
                     @click="setRoute(item)"
+                    @keydown.enter="setRoute(item)"
+                    @keydown.space.prevent="setRoute(item)"
+                    tabindex="0"
+                    role="button"
                     :key="`item-${i}`"
                     class="nav-item"
                     :class="{ active: item.path == currentPath }"
@@ -34,7 +38,14 @@
                         icon="chevron-left"
                     />
                 </div>
-                <div class="nav-item" @click="logOut()">
+                <div
+                    class="nav-item"
+                    role="button"
+                    tabindex="0"
+                    @click="logOut()"
+                    @keydown.enter="logOut()"
+                    @keydown.space.prevent="logOut()"
+                >
                     <div class="item-details has-text-danger">
                         <b-icon icon="exit-to-app" />
                         <span class="text-item" v-text="'Cerrar sesión'" />
@@ -52,14 +63,16 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from '@/store/vuex-compat'
 import EventBus from '@/event-bus'
+import defaultLogo from '@/assets/logo.png'
 
 export default {
     name: 'side-nav',
 
     data() {
         return {
+            defaultLogo,
             logo: localStorage.getItem('company_logo'),
             currentPath: 'home',
         }
@@ -207,7 +220,7 @@ export default {
         }
     }
     // break points
-    @media only screen and (max-width: $sidenav-break-point) {
+    @media only screen and (max-width: 1300px) {
         position: fixed;
         z-index: 1000;
         left: 0px;

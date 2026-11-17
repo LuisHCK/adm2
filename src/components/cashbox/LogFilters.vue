@@ -47,7 +47,7 @@
                 locale="es-NI"
                 :month-names="months"
                 :day-names="daysAbr"
-                @input="submitDateChange"
+                @update:model-value="submitDateChange"
                 :mobile-native="false"
                 range
             />
@@ -56,6 +56,7 @@
                 @click="emitCleanFilter"
                 icon-left="close"
                 type="is-text"
+                aria-label="Limpiar filtro de fecha"
                 v-show="dateRange && dateRange.length"
                 rounded
             />
@@ -65,7 +66,7 @@
             <b-input
                 placeholder="Buscar..."
                 :value="searchValue"
-                @input="handleSearch"
+                @update:model-value="handleSearch"
                 icon="magnify"
                 icon-right-clickable
                 :icon-right="searchValue ? 'close' : null"

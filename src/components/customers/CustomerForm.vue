@@ -38,8 +38,12 @@
 </template>
 
 <script>
+import database from "@/db"
+import { toPlain } from '@/lib/serialization'
 export default {
     name: 'customer-form',
+
+    emits: ['input', 'onSave'],
 
     data() {
         return {
@@ -52,8 +56,8 @@ export default {
             if (this.form.name) {
                 this.form.created_at = new Date().toISOString()
                 this.form.updated_at = new Date().toISOString()
-                Database.customer
-                    .add(this.form)
+                database.customer
+                    .add(toPlain(this.form))
                     .then(data => {
                         this.showToast('Se guardó el nuevo cliente')
                         this.$emit('input')

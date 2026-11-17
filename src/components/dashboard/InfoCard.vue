@@ -61,7 +61,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~bulma/sass/utilities/_all";
 
 .image {
     background-size: cover;
@@ -70,7 +69,7 @@ export default {
     align-items: center;
     justify-content: center;
 
-    @include mobile {
+    @media (max-width: 768px) {
         height: 100px;
         background-position: center;
     }

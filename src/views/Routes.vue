@@ -18,7 +18,7 @@
     </div>
 
     <!-- Form modal -->
-    <b-modal :active.sync="showModalForm" has-modal-card>
+    <b-modal v-model="showModalForm" has-modal-card>
       <div class="modal-card">
         <div class="modal-card-head">
           <span v-if="routeForm.id" class="modal-card-title">Editar Ruta</span>
@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import database from "@/db"
+import { toPlain } from '@/lib/serialization'
 import RouteCard from '@/components/routes/RouteCard.vue'
 
 export default {
@@ -71,7 +73,7 @@ export default {
 
   methods: {
     getRoutes() {
-      Database.route
+      database.route
         .toArray()
         .then(routes => {
           this.routes = routes
@@ -83,8 +85,8 @@ export default {
      * Save Route
      */
     submit() {
-      Database.route
-        .add(this.routeForm)
+      database.route
+        .add(toPlain(this.routeForm))
         .then(data => {
           // Perform post-create action
           this.showModalForm = false

@@ -64,8 +64,10 @@
                                     </td>
                                     <td style="text-align: left;">
                                         {{
-                                            sale.created_at
-                                                | moment('DD/MM/YYYY, h:mm a')
+                                            $date(
+                                                sale.created_at,
+                                                'dd/MM/yyyy, h:mm a',
+                                            )
                                         }}
                                     </td>
                                 </tr>
@@ -168,7 +170,7 @@
 
 <script>
 import { printContentent } from '@/lib/print'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from '@/store/vuex-compat'
 export default {
     name: 'sale-invoice',
 

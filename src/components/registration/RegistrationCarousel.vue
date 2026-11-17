@@ -108,7 +108,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '~bulma/sass/utilities/_all';
 
 .registration-carousel {
     height: 100%;
@@ -134,7 +133,7 @@ export default {
     }
 }
 
-@include mobile {
+@media (max-width: 768px) {
     .registration-carousel {
         margin: -9px;
     }

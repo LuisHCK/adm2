@@ -1,7 +1,0 @@
-{
-    "appId": "com.livingcompany.adm2",
-    "appName": "ADM2",
-    "bundledWebRuntime": false,
-    "webDir": "dist",
-    "linuxAndroidStudioPath": "/usr/bin/android-studio"
-}

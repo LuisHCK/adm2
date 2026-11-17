@@ -3,7 +3,7 @@
         <div class="columns">
             <div class="column">
                 <strong class v-text="getCompanyName" />
-                <div>{{ sale.created_at | moment('MMM DD YYYY, h:mm a') }}</div>
+                <div>{{ $date(sale.created_at, 'MMM dd yyyy, h:mm a') }}</div>
             </div>
             <div class="column">
                 <div class="has-text-right">
@@ -45,11 +45,11 @@
                         <td v-text="item.inventoryProduct.product.codebar"></td>
                         <td v-text="item.quantity"></td>
                         <td>
-                            {{ item.inventoryProduct.price | money }}
+                            {{ $money(item.inventoryProduct.price) }}
                         </td>
                         <td>
                             <span v-if="item.discount && item.discounted">
-                                {{ item.discounted || 0 | money }}
+                                {{ $money(item.discounted || 0) }}
                             </span>
                             <span v-else>
                                 --
@@ -57,10 +57,10 @@
                         </td>
                         <td>
                             <span v-if="item.discount && item.discounted">
-                                {{ (item.subTotal - item.discounted) | money }}
+                                {{ $money((item.subTotal - item.discounted)) }}
                             </span>
                             <span v-else>
-                                {{ item.subTotal | money }}
+                                {{ $money(item.subTotal) }}
                             </span>
                         </td>
                     </tr>
@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from '@/store/vuex-compat'
 export default {
     name: 'sale-details',
 

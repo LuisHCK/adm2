@@ -1,6 +1,6 @@
 <template>
     <b-modal
-        :active="isOpen"
+        v-model="isOpen"
         @close="closeModal"
         has-modal-card
         trap-focus
@@ -18,7 +18,7 @@
             </header>
             <section class="modal-card-body">
                 <b-table
-                    :checked-rows.sync="checkedProducts"
+                    v-model:checked-rows="checkedProducts"
                     :is-row-checkable="isCheckableRow"
                     :data="sale.shoppingCart"
                     :row-class="isRefunded"
@@ -76,12 +76,12 @@
                                 type="is-success"
                                 rounded
                             >
-                                {{ props.row.subTotal | money }}
+                                {{ $money(props.row.subTotal) }}
                             </b-tag>
                         </b-table-column>
                     </template>
 
-                    <template slot="footer">
+                    <template #footer>
                         <th colspan="6" class="has-text-right">
                             TOTAL
                         </th>
@@ -91,7 +91,7 @@
                                 type="is-primary"
                                 rounded
                             >
-                                {{ sale.total | money }}
+                                {{ $money(sale.total) }}
                             </b-tag>
                         </th>
                     </template>
@@ -115,18 +115,26 @@
 </template>
 
 <script>
+import database from "@/db"
+import { toPlain } from '@/lib/serialization'
+import { registerCashboxLog } from '@/controllers/cashbox'
+import { invoiceFormatId } from '@/reports/invoice'
+import { pinia, useAppStore } from '@/store'
+
 export default {
     name: 'refund-modal',
 
+    emits: ['update:modelValue', 'close', 'success'],
+
     props: {
-        value: {
+        modelValue: {
             type: Boolean,
             default: false
         },
 
         sale: {
             type: Object,
-            default: () => {}
+            default: () => ({})
         }
     },
 
@@ -137,42 +145,100 @@ export default {
     },
 
     computed: {
-        isOpen() {
-            return this.value
+        isOpen: {
+            get() {
+                return this.modelValue
+            },
+            set(value) {
+                this.$emit('update:modelValue', value)
+            }
         }
     },
 
     methods: {
         closeModal() {
-            this.$emit('input', false)
+            this.$emit('update:modelValue', false)
             this.$emit('close')
             this.checkedProducts = []
         },
 
         async refund() {
-            this.checkedProducts.forEach(c => {
-                c.refunded = true
+            const refundedItems = [...this.checkedProducts]
+            const originalTotal = Number(this.sale.total || 0)
+
+            refundedItems.forEach(item => {
+                item.refunded = true
             })
 
             const refundType = this.getRefundType()
+            const updatedSubTotal = this.getUpdatedSubTotal()
+            const refundAmount = Math.max(0, originalTotal - updatedSubTotal)
 
             try {
-                /** Update sale */
-                const updatedSubTotal = this.getUpdatedSubTotal()
+                await database.sale.update(
+                    this.sale.id,
+                    toPlain({
+                        refund_type: refundType,
+                        shoppingCart: this.sale.shoppingCart,
+                        subTotal: updatedSubTotal,
+                        total: updatedSubTotal,
+                    }),
+                )
 
-                await Database.sale.update(this.sale.id, {
-                    refund_type: refundType,
-                    shoppingCart: this.sale.shoppingCart,
-                    subTotal: updatedSubTotal,
-                    total: updatedSubTotal
-                })
+                await this.restoreStock(refundedItems)
+
+                if (this.sale.sale_type === 'cash' && refundAmount > 0) {
+                    await this.registerCashboxRefund(refundAmount)
+                }
 
                 this.notifySuccess()
-
-                /** Handle error */
             } catch (error) {
                 this.handleError(error)
             }
+        },
+
+        async restoreStock(items) {
+            await Promise.all(
+                items.map(async item => {
+                    const inventoryProduct = item.inventoryProduct
+
+                    if (!inventoryProduct || inventoryProduct.unlimited_stock) {
+                        return
+                    }
+
+                    const current = await database.inventory_product.get(
+                        inventoryProduct.id,
+                    )
+
+                    if (!current) return
+
+                    await database.inventory_product.update(
+                        current.id,
+                        toPlain({
+                            stock:
+                                Number(current.stock || 0) +
+                                Number(item.quantity || 0),
+                        }),
+                    )
+                }),
+            )
+        },
+
+        async registerCashboxRefund(amount) {
+            const user = useAppStore(pinia).user
+            const now = new Date().toISOString()
+
+            await registerCashboxLog({
+                amount: -Math.abs(amount),
+                concept: `Reembolso venta #${this.sale.id}`,
+                type: 'subtract',
+                reference: `REF-${invoiceFormatId(this.sale.id)}`,
+                notes: '',
+                user_id: user && user.id,
+                date: now,
+                created_at: now,
+                updated_at: now,
+            })
         },
 
         getRefundType() {
@@ -185,10 +251,15 @@ export default {
         },
 
         getUpdatedSubTotal() {
-            const subTotal = this.sale.shoppingCart
-                .filter(s => !s.refunded)
-                .reduce((prev, curr) => prev + curr.subTotal, 0)
-            return subTotal
+            return this.sale.shoppingCart
+                .filter(item => !item.refunded)
+                .reduce(
+                    (total, item) =>
+                        total +
+                        Number(item.subTotal || 0) -
+                        Number(item.discounted || 0),
+                    0,
+                )
         },
 
         handleError(error) {

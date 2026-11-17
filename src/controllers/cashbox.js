@@ -1,5 +1,6 @@
 import database from '../db'
-import moment from 'moment'
+import { toPlain } from '../lib/serialization'
+import { formatDate } from '../lib/datetime'
 import renderReport from '../reports/generic-report'
 import store from '../store'
 import { formatNumber } from '../filters/money-format.filter'
@@ -31,7 +32,7 @@ export const getCashBoxLogs = async ({
 
         // Check if any limit value is given
         if (limit) {
-            query = filtered_data.limit(limit)
+            query = query.limit(limit)
         }
 
         // This is the default return
@@ -96,7 +97,7 @@ export const searchCashBoxLog = async searchValue => {
  * @param {CashBoxLog} data
  */
 export const registerCashboxLog = async data => {
-    return await CashBoxModel.add(data)
+    return await CashBoxModel.add(toPlain(data))
 }
 
 /**
@@ -170,7 +171,8 @@ export const cashBoxRefGen = (type, value) => {
  * @returns {string} Formated string
  */
 export const cashBoxDateFormat = date => {
-    return moment(date).format('DDMMYYhmma')
+    // Lowercase the meridiem to preserve the legacy reference format.
+    return formatDate(date, 'ddMMyyhmma').toLowerCase()
 }
 
 /**
@@ -221,7 +223,7 @@ export const printChashboxReport = (cashboxLog, notes) => {
     const title = 'Reporte de caja'
     const { name } = store.getters.currentUser
     const shop = { ...store.getters.store }
-    const created_at = moment().format('DD/MM/YYYY, h:mm a')
+    const created_at = formatDate(new Date(), 'dd/MM/yyyy, h:mm a')
     const columns = [
         { label: '#', value: 'id' },
         { label: 'Cantidad', value: 'amount' },
@@ -236,7 +238,7 @@ export const printChashboxReport = (cashboxLog, notes) => {
         log.created_by_name = log.created_by.name
         log.amount = formatNumber(log.amount)
         log.type = getLogType(log.type).label
-        log.date = moment(log.date).format('DD/MM/YYYY, h:mm a')
+        log.date = formatDate(log.date, 'dd/MM/yyyy, h:mm a')
 
         return { ...log }
     })

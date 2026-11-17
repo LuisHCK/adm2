@@ -1,4 +1,5 @@
 import database from '../db'
+import { toPlain } from '../lib/serialization'
 
 /**
  * @typedef SettingItem
@@ -13,7 +14,7 @@ import database from '../db'
  * @returns {Promise}
  */
 export const createSettings = data => {
-    return database.settings.add(data)
+    return database.settings.add(toPlain(data))
 }
 
 export const loadSettings = async () => {
@@ -39,9 +40,9 @@ export const addOrUpdateSettings = async data => {
 
     if (existingSetting && existingSetting.id) {
         await database.settings.update(existingSetting.id, {
-            value: data.value,
+            value: toPlain(data.value),
         })
     } else {
-        await database.settings.add(data)
+        await database.settings.add(toPlain(data))
     }
 }

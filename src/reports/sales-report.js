@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { formatDate } from '../lib/datetime'
 import { render } from 'ejs'
 import store from '../store'
 
@@ -87,7 +87,7 @@ const htmlTemplate = `
             <%= currency %><%=sale.total %>
           </td>
           <td>
-            <%=moment(sale.created_at).format('DD/MM/YYYY, h:mm a') %>
+            <%=formatDate(sale.created_at, 'dd/MM/yyyy, h:mm a') %>
           </td>
         </tr>
         <% }); %>
@@ -110,7 +110,7 @@ function salesReport(sales, title, dateRange) {
         title,
         logo,
         store: storeData,
-        moment,
+        formatDate,
         currency
     })
 }

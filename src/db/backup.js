@@ -1,13 +1,12 @@
-import { importDB, exportDB, importInto } from 'dexie-export-import'
+import { exportDB, importInto } from 'dexie-export-import'
 import FileSaver from 'file-saver'
-import moment from 'moment'
+import { formatDate } from '../lib/datetime'
 import EventBus from '../event-bus'
 
 let progress = 0
 
 // Database export
 function backupDatabase(database) {
-    // Notify progress
     EventBus.$emit('EXPORTING_DB', progress)
 
     return exportDB(database, { progressCallback })
@@ -16,9 +15,10 @@ function backupDatabase(database) {
         })
         .catch(err => {
             console.error(err)
+            throw err
         })
         .finally(() => {
-            EventBus.$emit('IMPORT_FINISH')
+            EventBus.$emit('EXPORT_FINISH')
         })
 }
 
@@ -37,31 +37,36 @@ function restoreDatabase(database, blob) {
             importInto(database, blob, {
                 progressCallback,
                 overwriteValues: true,
-                clearTablesBeforeImport: true
+                clearTablesBeforeImport: true,
             })
-                .then(db => {
+                .then(() => {
                     setTimeout(() => {
-                        location.reload(true)
+                        location.reload()
                     }, 500)
                 })
                 .catch(err => {
                     console.error(err)
                 })
-                .finally(EventBus.$emit('IMPORT_FINISH'))
-        }
+                .finally(() => {
+                    EventBus.$emit('IMPORT_FINISH')
+                })
+        },
     })
 }
 
 /**
- * Print progress
+ * Report progress
  * @param {Object} options
  */
 function progressCallback({ totalRows, completedRows }) {
-    progress = (100 * completedRows) / totalRows
+    progress = totalRows
+        ? (100 * completedRows) / totalRows
+        : 0
+    EventBus.$emit('EXPORTING_DB', progress)
 }
 
 function getFilename() {
-    return moment().format('lll')
+    return formatDate(new Date(), 'yyyy-MM-dd_HHmmss')
 }
 
 export { backupDatabase, restoreDatabase }

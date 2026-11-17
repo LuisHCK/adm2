@@ -7,7 +7,7 @@
                     placeholder="Buscar..."
                     id="searchInput"
                     icon="magnify"
-                    @input="handleSearchInput"
+                    @update:model-value="handleSearchInput"
                     rounded
                 />
             </b-field>
@@ -35,7 +35,7 @@
                                     class="has-text-weight-bold"
                                     rounded
                                 >
-                                    {{ inventoryProduct.price | money }}
+                                    {{ $money(inventoryProduct.price) }}
                                 </b-tag>
                             </div>
                         </div>
@@ -69,6 +69,8 @@ import { compareText } from '../../lib/text-utils'
 
 export default {
     name: 'product-search',
+
+    emits: ['input'],
 
     data() {
         return {
@@ -209,7 +211,7 @@ export default {
     mounted() {
         this.getInventoryProducts()
         // Focus search box
-        document.getElementById('searchInput').focus()
+        document.querySelector('#searchInput input')?.focus()
     },
 }
 </script>

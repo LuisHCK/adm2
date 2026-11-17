@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from '@/store/vuex-compat'
 import { logIn } from '../lib/auth'
 export default {
     name: 'Login',
@@ -84,16 +84,13 @@ export default {
     },
 
     created() {
-        this.userCount.then(count => (this.totalUsers = count))
-    },
+        // Redirect to registration when the database has no users.
+        this.userCount.then(count => {
+            this.totalUsers = count
 
-    created() {
-        // Redirect to Registration if not users
-        this.$store.getters.userCount.then(count => {
             if (!count) {
                 return this.$router.push('/registration')
             }
-            return this.$router.push('/home')
         })
     }
 }

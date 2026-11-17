@@ -9,7 +9,7 @@
                     class="account-total grand-total"
                     :class="getTotalClass(totalCash)"
                 >
-                    {{ totalCash | money }}
+                    {{ $money(totalCash) }}
                 </div>
             </li>
         </ul>

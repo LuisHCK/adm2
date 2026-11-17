@@ -1,6 +1,6 @@
 <template>
     <card>
-        <template slot="title">
+        <template #title>
             <div class="is-flex is-justify-content-space-between w-100 actions">
                 <p class="card-header-title">
                     Movimientos de caja
@@ -34,17 +34,17 @@
 
                 <b-table-column label="Cantidad" v-slot="props">
                     <b-tag type="is-info" class="has-text-weight-bold" rounded>
-                        {{ props.row.amount | money }}
+                        {{ $money(props.row.amount) }}
                     </b-tag>
                 </b-table-column>
 
                 <b-table-column label="Tipo" v-slot="props">
                     <b-tag
                         class="has-text-weight-bold"
-                        v-text="getLogType(props.row.type).label"
                         :type="getLogType(props.row.type).className"
                         rounded
-                    />
+                        >{{ getLogType(props.row.type).label }}</b-tag
+                    >
                 </b-table-column>
 
                 <b-table-column label="Concepto" v-slot="props">
@@ -60,11 +60,11 @@
                 </b-table-column>
 
                 <b-table-column label="Fecha" v-slot="props">
-                    {{ props.row.date | moment('MMM DD YYYY, h:mm a') }}
+                    {{ $date(props.row.date, 'MMM dd yyyy, h:mm a') }}
                 </b-table-column>
             </template>
 
-            <template slot="empty">
+            <template #empty>
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
@@ -86,6 +86,7 @@ import {
     searchCashBoxLog
 } from '../../controllers/cashbox'
 import eventBus from '../../event-bus'
+import { formatDate } from '@/lib/datetime'
 import { PRINT_CASH_BOX_REPORT, CASHBOX_LOG_SAVE } from '@/event-bus/events'
 import Card from '../ui/Card.vue'
 import LogFilters from './LogFilters.vue'
@@ -132,8 +133,8 @@ export default {
 
                 // Set current filter
                 this.currentFilter = [
-                    this.$moment(start_date).format('D/MM/YY, h:mm a'),
-                    this.$moment(finish_date).format('D/MM/YY, h:mm a')
+                    formatDate(start_date, 'd/MM/yy, h:mm a'),
+                    formatDate(finish_date, 'd/MM/yy, h:mm a')
                 ]
             }
         },
@@ -178,8 +179,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '~bulma/sass/utilities/_all';
-@include mobile {
+@media (max-width: 768px) {
     .actions {
         flex-direction: column;
     }

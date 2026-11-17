@@ -48,7 +48,7 @@
                     v-slot="props"
                 >
                     <span class="price">
-                        {{ props.row.inventoryProduct.price | money }}
+                        {{ $money(props.row.inventoryProduct.price) }}
                     </span>
                 </b-table-column>
 
@@ -95,7 +95,7 @@
                             :max="100"
                             :min="0"
                             :value="props.row.discount"
-                            @input="emitDiscountChange($event, props.index)"
+                            @update:model-value="emitDiscountChange($event, props.index)"
                             @focus="focusSelect"
                             rounded
                         />
@@ -112,18 +112,15 @@
                         class="discounted"
                     >
                         <div class="original-price">
-                            {{ props.row.subTotal | money }}
+                            {{ $money(props.row.subTotal) }}
                         </div>
 
                         <div class="updated-price sub-total">
-                            {{
-                                (props.row.subTotal - props.row.discounted)
-                                    | money
-                            }}
+                            {{ $money((props.row.subTotal - props.row.discounted)) }}
                         </div>
                     </div>
                     <div class="sub-total" v-else>
-                        {{ props.row.subTotal | money }}
+                        {{ $money(props.row.subTotal) }}
                     </div>
                 </b-table-column>
 
@@ -138,11 +135,12 @@
                         @click="emitRemoveItem(props.index)"
                         rounded
                         icon-left="delete"
+                        aria-label="Quitar producto"
                     />
                 </b-table-column>
             </template>
 
-            <template slot="empty">
+            <template #empty>
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
@@ -157,7 +155,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from '@/store/vuex-compat'
 
 let discountTimeout
 
@@ -170,7 +168,13 @@ export default {
 
     methods: {
         getProductName(product) {
-            return `${product.name} - ${product.content} ${product.unit}`
+            if (!product) return ''
+
+            const details = [product.content, product.unit]
+                .filter(Boolean)
+                .join(' ')
+
+            return details ? `${product.name} - ${details}` : product.name
         },
 
         emitQuantityUpdate(index, event, stock) {

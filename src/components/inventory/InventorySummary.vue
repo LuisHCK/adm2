@@ -22,20 +22,20 @@
 
                 <list-item title="Total de productos">
                     <b-tag
-                        v-text="totalProducts"
                         type="is-info"
                         class="has-text-weight-bold"
                         rounded
-                    />
+                        >{{ totalProducts }}</b-tag
+                    >
                 </list-item>
 
                 <list-item title="Ganancia bruta estimada">
                     <b-tag
-                        v-text="`${currency}${grossProfit}`"
                         type="is-success"
                         class="has-text-weight-bold"
                         rounded
-                    />
+                        >{{ currency }}{{ grossProfit }}</b-tag
+                    >
                 </list-item>
             </div>
         </div>
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from '@/store/vuex-compat'
 import ListItem from '../ui/ListItem.vue'
 
 export default {
@@ -54,7 +54,7 @@ export default {
     props: {
         inventory: {
             type: Object,
-            default: () => {}
+            default: () => ({})
         },
 
         totalProducts: {

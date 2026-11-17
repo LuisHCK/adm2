@@ -1,19 +1,36 @@
-// directives.js
-import Vue from 'vue'
+export default {
+    install(app) {
+        app.directive('click-outside', {
+            beforeMount(element, binding) {
+                element.clickOutsideEvent = function (event) {
+                    if (
+                        !(
+                            element === event.target ||
+                            element.contains(event.target)
+                        )
+                    ) {
+                        const handler = binding.instance
+                            ? binding.instance[binding.expression]
+                            : undefined
 
-Vue.directive('click-outside', {
-    bind: function(element, binding, vnode) {
-        element.clickOutsideEvent = function(event) {
-            //  check that click was outside the el and his children
-            if (!(element === event.target || element.contains(event.target))) {
-                // and if it did, call method provided in attribute value
-                vnode.context[binding.expression](event)
-                // binding.value(); run the arg
-            }
-        }
-        document.body.addEventListener('click', element.clickOutsideEvent)
+                        if (typeof handler === 'function') {
+                            handler(event)
+                        }
+                    }
+                }
+                document.body.addEventListener(
+                    'click',
+                    element.clickOutsideEvent,
+                )
+            },
+
+            unmounted(element) {
+                document.body.removeEventListener(
+                    'click',
+                    element.clickOutsideEvent,
+                )
+                delete element.clickOutsideEvent
+            },
+        })
     },
-    unbind: function(element) {
-        document.body.removeEventListener('click', element.clickOutsideEvent)
-    },
-})
+}

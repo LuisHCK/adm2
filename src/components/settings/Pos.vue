@@ -7,12 +7,12 @@
             >
                 <b-switch
                     :value="posSettings.value.show_receipt_popup"
-                    @input="saveValue('show_receipt_popup', $event)"
+                    @update:model-value="saveValue('show_receipt_popup', $event)"
                 />
             </b-field>
         </div>
 
-        <div class="column is-half-tablet is-full-mobile" v-if="!isCapacitor">
+        <div class="column is-half-tablet is-full-mobile">
             <b-field
                 label="Imprimir recibo automáticamente"
                 message="Imprime el recibo luego de completar la venta
@@ -20,7 +20,7 @@
             >
                 <b-switch
                     :value="posSettings.value.auto_print_receipt"
-                    @input="saveValue('auto_print_receipt', $event)"
+                    @update:model-value="saveValue('auto_print_receipt', $event)"
                 />
             </b-field>
         </div>
@@ -33,29 +33,10 @@
                 <b-input
                     placeholder="Ej: Gracias por su compra"
                     :value="posSettings.value.invoice_message"
-                    @input="handleInput('invoice_message', $event)"
+                    @update:model-value="handleInput('invoice_message', $event)"
                     icon="text"
                     rounded
                 />
-            </b-field>
-        </div>
-
-        <div class="column is-half-tablet is-full-mobile" v-if="!isCapacitor">
-            <b-field label="Impresora principal">
-                <b-select
-                    @input="saveValue('default_printer', $event)"
-                    :value="posSettings.value.default_printer"
-                    placeholder="Seleccionar impresora"
-                    icon="printer"
-                    rounded
-                >
-                    <option
-                        v-for="printer in printers"
-                        :key="'printer-' + printer.name"
-                        :value="printer.name"
-                        v-text="printer.displayName"
-                    />
-                </b-select>
             </b-field>
         </div>
     </div>
@@ -63,16 +44,9 @@
 
 <script>
 import { addOrUpdateSettings, getSettings } from '@/controllers/settings'
-import LargeInvoicePreview from '@/components/invoices/large-invoice-preview.vue'
-import { getPrintersList } from '@/lib/print'
-import { Capacitor } from '@capacitor/core'
 
 export default {
     name: 'pos',
-
-    components: {
-        LargeInvoicePreview,
-    },
 
     data() {
         return {
@@ -80,14 +54,7 @@ export default {
                 value: {},
             },
             inputTimeout: null,
-            printers: getPrintersList(),
         }
-    },
-
-    computed: {
-        isCapacitor() {
-            return Capacitor.isNative
-        },
     },
 
     methods: {

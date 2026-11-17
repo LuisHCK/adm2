@@ -45,6 +45,7 @@
                                     type="is-primary"
                                     icon-left="pencil"
                                     size="is-small"
+                                    aria-label="Editar proveedor"
                                     @click="editProvider(props.row)"
                                     rounded
                                 />
@@ -54,6 +55,7 @@
                                     type="is-danger"
                                     icon-left="delete"
                                     size="is-small"
+                                    aria-label="Eliminar proveedor"
                                     @click="deleteProvider(props.row)"
                                     rounded
                                 />
@@ -62,7 +64,7 @@
                     </b-table-column>
                 </template>
 
-                <template slot="empty">
+                <template #empty>
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
                             <p>
@@ -79,7 +81,7 @@
         </div>
 
         <b-modal
-            :active.sync="showForm"
+            v-model="showForm"
             has-modal-card
             @close="selectedProvider = undefined"
         >
@@ -111,6 +113,7 @@
 </template>
 
 <script>
+import database from "@/db"
 import ProviderForm from '@/components/providers/ProviderForm.vue'
 
 export default {
@@ -132,7 +135,7 @@ export default {
 
     methods: {
         getProviders() {
-            Database.provider
+            database.provider
                 .reverse()
                 .toArray()
                 .then(providers => (this.providers = providers))
@@ -147,6 +150,43 @@ export default {
         editProvider(provider) {
             this.selectedProvider = provider
             this.showForm = true
+        },
+
+        deleteProvider(provider) {
+            this.$buefy.dialog.confirm({
+                title: 'Eliminar proveedor',
+                message: `¿Deseas eliminar <b>${provider.name}</b>? Esta acción no se puede deshacer.`,
+                confirmText: 'Sí, eliminar',
+                cancelText: 'Cancelar',
+                type: 'is-danger',
+                hasIcon: true,
+                onConfirm: () => this.performDeleteProvider(provider)
+            })
+        },
+
+        async performDeleteProvider(provider) {
+            try {
+                await database.product_provider
+                    .where('provider_id')
+                    .equals(provider.id)
+                    .delete()
+                await database.provider.delete(provider.id)
+
+                this.getProviders()
+                this.$buefy.toast.open({
+                    message: 'Se eliminó el proveedor',
+                    type: 'is-success',
+                    position: 'is-bottom'
+                })
+            } catch (error) {
+                console.error(error)
+                this.$buefy.dialog.alert({
+                    title: 'Error al eliminar',
+                    message: 'No se pudo eliminar el proveedor.',
+                    type: 'is-danger',
+                    hasIcon: true
+                })
+            }
         },
 
         setActionButtons() {

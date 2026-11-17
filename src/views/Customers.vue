@@ -2,7 +2,7 @@
     <div class="page-container">
         <div class="panel">
             <b-table :data="customers">
-                <template slot="empty">
+                <template #empty>
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
                             <p>
@@ -65,16 +65,13 @@
                         <b-tag
                             rounded
                             :type="
-                                props.row.total_credit > props.row.total_payment
+                                props.row.balance > 0
                                     ? 'is-danger'
                                     : 'is-success'
                             "
                             class="has-text-weight-bold"
                         >
-                            {{ currency
-                            }}{{
-                                props.row.total_credit - props.row.total_payment
-                            }}
+                            {{ currency }}{{ props.row.balance }}
                         </b-tag>
                     </b-table-column>
 
@@ -85,14 +82,15 @@
                         width="100"
                         :numeric="true"
                     >
-                        <b-button
-                            type="is-primary"
-                            size="is-small"
-                            rounded
-                            icon-right="eye-outline"
-                            @click="$router.push('/customers/' + props.row.id)"
-                        >
-                        </b-button>
+                            <b-button
+                                type="is-primary"
+                                size="is-small"
+                                rounded
+                                icon-right="eye-outline"
+                                aria-label="Ver cliente"
+                                @click="$router.push('/customers/' + props.row.id)"
+                            >
+                            </b-button>
                     </b-table-column>
                 </template>
             </b-table>
@@ -100,7 +98,7 @@
 
         <!-- Customer form modal -->
         <b-modal
-            :active.sync="showCustomerForm"
+            v-model="showCustomerForm"
             has-modal-card
             trap-focus
             aria-role="dialog"
@@ -122,9 +120,10 @@
 </template>
 
 <script>
+import database from "@/db"
 import CustomerForm from '@/components/customers/CustomerForm.vue'
 import { customersReport } from '@/reports/customers-report'
-import { mapGetters } from 'vuex'
+import { mapGetters } from '@/store/vuex-compat'
 
 export default {
     components: {
@@ -177,20 +176,27 @@ export default {
     },
 
     methods: {
-        getCustomers() {
-            Database.customer
-                .toArray()
-                .then(customers => {
-                    // Get customer current staus
-                    customers.map(c => {
-                        this.getCustomerCredit(c)
-                        this.getCustomerPayments(c)
-                    })
+        async getCustomers() {
+            try {
+                const customers = await database.customer.toArray()
 
-                    // Display data
-                    this.customers = customers
-                })
-                .catch(err => console.error(err))
+                await Promise.all(
+                    customers.map(async customer => {
+                        customer.total_credit =
+                            await this.getCustomerCredit(customer)
+                        customer.total_payment =
+                            await this.getCustomerPayments(customer)
+                        customer.balance = Math.max(
+                            0,
+                            customer.total_credit - customer.total_payment,
+                        )
+                    }),
+                )
+
+                this.customers = customers
+            } catch (err) {
+                console.error(err)
+            }
         },
 
         submitCustomer() {
@@ -198,39 +204,26 @@ export default {
             this.showCustomerForm = false
         },
 
-        getCustomerCredit(customer) {
-            // Set initial data
-            if (!customer.total_credit) {
-                customer.total_credit = 0
-            }
-
-            Database.sale
+        async getCustomerCredit(customer) {
+            const sales = await database.sale
                 .where({ customer_id: customer.id, sale_type: 'credit' })
-                .toArray(data => {
-                    // Sum total of records
-                    let total = data.reduce((prev, cur) => {
-                        return prev + cur.total
-                    }, 0)
-                    // Sum total
-                    customer.total_credit += total
-                })
+                .toArray()
+
+            return sales.reduce(
+                (total, sale) => total + Number(sale.total || 0),
+                0,
+            )
         },
 
-        getCustomerPayments(customer) {
-            if (!customer.total_payment) {
-                customer.total_payment = 0
-            }
-
-            Database.customer_payment
+        async getCustomerPayments(customer) {
+            const payments = await database.customer_payment
                 .where({ customer_id: customer.id })
-                .toArray(data => {
-                    // Sum total of records
-                    let total = data.reduce((prev, cur) => {
-                        return prev + Number(cur.amount)
-                    }, 0)
-                    // Sum total
-                    customer.total_payment += total
-                })
+                .toArray()
+
+            return payments.reduce(
+                (total, payment) => total + Number(payment.amount || 0),
+                0,
+            )
         },
 
         printCustomersReport() {

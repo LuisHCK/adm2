@@ -67,21 +67,18 @@
 </template>
 
 <script>
-import vSelect from 'vue-select'
-import 'vue-select/dist/vue-select.css'
-import { mapGetters } from 'vuex'
+import { mapGetters } from '@/store/vuex-compat'
 import { getInventoryProductById } from '../../controllers/inventories'
 import { getProductById } from '../../controllers/products'
+import { toPlain } from '@/lib/serialization'
 
 export default {
     name: 'inventory-product-form',
 
+    emits: ['submit'],
+
     computed: {
         ...mapGetters(['currency'])
-    },
-
-    components: {
-        'v-select': vSelect
     },
 
     props: {
@@ -118,7 +115,7 @@ export default {
                     this.form.inventory_id = this.inventoryId
                 }
 
-                this.$emit('submit', this.form)
+                this.$emit('submit', toPlain(this.form))
             } else {
                 this.notifyError('Por favor revise el formulario')
                 this.showMessages()
@@ -151,8 +148,13 @@ export default {
         },
 
         getProductName(product) {
-            if (product)
-                return `${product.name} - ${product.content} ${product.unit}`
+            if (!product) return ''
+
+            const details = [product.content, product.unit]
+                .filter(Boolean)
+                .join(' ')
+
+            return details ? `${product.name} - ${details}` : product.name
         },
 
         focusInput(event) {

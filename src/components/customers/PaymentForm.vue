@@ -46,10 +46,15 @@
 </template>
 
 <script>
+import database from "@/db"
 import { months, weekDays } from '@/lib/constants'
+import { dateToISO } from '@/lib/datetime'
+import { toPlain } from '@/lib/serialization'
 
 export default {
   name: 'payment-form',
+
+  emits: ['submit'],
 
   props: {
     customer: {
@@ -78,7 +83,7 @@ export default {
   data() {
     return {
       form: {
-        date: this.$moment().toDate()
+        date: new Date()
       },
       messages: {}
     }
@@ -118,16 +123,18 @@ export default {
      */
     savePayment(data) {
       const now = new Date()
-      Database.customer_payment
-        .add({
-          customer_id: this.customer.id,
-          amount: this.form.amount,
-          description: this.form.description,
-          customer: this.customer,
-          date: this.$moment(this.form.data).format(),
-          created_at: now.toISOString(),
-          updated_at: now.toISOString()
-        })
+      database.customer_payment
+        .add(
+          toPlain({
+            customer_id: this.customer.id,
+            amount: this.form.amount,
+            description: this.form.description,
+            customer: this.customer,
+            date: dateToISO(this.form.date || new Date()),
+            created_at: now.toISOString(),
+            updated_at: now.toISOString()
+          })
+        )
         .then(res => {
           this.$emit('submit', res)
 

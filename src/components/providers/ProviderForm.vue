@@ -5,15 +5,15 @@
             <div class="column is-full">
                 <b-field
                     label="Nombre*"
-                    :type="{ 'is-danger': errors.has('name') }"
-                    :message="errors.first('name')"
+                    :type="nameError ? 'is-danger' : ''"
+                    :message="nameError"
                 >
                     <b-input
                         v-model="form.name"
                         placeholder="Nombre del Proveedor"
                         name="name"
-                        v-validate="'required'"
                         icon="text"
+                        @update:model-value="nameError = ''"
                     />
                 </b-field>
             </div>
@@ -83,8 +83,14 @@
 </template>
 
 <script>
+import database from "@/db"
+import { validate } from '@/lib/validation'
+import { toPlain } from '@/lib/serialization'
+
 export default {
     name: 'provider-form',
+
+    emits: ['submit'],
 
     props: {
         provider: {
@@ -95,36 +101,42 @@ export default {
 
     data() {
         return {
-            form: {}
+            form: {},
+            nameError: ''
         }
     },
 
     methods: {
-        submit() {
+        async submit() {
+            const { valid, errors } = await validate(
+                this.form.name,
+                'required',
+            )
+            this.nameError = valid ? '' : errors[0]
+
+            if (!valid) {
+                this.$buefy.toast.open({
+                    message:
+                        'No se pudieron guardar los cambios. Revisa el formulario',
+                    type: 'is-danger',
+                    position: 'is-bottom'
+                })
+                return
+            }
+
             const date = new Date().toISOString()
             this.form.created_at = date
             this.form.updated_at = date
 
-            this.$validator.validateAll().then(result => {
-                if (result) {
-                    if (this.provider) {
-                        this.updateProvider()
-                    } else {
-                        this.saveProvider()
-                    }
-                } else {
-                    this.$buefy.toast.open({
-                        message:
-                            'No se pudieron guardar los cambios. Revisa el formulario',
-                        type: 'is-danger',
-                        position: 'is-bottom'
-                    })
-                }
-            })
+            if (this.provider) {
+                this.updateProvider()
+            } else {
+                this.saveProvider()
+            }
         },
 
         saveProvider() {
-            Database.provider.add(this.form).then(result => {
+            database.provider.add(toPlain(this.form)).then(result => {
                 this.$emit('submit')
                 this.form = {}
                 this.$buefy.toast.open({
@@ -137,7 +149,7 @@ export default {
 
         updateProvider() {
             delete this.form.id
-            Database.provider.update(this.provider.id, this.form).then(() => {
+            database.provider.update(this.provider.id, toPlain(this.form)).then(() => {
                 this.$emit('submit')
                 this.form = {}
                 this.$buefy.toast.open({
