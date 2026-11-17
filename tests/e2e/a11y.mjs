@@ -210,6 +210,28 @@ await page.goto(`${baseUrl}/settings`, { waitUntil: 'domcontentloaded' })
 await page.waitForTimeout(700)
 check('mobile Settings no horizontal overflow', await noHorizontalOverflow())
 
+// --- Light theme is forced regardless of system preference ---
+const darkContext = await browser.newContext({ colorScheme: 'dark' })
+const darkPage = await darkContext.newPage()
+await darkPage.goto(`${baseUrl}/login`, { waitUntil: 'domcontentloaded' })
+await darkPage.waitForTimeout(600)
+const darkTheme = await darkPage.evaluate(() => ({
+    mainL: getComputedStyle(document.documentElement)
+        .getPropertyValue('--bulma-scheme-main-l')
+        .trim(),
+    brightness: getComputedStyle(document.documentElement)
+        .getPropertyValue('--bulma-scheme-brightness')
+        .trim(),
+    colorScheme: getComputedStyle(document.documentElement).colorScheme,
+}))
+check(
+    'dark system preference ignored',
+    darkTheme.mainL === '100%' &&
+        darkTheme.brightness === 'light' &&
+        darkTheme.colorScheme === 'light',
+)
+await darkContext.close()
+
 console.log('\n--- errors ---')
 console.log(errors.length ? errors.join('\n') : 'none')
 

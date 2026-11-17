@@ -11,6 +11,20 @@
 
 @use 'buefy/src/scss/buefy';
 @use './assets/spacing';
+@use 'bulma/sass/themes/light' as light;
+@use 'bulma/sass/themes/setup' as setup;
+
+// ADM2 is light-theme only. Re-apply the light variables after Bulma's
+// prefers-color-scheme and data-theme rules so the system/browser theme is ignored.
+:root,
+[data-theme='light'],
+[data-theme='dark'],
+.theme-light,
+.theme-dark {
+    color-scheme: light;
+    @include light.light-theme;
+    @include setup.setup-theme;
+}
 
 /** SPECIFIC OVERRIDES */
 .card-footer {
