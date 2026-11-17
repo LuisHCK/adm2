@@ -24,11 +24,11 @@ export const getAllCustomers = async () => {
  * @returns {number} Current customer credit
  */
 export const getCustomerCredit = async id => {
-    const total = await database.sale
+    const sales = await database.sale
         .where({ customer_id: id, sale_type: 'credit' })
-        .toArray(data => data.reduce((prev, curr) => prev + curr.total, 0))
+        .toArray()
 
-    return total
+    return sales.reduce((total, sale) => total + Number(sale.total || 0), 0)
 }
 
 /**

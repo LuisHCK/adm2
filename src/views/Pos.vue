@@ -39,7 +39,7 @@
         </div>
 
         <!-- Customer modal form -->
-        <b-modal :active.sync="showCustomerForm" has-modal-card>
+        <b-modal v-model="showCustomerForm" has-modal-card>
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">Agregar un nuevo Cliente</p>
@@ -47,10 +47,7 @@
                 <section class="modal-card-body">
                     <customer-form
                         v-if="showCustomerForm"
-                        @input="
-                            getCustomers()
-                            showCustomerForm = false
-                        "
+                        @input="handleCustomerCreated"
                     />
                 </section>
             </div>
@@ -58,7 +55,7 @@
 
         <!-- Successful sale invoice -->
         <b-modal
-            :active.sync="showSaleInvoice"
+            v-model="showSaleInvoice"
             @close="saleInvoice = undefined"
             width="850"
             has-modal-card
@@ -73,6 +70,11 @@
                     >
                         Imprimir
                     </b-button>
+                    <button
+                        type="button"
+                        class="delete"
+                        @click="showSaleInvoice = false"
+                    />
                 </header>
                 <section class="modal-card-body">
                     <div
@@ -88,25 +90,24 @@
 </template>
 
 <script>
-import 'vue-select/dist/vue-select.css'
+import database from "@/db"
 import ProductSearch from '../components/pos/ProductSearch.vue'
 import CustomerForm from '../components/customers/CustomerForm.vue'
 import ProductsTable from '../components/pos/ProductsTable.vue'
 import PosSummary from '../components/pos/PosSummary.vue'
-import vSelect from 'vue-select'
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from '@/store/vuex-compat'
 import { printContentent, receiptPrint } from '@/lib/print'
 import { invoiceFormatId } from '@/reports/invoice'
 import { printInvoice } from '../reports/invoice'
 import Maths from '../lib/maths'
 import { registerCashboxLog } from '../controllers/cashbox'
+import { toPlain } from '@/lib/serialization'
 import { getSettings } from '@/controllers/settings'
 import ReceiptPreview from '@/components/invoices/ReceiptPreview.vue'
 
 export default {
     components: {
         ProductSearch,
-        vSelect,
         CustomerForm,
         ProductsTable,
         PosSummary,
@@ -255,38 +256,46 @@ export default {
                 return
             }
 
-            const saleId = await Database.sale.add({
-                shoppingCart: this.shoppingCart,
-                discount: this.discount,
-                customer: this.shoppingCartCustomer,
-                subTotal: this.shoppingCartTotal,
-                total: this.finalTotal,
-                sale_type: this.saleType ? 'cash' : 'credit',
-                pay_with: this.payWith,
-                customer_id: this.shoppingCartCustomer.id,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-            })
+            const saleId = await database.sale.add(
+                toPlain({
+                    shoppingCart: this.shoppingCart,
+                    discount: this.discount,
+                    customer: this.shoppingCartCustomer,
+                    subTotal: this.shoppingCartTotal,
+                    total: this.finalTotal,
+                    sale_type: this.saleType ? 'cash' : 'credit',
+                    pay_with: this.payWith,
+                    customer_id: this.shoppingCartCustomer.id,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                }),
+            )
 
-            this.saleInvoice = await Database.sale.get(saleId)
+            this.saleInvoice = await database.sale.get(saleId)
 
             // Reduce inventory stock
-            this.reduceInventoryQuantity()
+            await this.reduceInventoryQuantity()
             // Clear the sale form
             this.cancelSale()
             // Register cashbox log
-            this.createCashBoxLog()
+            await this.createCashBoxLog()
 
             // Print automatically if is enabled
             if (this.posSettings && this.posSettings.auto_print_receipt) {
                 receiptPrint(this.saleInvoice)
                 this.showSuccessToast('Se completó la venta')
             } else {
+                this.showSaleInvoice = true
                 this.showPrintToast('Se completó la venta')
             }
         },
 
         async createCashBoxLog() {
+            // Credit sales affect customer debt, not cash in the box.
+            if (!this.saleInvoice || this.saleInvoice.sale_type !== 'cash') {
+                return
+            }
+
             await registerCashboxLog({
                 amount: this.saleInvoice.total,
                 concept: `Venta POS cont #${this.saleInvoice.id}`,
@@ -298,19 +307,21 @@ export default {
             })
         },
 
-        reduceInventoryQuantity() {
-            this.shoppingCart.map(item => {
-                if (!item.inventoryProduct.unlimited_stock) {
-                    const totalStock =
-                        item.inventoryProduct.stock - item.quantity
-                    Database.inventory_product.update(
-                        item.inventoryProduct.id,
-                        {
-                            stock: totalStock,
-                        },
-                    )
-                }
-            })
+        async reduceInventoryQuantity() {
+            await Promise.all(
+                this.shoppingCart.map(async item => {
+                    if (!item.inventoryProduct.unlimited_stock) {
+                        const totalStock =
+                            item.inventoryProduct.stock - item.quantity
+                        await database.inventory_product.update(
+                            item.inventoryProduct.id,
+                            toPlain({
+                                stock: totalStock,
+                            }),
+                        )
+                    }
+                }),
+            )
         },
 
         showErrorToast(message) {
@@ -342,13 +353,18 @@ export default {
         },
 
         getCustomers() {
-            Database.customer.toArray().then(data => (this.customers = data))
+            database.customer.toArray().then(data => (this.customers = data))
+        },
+
+        handleCustomerCreated() {
+            this.getCustomers()
+            this.showCustomerForm = false
         },
 
         handleShortcuts(event) {
             // CTRL + 1 = Focus on search
             if ((event.which == 49 && event.ctrlKey) || event.which === 113) {
-                document.getElementById('searchInput').focus()
+                document.querySelector('#searchInput input')?.focus()
             }
 
             // CTRL + 2 = Finish the sale
@@ -378,7 +394,7 @@ export default {
         this.loadSettings()
     },
 
-    beforeDestroy() {
+    beforeUnmount() {
         window.removeEventListener('keydown', this.handleShortcuts)
     },
 }

@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [master, migration/vue3]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 26
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - name: Install Yarn
+        run: npm install -g yarn@1.22.22
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Unit and DB tests
+        run: yarn test
+
+      - name: Production build
+        run: yarn build
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end suites
+        run: yarn test:e2e
+        env:
+          PLAYWRIGHT_CHANNEL: bundled

@@ -1,6 +1,6 @@
 <template>
     <b-modal
-        :active="isOpen"
+        :model-value="isOpen"
         @close="onClose"
         has-modal-card
         trap-focus
@@ -42,7 +42,7 @@
                                 />
                             </p>
                             <b-input
-                                :value="balance"
+                                :model-value="balance"
                                 :editable="false"
                                 :readonly="true"
                                 custom-class="balance-input"
@@ -78,7 +78,7 @@
 import EventBus from '@/event-bus'
 import { CASHBOX_LOG_SAVE } from '@/event-bus/events'
 import { months, daysAbr } from '@/lib/locale'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from '@/store/vuex-compat'
 import {
     cashBoxDateFormat,
     cashBoxRefGen,
@@ -145,7 +145,7 @@ export default {
         },
 
         async onSubmitForm() {
-            const date = this.$moment()
+            const date = new Date()
             const isoString = date.toISOString()
 
             if (!this.form.withdrawalAmount) {
@@ -159,7 +159,7 @@ export default {
                 type: 'close',
                 reference: cashBoxRefGen(
                     'close',
-                    cashBoxDateFormat(date.toDate())
+                    cashBoxDateFormat(date)
                 ),
                 notes: this.form.notes,
                 user_id: this.user.id,
@@ -176,7 +176,7 @@ export default {
                     type: 'balance',
                     reference: cashBoxRefGen(
                         'balance',
-                        cashBoxDateFormat(date.toDate())
+                        cashBoxDateFormat(date)
                     ),
                     user_id: this.user.id,
                     date: isoString,
@@ -203,7 +203,7 @@ export default {
             this.$buefy.toast.open({
                 message: 'Ocurrió un error al guardar, revise el formulario',
                 position: 'is-bottom',
-                type: 'is-error',
+                type: 'is-danger',
             })
         }
     },

@@ -21,7 +21,7 @@
 <script>
 import EventBus from '@/event-bus'
 import Store from '../components/settings/Store.vue'
-import Pos from '@/components/settings/Pos'
+import Pos from '@/components/settings/Pos.vue'
 import Database from '../components/settings/Database.vue'
 import { loadSettings } from '@/controllers/settings'
 

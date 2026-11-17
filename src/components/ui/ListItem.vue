@@ -31,7 +31,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'src/assets/_variables';
+@use '../../assets/variables' as *;
 
 .list-item {
     width: 100%;

@@ -22,11 +22,11 @@
                     v-slot="props"
                 >
                     <b-tag
-                        v-text="props.row.cash_purchases"
                         type="is-success"
                         class="has-text-weight-bold"
                         rounded
-                    />
+                        >{{ props.row.cash_purchases }}</b-tag
+                    >
                 </b-table-column>
 
                 <b-table-column
@@ -35,11 +35,11 @@
                     v-slot="props"
                 >
                     <b-tag
-                        v-text="props.row.credit_purchases"
                         type="is-danger"
                         class="has-text-weight-bold"
                         rounded
-                    />
+                        >{{ props.row.credit_purchases }}</b-tag
+                    >
                 </b-table-column>
 
                 <b-table-column label="" v-slot="props">
@@ -55,7 +55,7 @@
                 </b-table-column>
             </template>
 
-            <template slot="empty">
+            <template #empty>
                 <empty-table-card />
             </template>
         </b-table>
@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import database from "@/db"
 import EmptyTableCard from '../ui/EmptyTableCard.vue'
 export default {
     name: 'customers-list',
@@ -78,7 +79,7 @@ export default {
 
     methods: {
         async getCustomers() {
-            const customers = await Database.customer
+            const customers = await database.customer
                 .orderBy('created_at')
                 .reverse()
                 .limit(5)
@@ -102,7 +103,7 @@ export default {
         },
 
         getPurchasesCount(customerId, saleType = 'cash') {
-            return Database.sale
+            return database.sale
                 .where({ customer_id: customerId, sale_type: saleType })
                 .count()
         }

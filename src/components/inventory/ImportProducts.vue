@@ -48,7 +48,7 @@
                     <b-field>
                         <b-switch
                             v-model="props.row.unlimited_stock"
-                            @input="handleUnlimitedSwitch($event, props.index)"
+                            @update:model-value="handleUnlimitedSwitch($event, props.index)"
                         >
                             Ilimitado
                         </b-switch>
@@ -97,7 +97,7 @@
                 </b-table-column>
             </template>
 
-            <template slot="empty">
+            <template #empty>
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
@@ -152,7 +152,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from '@/store/vuex-compat'
 export default {
     name: 'ImportProducts',
 

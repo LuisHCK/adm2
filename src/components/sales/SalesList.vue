@@ -10,7 +10,7 @@
             <template>
                 <b-table-column field="total" label="Total" v-slot="props">
                     <span class="has-text-weight-bold">
-                        {{ props.row.total | money }}
+                        {{ $money(props.row.total) }}
                     </span>
                 </b-table-column>
 
@@ -19,11 +19,11 @@
                 </b-table-column>
 
                 <b-table-column field="customer" label="Fecha" v-slot="props">
-                    {{ props.row.created_at | moment('MMM DD YYYY, h:mm a') }}
+                    {{ $date(props.row.created_at, 'MMM dd yyyy, h:mm a') }}
                 </b-table-column>
             </template>
 
-            <template slot="empty">
+            <template #empty>
                 <empty-table-card />
             </template>
         </b-table>

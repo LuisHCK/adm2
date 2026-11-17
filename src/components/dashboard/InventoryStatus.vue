@@ -13,7 +13,7 @@
                         v-for="(inventory, index) in inventories"
                         :key="'inventory-tab-' + index"
                     >
-                        <template slot="header">
+                        <template #header>
                             <span>
                                 {{ inventory.name }}
                                 <b-tag
@@ -62,7 +62,7 @@
                                         class="has-text-weight-bold"
                                         rounded
                                     >
-                                        {{ props.row.price | money }}
+                                        {{ $money(props.row.price) }}
                                     </b-tag>
                                 </b-table-column>
                                 <b-table-column
@@ -101,7 +101,7 @@
                                 </b-table-column>
                             </template>
 
-                            <template slot="empty">
+                            <template #empty>
                                 <empty-table-card />
                             </template>
                         </b-table>
@@ -130,8 +130,9 @@
 </template>
 
 <script>
+import database from "@/db"
 import { getProductById } from '@/controllers/products'
-import { mapGetters } from 'vuex'
+import { mapGetters } from '@/store/vuex-compat'
 import EmptyTableCard from '../ui/EmptyTableCard.vue'
 import {
     updateInventoryProduct,
@@ -164,30 +165,32 @@ export default {
     methods: {
         async getInventories() {
             this.inventories = await getAllInventories()
-            this.getProducts()
+            await this.getProducts()
         },
 
-        getProducts() {
-            this.inventories.forEach(async inventory => {
-                const inventoryProducts = await Database.inventory_product
-                    .where({
-                        inventory_id: inventory.id
-                    })
-                    .filter(
-                        invProd =>
-                            invProd.stock <= this.minQuantity &&
-                            !invProd.unlimited_stock
+        async getProducts() {
+            await Promise.all(
+                this.inventories.map(async inventory => {
+                    const inventoryProducts = await database.inventory_product
+                        .where({ inventory_id: inventory.id })
+                        .filter(
+                            invProd =>
+                                invProd.stock <= this.minQuantity &&
+                                !invProd.unlimited_stock,
+                        )
+                        .toArray()
+
+                    await Promise.all(
+                        inventoryProducts.map(async invProd => {
+                            invProd.product = await getProductById(
+                                invProd.product_id,
+                            )
+                        }),
                     )
-                    .toArray()
 
-                inventoryProducts.forEach(async invProd => {
-                    const product = await getProductById(invProd.product_id)
-                    invProd.product = product
-                    this.$forceUpdate()
-                })
-
-                inventory.products = inventoryProducts
-            })
+                    inventory.products = inventoryProducts
+                }),
+            )
         },
 
         getProductsCount(inventory) {

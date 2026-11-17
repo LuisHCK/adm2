@@ -51,7 +51,7 @@
                     @submit="emitUpdateValue($event, props.row.id, 'price')"
                 >
                     <b-tag type="is-info" class="has-text-weight-bold" rounded>
-                        {{ props.row.price | money }}
+                        {{ $money(props.row.price) }}
                     </b-tag>
                 </content-editable>
             </b-table-column>
@@ -88,12 +88,9 @@
                     input-type="number"
                     @submit="emitUpdateValue($event, props.row.id, 'lot')"
                 >
-                    <b-tag
-                        v-text="props.row.lot || '---'"
-                        type="is-info"
-                        class="has-text-weight-bold"
-                        rounded
-                    />
+                    <b-tag type="is-info" class="has-text-weight-bold" rounded>
+                        {{ props.row.lot || '---' }}
+                    </b-tag>
                 </content-editable>
             </b-table-column>
 
@@ -109,6 +106,7 @@
                             icon-left="pencil"
                             type="is-primary"
                             size="is-small"
+                            aria-label="Editar producto del inventario"
                             rounded
                         />
                     </div>
@@ -118,6 +116,7 @@
                             icon-left="delete"
                             type="is-danger"
                             size="is-small"
+                            aria-label="Quitar producto del inventario"
                             rounded
                         />
                     </div>
@@ -125,7 +124,7 @@
             </b-table-column>
         </template>
 
-        <template slot="empty">
+        <template #empty>
             <section class="section">
                 <div class="content has-text-grey has-text-centered">
                     <p>
@@ -139,7 +138,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from '@/store/vuex-compat'
 import ContentEditable from '../ui/ContentEditable.vue'
 
 export default {

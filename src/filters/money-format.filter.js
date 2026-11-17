@@ -1,9 +1,6 @@
-import Vue from 'vue'
 import store from '../store'
 
-const currency = store.getters.currency
-
-Vue.filter('money', value => formatNumber(value))
+const getCurrency = () => store.getters.currency
 
 /**
  * Generates a localized number
@@ -11,6 +8,7 @@ Vue.filter('money', value => formatNumber(value))
  * @returns string
  */
 export const formatNumber = value => {
+    const currency = getCurrency()
     const safeNumber = Number(value)
 
     if (isNaN(safeNumber)) {

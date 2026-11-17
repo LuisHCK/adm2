@@ -1,6 +1,6 @@
 import { render } from 'ejs'
 import { printContentent } from '../../lib/print'
-import template from './template.ejs'
+import template from './template.ejs?raw'
 
 /**
  * @typedef RenderProps

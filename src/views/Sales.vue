@@ -6,7 +6,7 @@
                     <b-select
                         placeholder="Tipo de pago"
                         icon="currency-usd"
-                        @input="handlePaymentTypeChange"
+                        @update:model-value="handlePaymentTypeChange"
                         rounded
                     >
                         <option :value="undefined">Todos</option>
@@ -24,7 +24,7 @@
                         :mobile-native="false"
                         :month-names="months"
                         :day-names="daysAbr"
-                        @input="handleDateChange"
+                        @update:model-value="handleDateChange"
                         ref="dateRangePicker"
                         range
                         rounded
@@ -35,7 +35,7 @@
                     <b-input
                         placeholder="Numero de venta, cliente"
                         icon="pound"
-                        @input="handleSearchInput"
+                        @update:model-value="handleSearchInput"
                         :value="searchValue"
                         rounded
                     />
@@ -50,6 +50,7 @@
                         icon-left="close"
                         @click="clearFilters()"
                         :expanded="isMobile"
+                        aria-label="Limpiar filtros"
                         rounded
                     >
                         <span v-if="isMobile">
@@ -106,7 +107,7 @@
                             type="is-info"
                             rounded
                         >
-                            {{ props.row.subTotal | money }}
+                            {{ $money(props.row.subTotal) }}
                         </b-tag>
                     </b-table-column>
 
@@ -116,11 +117,11 @@
                         label="Pago"
                     >
                         <b-tag
-                            v-text="getSaleType(props.row.sale_type).text"
                             :type="getSaleType(props.row.sale_type).color"
                             class="has-text-weight-bold"
                             rounded
-                        />
+                            >{{ getSaleType(props.row.sale_type).text }}</b-tag
+                        >
                     </b-table-column>
 
                     <b-table-column v-slot="props" field="total" label="TOTAL">
@@ -128,7 +129,7 @@
                             type="is-success"
                             class="has-text-weight-bold"
                             rounded
-                            >{{ props.row.total | money }}</b-tag
+                            >{{ $money(props.row.total) }}</b-tag
                         >
                     </b-table-column>
 
@@ -138,7 +139,10 @@
                         label="Fecha de venta"
                     >
                         {{
-                            props.row.created_at | moment('MMM DD YYYY, h:mm a')
+                            $date(
+                                props.row.created_at,
+                                'MMM dd yyyy, h:mm a',
+                            )
                         }}
                     </b-table-column>
 
@@ -188,6 +192,7 @@
                                         type="is-primary"
                                         icon-right="eye"
                                         size="is-small"
+                                        aria-label="Ver detalles de la venta"
                                         rounded
                                     />
                                 </b-tooltip>
@@ -203,6 +208,7 @@
                                         type="is-info"
                                         icon-right="printer"
                                         size="is-small"
+                                        aria-label="Imprimir factura"
                                         rounded
                                     />
                                 </b-tooltip>
@@ -218,6 +224,7 @@
                                         type="is-danger"
                                         icon-right="cash-refund"
                                         size="is-small"
+                                        aria-label="Realizar reembolso o devolución"
                                         @click="confirmRefund(props.row)"
                                         rounded
                                     />
@@ -227,17 +234,17 @@
                     </b-table-column>
                 </template>
 
-                <template slot="footer">
+                <template #footer>
                     <th colspan="6" class="has-text-right">
                         <b>TOTAL</b>
                     </th>
 
                     <th colspan="3">
-                        {{ salesTotal | money }}
+                        {{ $money(salesTotal) }}
                     </th>
                 </template>
 
-                <template slot="empty">
+                <template #empty>
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
                             <p>
@@ -253,7 +260,7 @@
             </b-table>
         </div>
 
-        <b-modal :active.sync="showSaleDetails" has-modal-card>
+        <b-modal v-model="showSaleDetails" has-modal-card>
             <div class="modal-card" style="width: auto">
                 <header class="modal-card-head">
                     <span
@@ -281,36 +288,30 @@
             @success="getSales"
         />
 
-        <b-modal :active.sync="showInvoiceModal" has-modal-card>
-            <div v-if="selectedSale" class="modal-card">
-                <receipt-preview :sale="selectedSale" />
-            </div>
-        </b-modal>
     </div>
 </template>
 
 <script>
+import database from "@/db"
 import SaleDetails from '@/components/sales/SaleDetails.vue'
-import Invoice from '@/components/sales/Invoice.vue'
 import { printContentent, receiptPrint } from '@/lib/print'
 import { salesReport } from '@/reports/sales-report'
-import { printInvoice, invoiceFormatId } from '../reports/invoice'
+import { invoiceFormatId } from '../reports/invoice'
 import RefundModal from '../components/sales/RefundModal.vue'
 import { months, daysAbr } from '@/lib/locale'
-import { mapGetters } from 'vuex'
-import { isCapacitorNative } from '@/lib/platform'
-import InvoiceModal from '@/components/invoices/InvoiceModal.vue'
-import ReceiptPreview from '@/components/invoices/ReceiptPreview.vue'
+import {
+    endOfDayDate,
+    isDateWithin,
+    startOfDayDate,
+} from '@/lib/datetime'
+import { mapGetters } from '@/store/vuex-compat'
 
 export default {
     name: 'sales-page',
 
     components: {
         SaleDetails,
-        Invoice,
         RefundModal,
-        InvoiceModal,
-        ReceiptPreview,
     },
 
     data() {
@@ -318,7 +319,6 @@ export default {
             sales: [],
             perPage: 50,
             loading: false,
-            showInvoiceModal: false,
             showSaleDetails: false,
             selectedSale: undefined,
             dateRange: undefined,
@@ -338,43 +338,28 @@ export default {
 
         months: () => months,
         daysAbr: () => daysAbr,
-
-        isCapacitorNative,
     },
 
     methods: {
         getSales() {
             this.loading = true
-            let query = Database.sale
+            let query = database.sale
 
             // FILTER BY PAYMENT TYPE
             if (this.paymentTypeFilter) {
-                query = Database.sale.where({
+                query = database.sale.where({
                     sale_type: this.paymentTypeFilter,
                 })
             }
 
             // FILTER BY DATE RANGE
             if (this.dateRange) {
-                // Parse filters
-                const startDate = this.$moment(this.dateRange[0])
-                const finishDate = this.$moment(this.dateRange[1])
+                const startDate = startOfDayDate(this.dateRange[0])
+                const finishDate = endOfDayDate(this.dateRange[1])
 
-                // Set time threshold
-                startDate.set({ hour: 0, minute: 0, second: 0, milisecond: 0 })
-                finishDate.set({
-                    hour: 23,
-                    minute: 59,
-                    second: 59,
-                    milisecond: 999,
-                })
-
-                // Update query
-                query = query.filter(item => {
-                    let paymentDate = this.$moment(item.created_at)
-                    // check if between
-                    return paymentDate.isBetween(startDate, finishDate)
-                })
+                query = query.filter(item =>
+                    isDateWithin(item.created_at, startDate, finishDate),
+                )
             }
 
             // Filter by sale id or customer name
@@ -416,12 +401,7 @@ export default {
         },
 
         openPrintInvoice(sale) {
-            if (isCapacitorNative) {
-                this.selectedSale = sale
-                this.showInvoiceModal = true
-            } else {
-                receiptPrint(sale)
-            }
+            receiptPrint(sale)
         },
 
         /** Optinally load a sale */
@@ -556,9 +536,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '~bulma/sass/utilities/_all';
 
-@include mobile {
+@media (max-width: 768px) {
     .sales-page {
         margin-bottom: 6rem;
     }
@@ -569,7 +548,7 @@ export default {
         margin-right: 8px;
     }
 
-    @include mobile {
+    @media (max-width: 768px) {
         flex-direction: column;
 
         .field {

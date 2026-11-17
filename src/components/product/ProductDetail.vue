@@ -58,7 +58,8 @@
                 v-for="(category, index) in product.categories"
                 :key="'cat-' + index"
                 type="is-info"
-                v-text="category" />
+                >{{ category }}</b-tag
+              >
             </b-taglist>
           </td>
         </tr>
@@ -68,6 +69,7 @@
 </template>
 
 <script>
+import database from "@/db"
 export default {
   name: 'product-detail',
 
@@ -85,7 +87,7 @@ export default {
 
   methods: {
     getProduct() {
-      Database.product.get(
+      database.product.get(
         this.id, data => this.product = data)
     }
   },

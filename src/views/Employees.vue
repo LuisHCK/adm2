@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import database from "@/db"
 export default {
   name: 'employees',
 
@@ -21,7 +22,7 @@ export default {
 
   methods: {
     getEmployees() {
-      Database.employee.toArray().then(employees => {
+      database.employee.toArray().then(employees => {
         this.employees = employees
       })
     }

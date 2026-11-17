@@ -134,13 +134,17 @@
 </template>
 
 <script>
+import database from "@/db"
+import { toPlain } from '@/lib/serialization'
 export default {
     name: 'product-form',
+
+    emits: ['submit'],
 
     props: {
         product: {
             type: Object,
-            default: () => {}
+            default: () => ({})
         },
         productId: Number
     },
@@ -167,7 +171,7 @@ export default {
                     this.form.providers = this.selectedProviders.map(p => p.id)
                 }
 
-                this.$emit('submit', this.form)
+                this.$emit('submit', toPlain(this.form))
             } else {
                 this.notifyError('Por favor revise el formulario')
                 this.showMessages()
@@ -175,6 +179,8 @@ export default {
         },
 
         showMessages() {
+            this.messages = {}
+
             if (!this.form.name) {
                 this.messages.name = 'Este campo es requerido'
             }
@@ -200,33 +206,35 @@ export default {
          * Load product from db using ID prop
          */
         async getProduct(id) {
-            this.form = await Database.product.get(id)
+            this.form = (await database.product.get(id)) || {}
         },
 
         async getProviders() {
-            this.providers = await Database.provider.toArray()
-            this.selectedProviders = this.providers.filter(p =>
-                this.form.providers ? this.form.providers.includes(p.id) : false
+            this.providers = await database.provider.toArray()
+            this.selectedProviders = this.providers.filter(provider =>
+                this.form.providers
+                    ? this.form.providers.includes(provider.id)
+                    : false
             )
         },
 
-        getFilteredProviders(text) {
+        getFilteredProviders(text = '') {
+            const query = String(text).toLowerCase()
+
             this.filteredProviders = this.providers.filter(option => {
-                return (
-                    option.name
-                        .toString()
-                        .toLowerCase()
-                        .indexOf(text.toLowerCase()) >= 0
-                )
+                return option.name
+                    .toString()
+                    .toLowerCase()
+                    .indexOf(query) >= 0
             })
         }
     },
 
-    mounted() {
+    async mounted() {
         if (this.productId) {
-            this.getProduct(this.productId)
+            await this.getProduct(this.productId)
         }
-        this.getProviders()
+        await this.getProviders()
     }
 }
 </script>

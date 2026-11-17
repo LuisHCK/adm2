@@ -1,39 +1,31 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store'
+import { pinia, compatStore } from './store'
 import Buefy from 'buefy'
-import VeeValidate from 'vee-validate'
-import { Plugins } from '@capacitor/core'
-const { SplashScreen } = Plugins
+import { setBuefy } from './event-bus'
+import i18n from './i18n'
+import directives from './directives'
 import './db'
 import './assets/materialdesignicons.css'
-import moment from 'moment'
-import 'moment/locale/es'
+import './assets/_fonts.scss'
+import './buefy.scss'
 import '@/styles.scss'
-import './registerServiceWorker'
-import './filters/money-format.filter'
-import './directives'
-import i18n from './i18n'
+import { formatDate } from './lib/datetime'
+import { formatNumber } from './filters/money-format.filter'
 
-Vue.use(Buefy)
+const app = createApp(App)
 
-Vue.config.productionTip = false
+app.use(pinia)
+app.use(router)
+app.use(i18n)
+app.use(Buefy)
+app.use(directives)
 
-Vue.use(VeeValidate)
+setBuefy(app.config.globalProperties.$buefy)
 
-Vue.use(require('vue-moment'), {
-  moment
-})
+app.config.globalProperties.$date = formatDate
+app.config.globalProperties.$money = formatNumber
+app.config.globalProperties.$store = compatStore
 
-window.app = new Vue({
-    router,
-    store,
-
-    mounted() {
-        SplashScreen.hide()
-    },
-
-    i18n,
-    render: h => h(App)
-}).$mount('#app')
+app.mount('#app')

@@ -12,7 +12,7 @@
             </div>
             <div class="column is-half has-text-right">
                 <span>
-                    {{ shoppingCartTotal | money }}
+                    {{ $money(shoppingCartTotal) }}
                 </span>
             </div>
             <!-- Total -->
@@ -21,7 +21,7 @@
             </div>
             <div class="column is-half has-text-right">
                 <strong class="is-size-4 has-text-danger">
-                    {{ finalTotal | money }}
+                    {{ $money(finalTotal) }}
                 </strong>
             </div>
         </div>
@@ -58,7 +58,7 @@
 
             <div class="column is-half has-text-right">
                 <strong class="hast-text-success">
-                    {{ exchange | money }}
+                    {{ $money(exchange) }}
                 </strong>
             </div>
 
@@ -101,22 +101,29 @@
                 <span>Cliente</span>
             </div>
             <div class="column is-full-desktop" style="display: flex;">
-                <v-select
-                    label="name"
+                <b-autocomplete
+                    :value="
+                        shoppingCartCustomer ? shoppingCartCustomer.name : ''
+                    "
+                    :data="customers"
+                    field="name"
+                    placeholder="Buscar cliente"
+                    icon="account-search"
                     style="width: 100%;"
-                    :options="customers"
-                    @input="setCustomer"
-                    :value="shoppingCartCustomer"
+                    clearable
+                    @select="setCustomer"
+                    @update:model-value="handleCustomerInput"
                 >
-                    <div slot="no-options">
+                    <template #empty>
                         No hay clientes registrados
-                    </div>
-                </v-select>
+                    </template>
+                </b-autocomplete>
                 <b-button
                     @click="showCustomerForm = true"
                     type="is-primary"
                     style="margin-left: 8px;"
                     size="is-small"
+                    aria-label="Agregar cliente"
                 >
                     <i class="mdi mdi-plus"></i>
                 </b-button>
@@ -145,6 +152,7 @@
                         @click="cancelSale"
                         icon-right="delete"
                         :disabled="!shoppingCart.length"
+                        aria-label="Cancelar venta"
                         rounded
                     />
                 </div>
@@ -160,9 +168,8 @@
 </template>
 
 <script>
-import vSelect from 'vue-select'
-import 'vue-select/dist/vue-select.css'
-import { mapGetters } from 'vuex'
+import database from "@/db"
+import { mapGetters } from '@/store/vuex-compat'
 import CustomerForm from '@/components/customers/CustomerForm.vue'
 import ModalCard from '@/components/ui/ModalCard.vue'
 
@@ -170,7 +177,6 @@ export default {
     name: 'pos-summary',
 
     components: {
-        vSelect,
         CustomerForm,
         ModalCard,
     },
@@ -183,7 +189,7 @@ export default {
 
         shoppingCartCustomer: {
             type: Object,
-            default: () => {},
+            default: () => ({}),
         },
 
         shoppingCart: {
@@ -244,8 +250,14 @@ export default {
             this.$emit('setCustomer', event)
         },
 
+        handleCustomerInput(value) {
+            if (!value) {
+                this.setCustomer({})
+            }
+        },
+
         async getCustomers() {
-            this.customers = await Database.customer.toArray()
+            this.customers = await database.customer.toArray()
         },
 
         completeSale() {

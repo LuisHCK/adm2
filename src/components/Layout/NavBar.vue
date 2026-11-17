@@ -5,7 +5,11 @@
         aria-label="main navigation"
     >
         <div class="navbar-brand">
-            <button class="navbar-toggle-menu" @click="toggleSidenav()">
+            <button
+                class="navbar-toggle-menu"
+                aria-label="Abrir menú"
+                @click="toggleSidenav()"
+            >
                 <b-icon icon="menu"></b-icon>
             </button>
             <div class="navbar-item">
@@ -21,7 +25,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from '@/store/vuex-compat'
 import ActionButtons from './ActionButtons.vue'
 export default {
     name: 'nav-bar',
@@ -77,7 +81,7 @@ export default {
         background-color: rgba(94, 94, 94, 0.37);
     }
 
-    @media only screen and (max-width: $sidenav-break-point) {
+    @media only screen and (max-width: 1300px) {
         display: block;
     }
 }

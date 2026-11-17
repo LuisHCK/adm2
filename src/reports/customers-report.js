@@ -1,4 +1,4 @@
-import * as moment from 'moment'
+import { formatDate } from '../lib/datetime'
 import { render } from 'ejs'
 import store from '../store'
 import { printContentent } from '../lib/print'
@@ -46,7 +46,7 @@ const customersHtmlTemplate = `
           <td style="text-align: right; vertical-align: top;">
             <img src="<%= store.logo %>" style=" height: 100px; width: auto;" />
             <div style="margin-top: 1em;">
-              <%= moment().format('DD/MM/YYYY, h:mm a') %>
+              <%= formatDate(new Date(), 'dd/MM/yyyy, h:mm a') %>
             </div>
           </td>
         </tr>
@@ -108,7 +108,7 @@ function customersReport(customers) {
         customers,
         logo,
         store: storeData,
-        moment,
+        formatDate,
         title,
         currency
     })
@@ -160,7 +160,7 @@ const customerDetailHtmlTemplate = `
           <td style="text-align: right; vertical-align: top;">
             <img src="<%= store.logo %>" alt="LOGO" style=" height: 100px; width: 100px;" />
             <div style="margin-top: 1em;">
-              <%= moment().format('DD/MM/YYYY, h:mm a') %>
+              <%= formatDate(new Date(), 'dd/MM/yyyy, h:mm a') %>
             </div>
           </td>
         </tr>
@@ -225,7 +225,7 @@ const customerDetailHtmlTemplate = `
             <%= transaction.description %>
           </td>
           <td>
-            <%= moment(transaction.created_at).format('DD/MM/YYYY, h:mma') %>
+            <%= formatDate(transaction.created_at, 'dd/MM/yyyy, h:mma') %>
           </td>
           <td>
             <%= currency %><%= transaction.total %>
@@ -259,7 +259,7 @@ function customerDetailReport(data) {
     const renderedTemplate = render(customerDetailHtmlTemplate, {
         data,
         store: storeData,
-        moment,
+        formatDate,
         title,
         currency
     })

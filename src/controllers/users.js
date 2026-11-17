@@ -1,5 +1,14 @@
 import database from '../db'
 import { hashSync } from '../lib/auth'
+import { toPlain } from '../lib/serialization'
+
+const duplicateUserError = () => {
+    const error = new Error(
+        'El nombre de usuario o el correo ya están registrados',
+    )
+    error.code = 'DUPLICATE_USER'
+    return error
+}
 
 /**
  * Register a new user
@@ -7,7 +16,32 @@ import { hashSync } from '../lib/auth'
  * @returns {Promise}
  */
 export const registerUser = async data => {
-    let payload = { ...data }
+    const username = data.username ? String(data.username).trim() : ''
+    const email = data.email ? String(data.email).trim() : ''
+
+    if (username) {
+        const existingUsername = await database.user
+            .where('username')
+            .equalsIgnoreCase(username)
+            .first()
+
+        if (existingUsername) {
+            throw duplicateUserError()
+        }
+    }
+
+    if (email) {
+        const existingEmail = await database.user
+            .where('email')
+            .equalsIgnoreCase(email)
+            .first()
+
+        if (existingEmail) {
+            throw duplicateUserError()
+        }
+    }
+
+    const payload = toPlain({ ...data, username, email })
     payload.password_digest = hashSync(payload.password)
     delete payload.password
 

@@ -1,22 +1,18 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createPinia, defineStore } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { getUserCount } from '../lib/auth'
-import VuexPersistence from 'vuex-persist'
 import Maths from '../lib/maths'
 import {
     SET_STORE,
     TOGGLE_SIDENAV,
-    ADD_PRODUCT_TO_SHOPPING_CART
+    ADD_PRODUCT_TO_SHOPPING_CART,
 } from '@/constants'
 
-Vue.use(Vuex)
+export const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 
-const vuexLocal = new VuexPersistence({
-    storage: window.localStorage
-})
-
-export default new Vuex.Store({
-    state: {
+export const useAppStore = defineStore('app', {
+    state: () => ({
         user: undefined,
         users: [],
         store: {},
@@ -24,148 +20,141 @@ export default new Vuex.Store({
         shoppingCartCustomer: {},
         chartData: {},
         sidenavVisible: false,
-        actionButtons: []
-    },
-
-    mutations: {
-        /**
-         * Set User
-         * @param {Object} state state
-         * @param {Object} user User
-         */
-        setUser(state, user) {
-            state.user = user
-        },
-
-        [SET_STORE](state, store) {
-            state.store = store
-        },
-
-        [TOGGLE_SIDENAV](state) {
-            state.sidenavVisible = !state.sidenavVisible
-        },
-
-        /**
-         * Add inventory product to shopping cart
-         * @param {*} state
-         * @param {*} inventoryProduct
-         */
-        [ADD_PRODUCT_TO_SHOPPING_CART](state, payload) {
-            state.shoppingCart = [...state.shoppingCart, payload]
-        },
-
-        /**
-         * Remove Inventory Product form shopping cart
-         * @param {*} state
-         * @param {*} index
-         */
-        REMOVE_ITEM_SHOPPING_CART(state, index) {
-            state.shoppingCart.splice(index, 1)
-        },
-
-        /**
-         * Set the quantity of shopping cart
-         * @param {Object} state Vuex state
-         * @param {Object} payload Data
-         */
-        SET_PRODUCT_QTY_SHOPPING_CART(state, payload) {
-            state.shoppingCart[payload.index].quantity = Number(
-                payload.quantity
-            )
-            // Compute subtotal
-            const qty = state.shoppingCart[payload.index].quantity
-            const price =
-                state.shoppingCart[payload.index].inventoryProduct.price
-
-            state.shoppingCart[[payload.index]].subTotal = qty * price
-            state.shoppingCart = [...state.shoppingCart]
-        },
-
-        SET_PRODUCT_DISCOUNT_SHOPPING_CART(state, payload) {
-            // Compute subtotal
-            const qty = state.shoppingCart[payload.index].quantity
-            const price =
-                state.shoppingCart[payload.index].inventoryProduct.price
-            const subTotal = qty * price
-
-            const discounted = Maths.getPercent(subTotal, payload.discount || 0)
-
-            state.shoppingCart[[payload.index]].discount = payload.discount
-            state.shoppingCart[[payload.index]].discounted = discounted
-
-            state.shoppingCart = [...state.shoppingCart]
-        },
-
-        /**
-         * Increase by 1 the shopping cart product Quantity
-         * @param {Object} state
-         * @param {Number} index
-         */
-        INCREASE_PRODUCT_SHOPPING_CART(state, index) {
-            state.shoppingCart[index].quantity++
-            // Compute subtotal
-            const qty = state.shoppingCart[index].quantity
-            const price = state.shoppingCart[index].inventoryProduct.price
-
-            state.shoppingCart[[index]].subTotal = qty * price
-            state.shoppingCart = [...state.shoppingCart]
-        },
-
-        SET_SHOPPING_CART_CUSTOMER(state, payload) {
-            state.shoppingCartCustomer = payload
-        },
-
-        CLEAR_SHOPPING_CART(state) {
-            state.shoppingCart = []
-        },
-
-        // CHART DATA
-        SET_CHART_DATA(state, payload) {
-            state.chartData = payload
-        },
-
-        SET_ACTION_BUTTONS(state, payload) {
-            state.actionButtons = payload
-        },
-
-        SET_POS_SETTINGS(state, payload) {
-            state.pos = payload
-        }
-    },
-
-    actions: {
-        LOGOUT(context) {
-            context.commit('setUser', undefined)
-        }
-    },
+        actionButtons: [],
+        pos: undefined,
+    }),
 
     getters: {
         userCount() {
             return getUserCount()
         },
 
-        isAuthenticated: state => {
-            return state.user != undefined
-        },
+        isAuthenticated: state => state.user != undefined,
 
-        store: state => {
-            return state.store
-        },
-
-        /**
-         * Sum all subtotals
-         */
-        shoppingCartTotal: state => {
-            return state.shoppingCart.reduce((val, obj) => {
-                const discounted = obj.discounted || 0
-                return val + (obj.subTotal - discounted)
-            }, 0)
-        },
+        shoppingCartTotal: state =>
+            state.shoppingCart.reduce((value, item) => {
+                const discounted = item.discounted || 0
+                return value + (item.subTotal - discounted)
+            }, 0),
 
         currency: state => state.store.currency || '$',
 
-        currentUser: state => state.user
+        currentUser: state => state.user,
     },
 
-    plugins: [vuexLocal.plugin]
+    actions: {
+        setUser(user) {
+            this.user = user
+        },
+
+        [SET_STORE](store) {
+            this.store = store
+        },
+
+        [TOGGLE_SIDENAV]() {
+            this.sidenavVisible = !this.sidenavVisible
+        },
+
+        [ADD_PRODUCT_TO_SHOPPING_CART](payload) {
+            this.shoppingCart = [...this.shoppingCart, payload]
+        },
+
+        REMOVE_ITEM_SHOPPING_CART(index) {
+            this.shoppingCart.splice(index, 1)
+        },
+
+        SET_PRODUCT_QTY_SHOPPING_CART(payload) {
+            this.shoppingCart[payload.index].quantity = Number(payload.quantity)
+
+            const quantity = this.shoppingCart[payload.index].quantity
+            const price = this.shoppingCart[payload.index].inventoryProduct.price
+
+            this.shoppingCart[payload.index].subTotal = quantity * price
+            this.shoppingCart = [...this.shoppingCart]
+        },
+
+        SET_PRODUCT_DISCOUNT_SHOPPING_CART(payload) {
+            const quantity = this.shoppingCart[payload.index].quantity
+            const price = this.shoppingCart[payload.index].inventoryProduct.price
+            const subTotal = quantity * price
+
+            const discounted = Maths.getPercent(
+                subTotal,
+                payload.discount || 0,
+            )
+
+            this.shoppingCart[payload.index].discount = payload.discount
+            this.shoppingCart[payload.index].discounted = discounted
+            this.shoppingCart = [...this.shoppingCart]
+        },
+
+        INCREASE_PRODUCT_SHOPPING_CART(index) {
+            this.shoppingCart[index].quantity++
+
+            const quantity = this.shoppingCart[index].quantity
+            const price = this.shoppingCart[index].inventoryProduct.price
+
+            this.shoppingCart[index].subTotal = quantity * price
+            this.shoppingCart = [...this.shoppingCart]
+        },
+
+        SET_SHOPPING_CART_CUSTOMER(payload) {
+            this.shoppingCartCustomer = payload
+        },
+
+        CLEAR_SHOPPING_CART() {
+            this.shoppingCart = []
+        },
+
+        SET_CHART_DATA(payload) {
+            this.chartData = payload
+        },
+
+        SET_ACTION_BUTTONS(payload) {
+            this.actionButtons = payload
+        },
+
+        SET_POS_SETTINGS(payload) {
+            this.pos = payload
+        },
+
+        LOGOUT() {
+            this.user = undefined
+        },
+    },
+
+    persist: true,
 })
+
+const getAppStore = () => useAppStore(pinia)
+
+/**
+ * Temporary Vuex-style facade used by legacy call sites.
+ * Created lazily so Pinia plugins (persistence) are installed first.
+ * Remove after Phase 3 once components use the Pinia store directly.
+ */
+export const compatStore = {
+    commit(type, payload) {
+        const store = getAppStore()
+
+        if (typeof store[type] === 'function') {
+            return store[type](payload)
+        }
+
+        throw new Error(`[store] Unknown action: ${type}`)
+    },
+
+    dispatch(type, payload) {
+        return this.commit(type, payload)
+    },
+
+    get getters() {
+        return getAppStore()
+    },
+
+    get state() {
+        return getAppStore().$state
+    },
+}
+
+export default compatStore

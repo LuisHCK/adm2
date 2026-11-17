@@ -152,8 +152,10 @@
                                     field="created_at"
                                     label="Fecha"
                                     >{{
-                                        props.row.created_at
-                                            | moment('MMM DD YYYY, h:mma')
+                                        $date(
+                                            props.row.created_at,
+                                            'MMM dd yyyy, h:mma',
+                                        )
                                     }}</b-table-column
                                 >
 
@@ -182,7 +184,7 @@
         </div>
 
         <!-- Add to inventory -->
-        <b-modal :active.sync="showFormModal" has-modal-card>
+        <b-modal v-model="showFormModal" has-modal-card>
             <div class="modal-card">
                 <div class="modal-card-head">
                     <span class="modal-card-title">Registrar pago</span>
@@ -203,7 +205,9 @@
 import PaymentForm from '@/components/customers/PaymentForm.vue'
 import { customerDetailReport } from '@/reports/customers-report'
 import { months, daysAbr } from '@/lib/locale'
-import { mapGetters } from 'vuex'
+import { isDateWithin } from '@/lib/datetime'
+import { calculateCustomerDebt } from '@/lib/customer-math'
+import { mapGetters } from '@/store/vuex-compat'
 import { getCustomerById, getCustomerPayments } from '@/controllers/customers'
 import { getSalesWithFilters } from '@/controllers/sales'
 
@@ -230,12 +234,7 @@ export default {
         ...mapGetters(['currency']),
 
         totalDebt() {
-            if (this.transactions && this.transactions.length) {
-                return this.transactions
-                    .filter(t => t.type == 'credit')
-                    .reduce((a, b) => a + b.total, 0)
-            }
-            return 0
+            return calculateCustomerDebt(this.transactions)
         },
 
         /**
@@ -243,7 +242,7 @@ export default {
          */
         sortedTransactions() {
             if (this.transactions && this.transactions.length) {
-                return this.transactions.sort((a, b) => {
+                return [...this.transactions].sort((a, b) => {
                     return new Date(b.created_at) - new Date(a.created_at)
                 })
             }
@@ -271,7 +270,7 @@ export default {
         /**
          * Get all purchases by Customer
          */
-        getSales() {
+        async getSales() {
             const customer_id = Number(this.$route.params.id)
 
             // Define filters
@@ -286,70 +285,66 @@ export default {
 
             // Get date range
             if (this.dateRange) {
-                // Parse filters
-                const startDate = this.$moment(this.dateRange[0])
-                const finishDate = this.$moment(this.dateRange[1])
-
-                // Update query
-                query = query.and(item => {
-                    let paymentDate = this.$moment(item.created_at)
-                    // check if between
-                    return paymentDate.isBetween(startDate, finishDate)
-                })
+                // Preserves the original boundaries returned by the picker.
+                // Revisit end-of-day handling in Step 3.5.
+                query = query.and(item =>
+                    isDateWithin(
+                        item.created_at,
+                        this.dateRange[0],
+                        this.dateRange[1],
+                    ),
+                )
             }
 
-            query.toArray(data => {
-                const sales = data.map(d => {
-                    return {
-                        type: d.sale_type,
-                        id: d.id,
-                        description:
-                            d.sale_type == 'credit'
-                                ? 'Compra al crédito'
-                                : 'Compra de contado',
-                        total: d.total,
-                        created_at: d.created_at,
-                        updated_at: d.updated_at
-                    }
-                })
-                this.transactions.push(...sales)
+            const data = await query.toArray()
+            const sales = data.map(d => {
+                return {
+                    type: d.sale_type,
+                    id: d.id,
+                    description:
+                        d.sale_type == 'credit'
+                            ? 'Compra al crédito'
+                            : 'Compra de contado',
+                    total: d.total,
+                    created_at: d.created_at,
+                    updated_at: d.updated_at,
+                }
             })
+            this.transactions.push(...sales)
         },
 
         /**
          * Retrieve all Payments
          */
-        getPayments() {
+        async getPayments() {
             const id = Number(this.$route.params.id)
             let query = getCustomerPayments(id)
 
             // Get date range
             if (this.dateRange) {
-                // Parse filters
-                const startDate = this.$moment(this.dateRange[0])
-                const finishDate = this.$moment(this.dateRange[1])
-
-                // Update query
-                query = query.and(item => {
-                    let paymentDate = this.$moment(item.created_at)
-                    // check if between
-                    return paymentDate.isBetween(startDate, finishDate)
-                })
+                // Preserves the original boundaries returned by the picker.
+                // Revisit end-of-day handling in Step 3.5.
+                query = query.and(item =>
+                    isDateWithin(
+                        item.created_at,
+                        this.dateRange[0],
+                        this.dateRange[1],
+                    ),
+                )
             }
 
-            query.toArray(data => {
-                const payments = data.map(p => {
-                    return {
-                        type: 'payment',
-                        id: p.id,
-                        description: p.description,
-                        total: -Math.abs(p.amount), // Convert payment to negative, its reduce debt
-                        created_at: p.date || p.created_at,
-                        updated_at: p.updated_at
-                    }
-                })
-                this.transactions.push(...payments)
+            const data = await query.toArray()
+            const payments = data.map(p => {
+                return {
+                    type: 'payment',
+                    id: p.id,
+                    description: p.description,
+                    total: -Math.abs(p.amount), // Convert payment to negative, its reduce debt
+                    created_at: p.date || p.created_at,
+                    updated_at: p.updated_at,
+                }
             })
+            this.transactions.push(...payments)
         },
 
         savePayment(payment) {

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from '@/store/vuex-compat'
 import NavBar from '../components/Layout/NavBar.vue'
 import SideNav from '../components/Layout/SideNav.vue'
 
@@ -40,7 +40,7 @@ export default {
     transition: 0.3s;
     padding-left: 280px;
 
-    @media only screen and (max-width: $sidenav-break-point) {
+    @media only screen and (max-width: 1300px) {
         display: block;
         padding-left: 0px;
     }

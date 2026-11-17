@@ -11,17 +11,17 @@
                 @click="executeBackup()"
                 :loading="exporting"
             >
-                Exportar copida de seguridad
+                Exportar copia de seguridad
             </b-button>
             <b-button
                 v-if="exporting"
                 type="is-link"
                 class="is-margin-top-1"
-                v-text="progress"
-            />
+                >{{ progress }}</b-button
+            >
         </div>
         <div class="is-margin-top-1">
-            <b-upload @input="importDatabase($event)">
+            <b-upload @update:model-value="importDatabase($event)">
                 <a class="button is-warning">
                     <b-icon icon="upload"></b-icon>
                     <span>Importar copia de seguridad</span>
@@ -37,6 +37,9 @@
 </template>
 
 <script>
+import database from "@/db"
+import products from '@/assets/products.json'
+import { toPlain } from '@/lib/serialization'
 import { backupDatabase, restoreDatabase } from '../../db/backup'
 
 export default {
@@ -54,12 +57,11 @@ export default {
          * this insert all products in products.json
          */
         seedProducts() {
-            const products = require('@/assets/products.json')
             products.map(product => {
                 product.categories = product.categories.split('&')
                 product.subcategories = product.subcategories.split('&')
                 // Insert into db (Oh God halp plz)
-                Database.product.add(product).then(() => {
+                database.product.add(toPlain(product)).then(() => {
                     console.debug('success')
                 })
             })
@@ -71,12 +73,28 @@ export default {
         },
 
         async executeBackup() {
-            await backupDatabase(Database)
-            this.exporting = false
+            this.exporting = true
+
+            try {
+                await backupDatabase(database)
+                this.$buefy.toast.open({
+                    message: 'Copia de seguridad exportada',
+                    type: 'is-success',
+                    position: 'is-bottom',
+                })
+            } catch (error) {
+                this.$buefy.toast.open({
+                    message: 'No se pudo exportar la copia de seguridad',
+                    type: 'is-danger',
+                    position: 'is-bottom',
+                })
+            } finally {
+                this.exporting = false
+            }
         },
 
         importDatabase(file) {
-            restoreDatabase(Database, file)
+            restoreDatabase(database, file)
         },
     },
 }

@@ -43,8 +43,6 @@ const CashBox = database.cash_box.defineClass(classes.CashBox)
 
 database.open()
 
-window.Database = database
-
 export default database
 
 export {

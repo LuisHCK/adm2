@@ -1,71 +1,42 @@
-// Import Bulma's core
-@import '~bulma/sass/utilities/_all';
-@import 'src/assets/_variables';
-@import 'src/assets/_spacing';
-
-$success: #2ebb60;
-
-// Setup $colors to use as bulma classes (e.g. 'is-twitter')
-$colors: (
-    'white': (
-        $white,
-        $black
-    ),
-    'black': (
-        $black,
-        $white
-    ),
-    'light': (
-        $light,
-        $light-invert
-    ),
-    'dark': (
-        $dark,
-        $dark-invert
-    ),
-    'primary': (
-        $primary,
-        $primary-invert
-    ),
-    'info': (
-        $info,
-        $info-invert
-    ),
-    'success': (
-        $success,
-        $success-invert
-    ),
-    'warning': (
-        $warning,
-        $warning-invert
-    ),
-    'danger': (
-        $danger,
-        $danger-invert
-    ),
-    'twitter': (
-        $twitter,
-        $twitter-invert
+// Bulma 1.x + Buefy 3 theme
+@use 'bulma/sass' with (
+    $primary: #1976d2,
+    $link: #1976d2,
+    $success: #2ebb60,
+    $family-sans-serif: (
+        'Poppins',
+        sans-serif,
     )
 );
 
-// Links
-$link: $primary;
-$link-invert: $primary-invert;
-$link-focus-border: $primary;
+@use 'buefy/src/scss/buefy';
+@use './assets/spacing';
+@use 'bulma/sass/themes/light' as light;
+@use 'bulma/sass/themes/setup' as setup;
 
-/** Cards **/
-$modal-card-title-size: $size-5;
-$modal-card-head-background-color: $primary;
-$modal-card-title-color: $light;
-
-// Import Bulma and Buefy styles
-@import '~bulma';
-@import '~buefy/src/scss/buefy';
+// ADM2 is light-theme only. Re-apply the light variables after Bulma's
+// prefers-color-scheme and data-theme rules so the system/browser theme is ignored.
+:root,
+[data-theme='light'],
+[data-theme='dark'],
+.theme-light,
+.theme-dark {
+    color-scheme: light;
+    @include light.light-theme;
+    @include setup.setup-theme;
+}
 
 /** SPECIFIC OVERRIDES */
 .card-footer {
     border-top: 1px solid #f1f1f1;
+}
+
+.modal-card-head {
+    background-color: #1976d2;
+}
+
+.modal-card-title {
+    color: #fff;
 }
 
 .modal-card-foot {
@@ -78,6 +49,24 @@ $modal-card-title-color: $light;
 }
 .justify-content-end {
     justify-content: flex-end;
+}
+
+// Buefy 3 radio buttons need explicit spacing between icon and label.
+.b-radio.radio.button {
+    gap: 0.35rem;
+
+    .icon {
+        flex-shrink: 0;
+        margin: 0;
+    }
+}
+
+.b-radio.radio.button .icon:first-child:nth-last-child(2) {
+    margin-inline: 0;
+}
+
+.b-radio.radio.button + .b-radio.radio.button {
+    margin-inline-start: 0.5rem;
 }
 
 .tab-item:focus {

@@ -1,7 +1,7 @@
-import * as moment from 'moment'
+import { formatDate } from '../../lib/datetime'
 import { render } from 'ejs'
 import store from '../../store'
-import receiptTemplate from './template.ejs'
+import receiptTemplate from './template.ejs?raw'
 
 /**
  * Print Sale invoice
@@ -17,7 +17,7 @@ export const printInvoice = sale => {
         {
             sale,
             store: storeData,
-            moment,
+            formatDate,
             currency,
             barCode: "",
             invoiceFormatId

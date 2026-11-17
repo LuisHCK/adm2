@@ -4,36 +4,37 @@
             <slot />
         </div>
         <b-field v-else>
-            <b-input
-                v-if="inputType !== 'number'"
-                :placeholder="placeholder"
-                :type="inputType"
-                v-model="editedValue"
-                size="is-small"
-                ref="inputRef"
-                @keydown.native="handleKeydown"
-                @focus="handleFocus"
-                rounded
-            />
+            <div @keydown="handleKeydown" style="display: contents;">
+                <b-input
+                    v-if="inputType !== 'number'"
+                    :placeholder="placeholder"
+                    :type="inputType"
+                    v-model="editedValue"
+                    size="is-small"
+                    ref="inputRef"
+                    @focus="handleFocus"
+                    rounded
+                />
 
-            <!-- Is safer to use specific number input -->
-            <b-numberinput
-                :placeholder="placeholder"
-                v-model="editedValue"
-                size="is-small"
-                ref="inputRef"
-                @keydown.native="handleKeydown"
-                @focus="handleFocus"
-                :controls="false"
-                :min="0"
-                rounded
-            />
+                <!-- Is safer to use specific number input -->
+                <b-numberinput
+                    :placeholder="placeholder"
+                    v-model="editedValue"
+                    size="is-small"
+                    ref="inputRef"
+                    @focus="handleFocus"
+                    :controls="false"
+                    :min="0"
+                    rounded
+                />
+            </div>
             <p class="control">
                 <b-button
                     @click="emitEditedValue"
                     type="is-success"
                     icon-left="send"
                     size="is-small"
+                    aria-label="Guardar"
                     rounded
                 />
             </p>
@@ -58,7 +59,7 @@ export default {
 
         inputType: {
             type: String,
-            value: 'text'
+            default: 'text'
         }
     },
 
@@ -77,7 +78,13 @@ export default {
 
             if (this.isEditing) {
                 setTimeout(() => {
-                    this.$refs.inputRef.focus()
+                    const input = this.$refs.inputRef
+
+                    if (input && typeof input.focus === 'function') {
+                        input.focus()
+                    } else if (input && input.$el) {
+                        input.$el.focus()
+                    }
                 }, 150)
             }
         },

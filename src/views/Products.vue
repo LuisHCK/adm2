@@ -19,7 +19,7 @@
                 :striped="true"
                 :hoverable="true"
                 :loading="loading"
-                :checked-rows.sync="checkedProducts"
+                v-model:checked-rows="checkedProducts"
                 :sticky-header="true"
                 height="75vh"
                 checkable
@@ -78,10 +78,10 @@
                                 v-for="(cat, i) in props.row.categories"
                                 class="has-text-weight-bold"
                                 :key="`catg-${i}`"
-                                v-text="cat"
                                 type="is-info"
                                 rounded
-                            />
+                                >{{ cat }}</b-tag
+                            >
                         </b-taglist>
                     </b-table-column>
                     <b-table-column
@@ -101,6 +101,7 @@
                                         type="is-primary"
                                         icon-right="pencil"
                                         size="is-small"
+                                        aria-label="Editar producto"
                                         rounded
                                     />
                                 </b-tooltip>
@@ -116,6 +117,7 @@
                                         type="is-info"
                                         icon-right="eye"
                                         size="is-small"
+                                        aria-label="Ver detalles del producto"
                                         rounded
                                     />
                                 </b-tooltip>
@@ -128,10 +130,11 @@
                                     position="is-left"
                                 >
                                     <b-button
-                                        @click="openUpdateForm(props.row)"
+                                        @click="deleteProduct(props.row)"
                                         type="is-danger"
                                         icon-right="delete"
                                         size="is-small"
+                                        aria-label="Eliminar producto"
                                         rounded
                                     />
                                 </b-tooltip>
@@ -140,7 +143,7 @@
                     </b-table-column>
                 </template>
 
-                <template slot="empty">
+                <template #empty>
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
                             <p>
@@ -157,7 +160,7 @@
         </div>
 
         <!-- Product modal form -->
-        <b-modal :active.sync="showForm" has-modal-card>
+        <b-modal v-model="showForm" has-modal-card>
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">Agregar un nuevo producto</p>
@@ -169,7 +172,7 @@
         </b-modal>
 
         <!-- Product edit form -->
-        <b-modal :active.sync="showUpdateForm" has-modal-card>
+        <b-modal v-model="showUpdateForm" has-modal-card>
             <div v-if="selectedProduct" class="modal-card">
                 <header class="modal-card-head">
                     <span
@@ -192,7 +195,7 @@
         </b-modal>
 
         <!-- Product detail modal -->
-        <b-modal :active.sync="showDetailModal" has-modal-card>
+        <b-modal v-model="showDetailModal" has-modal-card>
             <div class="modal-card" v-if="showDetailModal">
                 <section class="modal-card-body">
                     <product-detail :id="selectedProductId" />
@@ -201,7 +204,7 @@
         </b-modal>
 
         <!-- Add to inventory -->
-        <b-modal :active.sync="showInventoryModal" has-modal-card :width="1024">
+        <b-modal v-model="showInventoryModal" has-modal-card :width="1024">
             <div class="modal-card is-full-width">
                 <header class="modal-card-head">
                     <span class="modal-card-title"
@@ -222,7 +225,7 @@
         </b-modal>
 
         <!-- Select inventory modal -->
-        <b-modal :active.sync="showInventorySelect" has-modal-card>
+        <b-modal v-model="showInventorySelect" has-modal-card>
             <div class="modal-card">
                 <InventorySelect
                     :inventories="inventories"
@@ -235,7 +238,9 @@
 </template>
 
 <script>
+import database from "@/db"
 import EventBus from '../event-bus'
+import { toPlain } from '@/lib/serialization'
 import ProductForm from '../components/product/Form.vue'
 import InventorySelect from '../components/product/InventorySelect.vue'
 import ProductDetail from '../components/product/ProductDetail.vue'
@@ -276,7 +281,7 @@ export default {
     methods: {
         // Get all products
         getProducts() {
-            Database.product
+            database.product
                 .toArray()
                 .then(products => (this.products = products))
                 .then(() => (this.loading = false))
@@ -291,8 +296,8 @@ export default {
             data.created_at = now.toISOString()
             data.updated_at = now.toISOString()
 
-            Database.product
-                .add(data)
+            database.product
+                .add(toPlain(data))
                 .then(product => {
                     // Save the product
                     this.getProducts()
@@ -316,7 +321,7 @@ export default {
             }
 
             this.errorAlert(messageText)
-            console.error(err)
+            console.warn(err)
         },
 
         /** Display an error message */
@@ -331,8 +336,8 @@ export default {
         },
 
         updateProduct(data) {
-            Database.product
-                .update(data.id, data)
+            database.product
+                .update(data.id, toPlain(data))
                 .then(updated => {
                     this.showUpdateForm = false
                     this.getProducts()
@@ -357,6 +362,53 @@ export default {
             EventBus.$emit('SELECT_PROJECT_UPDATE')
         },
 
+        async deleteProduct(product) {
+            const inventoryRows = await database.inventory_product
+                .where('product_id')
+                .equals(product.id)
+                .count()
+
+            if (inventoryRows > 0) {
+                return this.$buefy.dialog.alert({
+                    title: 'No se puede eliminar',
+                    message: `El producto <b>${product.name}</b> pertenece a un inventario. Quítalo del inventario antes de eliminarlo.`,
+                    type: 'is-warning',
+                    hasIcon: true,
+                    icon: 'alert-circle-outline',
+                })
+            }
+
+            this.$buefy.dialog.confirm({
+                title: 'Eliminar producto',
+                message: `¿Deseas eliminar <b>${product.name}</b>? Esta acción no se puede deshacer.`,
+                confirmText: 'Sí, eliminar',
+                cancelText: 'Cancelar',
+                type: 'is-danger',
+                hasIcon: true,
+                onConfirm: () => this.performDelete(product),
+            })
+        },
+
+        async performDelete(product) {
+            try {
+                await database.product_provider
+                    .where('product_id')
+                    .equals(product.id)
+                    .delete()
+                await database.product.delete(product.id)
+
+                if (this.selectedProduct?.id === product.id) {
+                    this.selectedProduct = undefined
+                }
+
+                this.getProducts()
+                this.showToast('Se eliminó el producto')
+            } catch (error) {
+                console.error(error)
+                this.errorAlert('No se pudo eliminar el producto.')
+            }
+        },
+
         handleSearch(event) {
             clearTimeout(this.searchTimeout)
 
@@ -366,15 +418,16 @@ export default {
         },
 
         searchProduct(value) {
-            if (value.length) {
-                Database.product
+            if (String(value || '').length) {
+                database.product
                     .where('name')
                     .startsWithIgnoreCase(value)
                     .or('brand')
                     .startsWithIgnoreCase(value)
                     .or('codebar')
                     .startsWithIgnoreCase(value)
-                    .toArray(products => (this.products = products))
+                    .toArray()
+                    .then(products => (this.products = products))
             } else {
                 this.getProducts()
             }
@@ -386,7 +439,7 @@ export default {
         },
 
         async getInventories() {
-            this.inventories = await Database.inventory.toArray()
+            this.inventories = await database.inventory.toArray()
 
             if (this.inventories.length === 1) {
                 this.selectedInventory = this.inventories[0]
@@ -397,15 +450,14 @@ export default {
          * Check for query params, when an inventory id is given,
          * set selectedInventory
          */
-        handlePreselectedInventory() {
-            if (this.$route.query && this.$route.query.selectedInventory) {
-                Database.inventory.toArray(data => {
-                    this.inventories = data
-                    // set selected inventory
-                    this.selectedInventory = this.inventories.find(
-                        i => i.id === this.$route.query.selectedInventory,
-                    )
-                })
+        async handlePreselectedInventory() {
+            const selected = this.$route.query && this.$route.query.selectedInventory
+
+            if (selected) {
+                this.inventories = await database.inventory.toArray()
+                this.selectedInventory = this.inventories.find(
+                    inventory => inventory.id === Number(selected),
+                )
             }
         },
 
@@ -424,16 +476,19 @@ export default {
             })
 
             inventoryProducts.forEach(async item => {
-                let existent = await Database.inventory_product
+                let existent = await database.inventory_product
                     .filter(i => i.product_id === item.product_id)
                     .and(i => i.inventory_id === item.inventory_id)
                     .first()
 
                 // Update or create
                 if (existent) {
-                    await Database.inventory_product.update(existent.id, item)
+                    await database.inventory_product.update(
+                        existent.id,
+                        toPlain(item),
+                    )
                 } else {
-                    await Database.inventory_product.add(item)
+                    await database.inventory_product.add(toPlain(item))
                 }
             })
 
@@ -557,14 +612,13 @@ export default {
         this.getInventories()
     },
 
-    beforeDestroy() {
+    beforeUnmount() {
         this.removeActionButtions()
     },
 }
 </script>
 
 <style lang="scss" scoped>
-@import '~bulma/sass/utilities/_all';
 
 .tag {
     margin-right: 2px;
@@ -579,7 +633,7 @@ export default {
     overflow: hidden;
 }
 
-@include mobile {
+@media (max-width: 768px) {
     .multi-import-card-body {
         overflow: auto;
     }

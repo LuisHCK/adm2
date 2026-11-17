@@ -48,8 +48,8 @@
                         <!-- Password -->
                         <b-field
                             label="Constraseña"
-                            :type="messages.phone ? 'is-danger' : ''"
-                            :message="messages.phone"
+                            :type="messages.password ? 'is-danger' : ''"
+                            :message="messages.password"
                         >
                             <b-input
                                 type="password"
@@ -98,7 +98,7 @@
                         </b-button>
 
                         <b-upload
-                            @input="importDatabase($event)"
+                            @update:model-value="importDatabase($event)"
                             :loading="importing"
                             class="w-100"
                         >
@@ -119,6 +119,7 @@
 <script>
 import EventBus from '@/event-bus'
 import { restoreDatabase } from '@/db/backup'
+import database from '@/db'
 import { createSettings } from '@/controllers/settings'
 import { registerUser, getTotalUsers } from '@/controllers/users'
 import RegistrationCarousel from '@/components/registration/RegistrationCarousel.vue'
@@ -136,7 +137,7 @@ export default {
                 name: undefined,
                 username: undefined,
                 password: undefined,
-                phone_number: undefined,
+                company_name: undefined,
             },
             importing: false,
             messages: {},
@@ -146,44 +147,54 @@ export default {
     // Component methods
     methods: {
         validateForm() {
+            this.messages = {}
+
             if (!this.form.name) this.messages.name = 'El nombre es requerido'
 
-            if (!this.form.username)
+            if (!this.form.username) {
                 this.messages.username = 'El nombre de usuario es requerido'
+            }
 
-            if (!this.form.password)
+            if (!this.form.password) {
                 this.messages.password = 'Por favor escribe una contraseña'
+            } else if (this.form.password.length < 6) {
+                this.messages.password =
+                    'La contraseña debe tener al menos 6 caracteres'
+            }
 
-            if (!this.form.company_name)
+            if (!this.form.company_name) {
                 this.messages.company_name =
                     'Por favor indica el nombre de la empresa'
+            }
 
-            if (
-                !this.form.password ||
-                !this.form.username ||
-                !this.form.password
-            )
-                return false
-            else return true
+            return Object.keys(this.messages).length === 0
         },
 
         async submitForm() {
-            if (this.validateForm()) {
-                // Register new usuer
-                try {
-                    const newUser = await registerUser(this.form)
-                    this.$store.commit('setUser', newUser)
-                } catch (error) {
-                    console.error(error)
-                    this.notifyError('Ocurrió un error al guardar')
+            if (!this.validateForm()) {
+                return this.notifyError(
+                    'Por favor verifica los datos introducidos',
+                )
+            }
+
+            try {
+                const newUser = await registerUser(this.form)
+                this.$store.commit('setUser', newUser)
+            } catch (error) {
+                console.error(error)
+
+                if (error.code === 'DUPLICATE_USER') {
+                    return this.notifyError(
+                        'El nombre de usuario ya está registrado',
+                    )
                 }
 
-                this.setStoreName(this.form.company_name)
-                this.notifySuccess('Se guardó el nuevo usuario')
-                this.$router.push('/')
-            } else {
-                this.notifyError('Por favor verifica los datos introducidos')
+                return this.notifyError('Ocurrió un error al guardar')
             }
+
+            await this.setStoreName(this.form.company_name)
+            this.notifySuccess('Se guardó el nuevo usuario')
+            this.$router.push('/')
         },
 
         async setStoreName(name) {
@@ -223,7 +234,7 @@ export default {
                     ariaModal: true,
                 })
             }
-            restoreDatabase(Database, file)
+            restoreDatabase(database, file)
         },
 
         async checkUsers() {
@@ -253,7 +264,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '~bulma/sass/utilities/_all';
 
 #registration-page {
     background-image: url('/solen-feyissa-iez9wUP_nFI-unsplash.jpeg');
@@ -285,7 +295,7 @@ export default {
         height: 100%;
     }
 
-    @include mobile {
+    @media (max-width: 768px) {
         .form-container {
             margin: 0px 0px;
         }
@@ -295,7 +305,7 @@ export default {
         }
     }
 
-    @include mobile {
+    @media (max-width: 768px) {
         .panel-side {
             width: 100%;
         }

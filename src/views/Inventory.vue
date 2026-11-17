@@ -26,7 +26,7 @@
         </div>
 
         <!-- Product modal form -->
-        <b-modal :active.sync="showForm" has-modal-card>
+        <b-modal v-model="showForm" has-modal-card>
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">Agregar un nuevo producto</p>
@@ -42,7 +42,7 @@
         </b-modal>
 
         <!-- Product inventory edit form -->
-        <b-modal :active.sync="showUpdateForm" has-modal-card>
+        <b-modal v-model="showUpdateForm" has-modal-card>
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">Actualizar inventario</p>
@@ -60,9 +60,8 @@
 </template>
 
 <script>
-import ImportProducts from '@/components/inventory/ImportProducts.vue'
 import InventoryProductForm from '../components/inventory/InventoryProductForm.vue'
-import { mapGetters } from 'vuex'
+import { mapGetters } from '@/store/vuex-compat'
 import InventoryTable from '../components/inventory/InventoryTable.vue'
 import InventorySummary from '../components/inventory/InventorySummary.vue'
 import {
@@ -76,7 +75,6 @@ import { getProductById } from '../controllers/products'
 
 export default {
     components: {
-        ImportProducts,
         InventoryProductForm,
         InventoryTable,
         InventorySummary,
@@ -105,6 +103,7 @@ export default {
     data() {
         return {
             inventory: {},
+            inventoryId: Number(this.$route.params.id),
             inventoryProducts: [],
             showForm: false,
             showUpdateForm: false,
@@ -171,7 +170,12 @@ export default {
 
         getProductName(product) {
             if (!product) return '¡Desconocido!'
-            return `${product.name} - ${product.content} ${product.unit}`
+
+            const details = [product.content, product.unit]
+                .filter(Boolean)
+                .join(' ')
+
+            return details ? `${product.name} - ${details}` : product.name
         },
 
         deleteInventoryProduct(inventoryProduct) {
@@ -225,7 +229,6 @@ export default {
     },
 
     mounted() {
-        this.inventoryId = Number(this.$route.params.id)
         this.getInventory()
         this.setActionButtons()
     },

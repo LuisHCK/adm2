@@ -39,14 +39,8 @@
 </template>
 
 <script>
-import InventoryCard from '@/components/inventory/InventoryCard.vue'
-
 export default {
     name: 'inventory-select',
-
-    components: {
-        InventoryCard
-    },
 
     data() {
         return {

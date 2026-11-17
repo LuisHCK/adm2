@@ -1,5 +1,12 @@
 <template>
-    <div class="inventory-card" @click="goToInventory">
+    <div
+        class="inventory-card"
+        role="button"
+        tabindex="0"
+        @click="goToInventory"
+        @keydown.enter="goToInventory"
+        @keydown.space.prevent="goToInventory"
+    >
         <section class="main">
             <div>
                 <strong class="is-size-4" v-text="inventory.name" />
@@ -29,7 +36,7 @@ export default {
     props: {
         inventory: {
             type: Object,
-            default: {}
+            default: () => ({})
         }
     },
 

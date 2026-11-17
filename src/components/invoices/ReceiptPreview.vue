@@ -38,16 +38,13 @@
                             {{ getProductName(item.inventoryProduct) }}
                         </td>
                         <td class="has-text-right">
-                            {{ item.inventoryProduct.price | money }}
+                            {{ $money(item.inventoryProduct.price) }}
                         </td>
                         <td class="has-text-right">
-                            {{ Number(item.discounted || 0) | money }}
+                            {{ $money(Number(item.discounted || 0)) }}
                         </td>
                         <td class="has-text-right">
-                            {{
-                                (item.subTotal - Number(item.discounted))
-                                    | money
-                            }}
+                            {{ $money((item.subTotal - Number(item.discounted))) }}
                         </td>
                     </tr>
                 </tbody>
@@ -60,7 +57,7 @@
                         </td>
                         <td class="has-text-right">
                             <span class="has-text-weight-bold">
-                                {{ Number(sale.total) | money }}
+                                {{ $money(Number(sale.total)) }}
                             </span>
                         </td>
                     </tr>
@@ -71,7 +68,7 @@
                         <td class="has-text-right">
                             <span>
                                 <template v-if="sale.pay_with">
-                                    {{ Number(sale.pay_with) | money }}
+                                    {{ $money(Number(sale.pay_with)) }}
                                 </template>
                                 <template v-else>
                                     --
@@ -86,11 +83,7 @@
                         <td class="has-text-right">
                             <span>
                                 <template v-if="sale.pay_with && sale.total">
-                                    {{
-                                        (Number(sale.pay_with) -
-                                            Number(sale.total))
-                                            | money
-                                    }}
+                                    {{ $money((Number(sale.pay_with) - Number(sale.total))) }}
                                 </template>
                                 <template v-else>
                                     --
@@ -119,7 +112,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from '@/store/vuex-compat'
 import JsBarcode from 'jsbarcode'
 import { getSettings } from '@/controllers/settings'
 import { invoiceFormatId } from '@/reports/invoice'
@@ -147,7 +140,11 @@ export default {
     methods: {
         getProductName(inventoryProduct) {
             const prod = inventoryProduct.product
-            return `${prod.name} ${prod.content}${prod.unit}`
+            const details = [prod.content, prod.unit]
+                .filter(Boolean)
+                .join(' ')
+
+            return details ? `${prod.name} ${details}` : prod.name
         },
 
         async getPosSettings() {

@@ -1,23 +1,23 @@
-import Vue from 'vue'
-import VueI18n from 'vue-i18n'
+import { createI18n } from 'vue-i18n'
 
-Vue.use(VueI18n)
+function loadLocaleMessages() {
+    const locales = import.meta.glob('./locales/*.json', { eager: true })
+    const messages = {}
 
-function loadLocaleMessages () {
-  const locales = require.context('./locales', true, /[A-Za-z0-9-_,\s]+\.json$/i)
-  const messages = {}
-  locales.keys().forEach(key => {
-    const matched = key.match(/([A-Za-z0-9-_]+)\./i)
-    if (matched && matched.length > 1) {
-      const locale = matched[1]
-      messages[locale] = locales(key)
-    }
-  })
-  return messages
+    Object.entries(locales).forEach(([path, module]) => {
+        const matched = path.match(/([A-Za-z0-9-_]+)\.json$/i)
+        if (matched && matched.length > 1) {
+            messages[matched[1]] = module.default || module
+        }
+    })
+
+    return messages
 }
 
-export default new VueI18n({
-  locale: process.env.VUE_APP_I18N_LOCALE || 'en',
-  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
-  messages: loadLocaleMessages()
+export default createI18n({
+    legacy: false,
+    globalInjection: true,
+    locale: import.meta.env.VITE_I18N_LOCALE || 'es',
+    fallbackLocale: import.meta.env.VITE_I18N_FALLBACK_LOCALE || 'es',
+    messages: loadLocaleMessages(),
 })
