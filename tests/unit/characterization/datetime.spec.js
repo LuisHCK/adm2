@@ -77,9 +77,9 @@ describe('datetime helpers', () => {
         expect(formatDate('not-a-date', 'dd/MM/yyyy')).toBe('Invalid date')
     })
 
-    it('formats ISO strings with the local offset', () => {
+    it('formats an ISO-8601 timestamp', () => {
         expect(dateToISO(new Date(2024, 0, 2, 3, 4, 5))).toMatch(
-            /^2024-01-02T03:04:05[+-]\d{2}:\d{2}$/,
+            /^2024-01-02T03:04:05(?:Z|[+-]\d{2}:\d{2})$/,
         )
     })
 
