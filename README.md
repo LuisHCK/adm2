@@ -76,7 +76,7 @@ The E2E runner uses the installed Google Chrome locally. CI sets
 src/
   controllers/   Dexie-backed data access (sales, customers, inventory, cashbox, users)
   db/            Dexie schema, class mappings, backup export/import
-  store/         Pinia store + temporary Vuex-style compatibility facade
+  store/         Pinia store with persistence
   lib/           money/date helpers, auth, validation, printing, serialization
   reports/       EJS invoice, receipt, sales, customer, and cashbox reports
   views/         Routed screens (POS, products, inventories, sales, cashbox, settings)
