@@ -1,10 +1,10 @@
 import { launchBrowser } from './browser.mjs'
 import { mkdirSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 const baseUrl = process.env.SMOKE_URL || 'http://127.0.0.1:4173'
-const outDir =
-    process.env.SHOT_DIR ||
-    '/private/var/folders/t6/hly66xl144q865nx0v5rg8xc0000gn/T/opencode/adm2-shots'
+const outDir = process.env.SHOT_DIR || join(tmpdir(), 'adm2-shots')
 
 mkdirSync(outDir, { recursive: true })
 
