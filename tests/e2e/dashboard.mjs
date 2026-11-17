@@ -191,6 +191,27 @@ check(
         )),
 )
 
+const chartHeightStart = await canvas.evaluate(element =>
+    Math.round(element.getBoundingClientRect().height),
+)
+const chartParentClass = await canvas.evaluate(
+    element => element.parentElement?.className || '',
+)
+await page.waitForTimeout(1500)
+const chartHeightEnd = await canvas.evaluate(element =>
+    Math.round(element.getBoundingClientRect().height),
+)
+check(
+    'chart height is stable',
+    chartHeightStart === chartHeightEnd &&
+        chartHeightStart >= 280 &&
+        chartHeightStart <= 320,
+)
+check(
+    'chart canvas has a fixed wrapper',
+    chartParentClass.includes('chart-canvas-wrapper'),
+)
+
 await page.screenshot({ path: `${shotDir}/dashboard-chart.png`, fullPage: false })
 console.log('[shot]', `${shotDir}/dashboard-chart.png`)
 

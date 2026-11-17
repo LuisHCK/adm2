@@ -22,11 +22,12 @@
                 </b-field>
             </div>
         </div>
-        <line-chart
-            :chart-data="datacollection"
-            :options="options"
-            style="height: 300px;"
-        ></line-chart>
+        <div class="chart-canvas-wrapper">
+            <line-chart
+                :chart-data="datacollection"
+                :options="options"
+            ></line-chart>
+        </div>
     </div>
 </template>
 
@@ -101,5 +102,11 @@ export default {
 <style>
 .chart-container {
     min-height: 300px;
+}
+
+.chart-canvas-wrapper {
+    position: relative;
+    width: 100%;
+    height: 300px;
 }
 </style>
