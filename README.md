@@ -82,7 +82,6 @@ src/
   views/         Routed screens (POS, products, inventories, sales, cashbox, settings)
   components/    Feature components and shared UI
   locales/       i18n messages
-docs/migration/  Migration plan and execution tracker
 ```
 
 The database name is `adm_2` and the schema must remain backward compatible with existing
@@ -106,15 +105,6 @@ mode, and keyboard/mobile flows.
 Deploy the contents of `dist/` to any static host with SPA history fallback enabled
 (`/index.html` for unknown paths). The generated service worker and manifest make the app
 installable and offline-capable.
-
-## Migration notes
-
-This project was migrated from Vue 2 + Vue CLI + Vuex + Buefy 0.9. The plan and the
-step-by-step execution record, including tests and known caveats, are in:
-
-- [`docs/migration/PLAN.md`](docs/migration/PLAN.md)
-- [`docs/migration/TRACKER.md`](docs/migration/TRACKER.md)
-- [`docs/migration/RELEASE.md`](docs/migration/RELEASE.md)
 
 ## Screenshots
 
