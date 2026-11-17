@@ -49,6 +49,24 @@ Expected at the time of writing:
    - `assets/*`: immutable (content-hashed filenames).
    - `manifest.webmanifest`: short max-age.
 5. Do not rewrite `/assets/*` to `index.html`.
+6. The build root is `/`. Deploying under a subpath requires setting Vite `base`
+   and `createWebHistory` picks it up automatically.
+
+### Same-origin upgrade from the Vue 2 build
+
+The Vue 2 build registered `/service-worker.js`; the Vue 3 build registers `/sw.js`.
+A browser that still has the old worker installed keeps serving the cached Vue 2 shell,
+so the new `index.html` is never fetched.
+
+`public/service-worker.js` is a cleanup worker emitted at the old path. The old page
+calls `register('/service-worker.js')` on boot, the browser picks up the changed bytes,
+and the cleanup worker deletes all caches, unregisters itself, and reloads open clients.
+The Vue 3 app then installs `/sw.js` normally. On a fresh origin the file is never
+registered and has no effect.
+
+Expect **one extra reload** for already-open tabs when upgrading an existing origin.
+If a client still shows the old shell after that, do a hard reload; clearing site data
+is the last resort.
 
 The service worker is generated with `skipWaiting` + `clientsClaim`, so open clients pick
 up the next deployment automatically. A hard reload is the fallback if a client is stuck

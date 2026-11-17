@@ -34,6 +34,9 @@ export default defineConfig({
                 globPatterns: [
                     '**/*.{js,css,html,ico,png,svg,woff,woff2,jpg,jpeg}',
                 ],
+                // `service-worker.js` is the legacy Vue 2 cleanup worker, not
+                // part of the app shell. Never precache it.
+                globIgnores: ['service-worker.js'],
             },
         }),
     ],

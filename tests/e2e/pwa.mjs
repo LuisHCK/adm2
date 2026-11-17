@@ -38,6 +38,19 @@ check(
     'auto-update service worker',
     readFileSync(join(distDir, 'sw.js'), 'utf8').includes('skipWaiting'),
 )
+check(
+    'legacy service worker cleanup emitted',
+    existsSync(join(distDir, 'service-worker.js')) &&
+        readFileSync(join(distDir, 'service-worker.js'), 'utf8').includes(
+            'unregister',
+        ),
+)
+check(
+    'legacy worker not precached',
+    !readFileSync(join(distDir, 'sw.js'), 'utf8').includes(
+        'service-worker.js',
+    ),
+)
 
 const assetsDir = join(distDir, 'assets')
 const indexFile = readdirSync(assetsDir).find(file =>
