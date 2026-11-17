@@ -29,8 +29,10 @@ Expected at the time of writing:
 
 ### Manual release checks
 
-1. Import a **real user backup JSON** at the preview origin (IndexedDB is
-   origin-scoped, so a new deployment starts empty otherwise).
+1. Import a **real user backup JSON** at the preview origin, if any exist
+   (IndexedDB is origin-scoped, so a new deployment starts empty otherwise).
+   The legacy 1.x format itself is covered by
+   `tests/unit/characterization/legacy-backup.spec.js`.
 2. Register/login/logout and refresh; the session and store should persist.
 3. Create a product, add it to an inventory, and make a cash sale from the POS.
 4. Confirm stock decrements, the cashbox log appears, and the receipt print window opens.
@@ -98,10 +100,15 @@ There has been no schema bump in this migration.
 
 ## Known caveats
 
-- A real user backup fixture is still pending; the synthetic export/import round-trip
-  passes.
+- No real user backup fixture exists. The upgrade path is covered instead by
+  `tests/fixtures/legacy-backup-v1.json`, generated with the Vue 2 app's own
+  libraries (Dexie 3.2.2 + dexie-export-import 1.0.0) and imported in
+  `tests/unit/characterization/legacy-backup.spec.js`.
 - Employees is a placeholder screen; HelloI18n is preserved but unrouted (D4: no deletions).
 - Form labels from Buefy are not programmatically associated with inputs; a full axe audit
   is still recommended.
 - 18 ESLint warnings remain (legacy callback arguments).
+- `yarn audit` reports 85 advisories, all in build/dev tooling or unused CLI
+  sub-dependencies (`ejs > jake`), plus an unpatched `picomatch` in the build
+  graph. No vulnerable package appears in `dist/`. See `TRACKER.md`.
 - Desktop (Electron) and native (Capacitor) shells are out of scope.
