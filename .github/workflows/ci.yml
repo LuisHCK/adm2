@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [master, migration/vue3]
+    branches: [master, migration/vue3, v2]
   pull_request:
 
 jobs:

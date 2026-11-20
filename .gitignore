@@ -6,8 +6,22 @@ node_modules
 /tests/e2e/screenshots/
 
 # local env files
+.env
 .env.local
 .env.*.local
+
+# server runtime data and secrets (never commit these)
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.db
+secret.key
+/data/
+/backups/
+
+# compiled server artifacts
+adm2-server
+adm2-server.exe
 
 # Log files
 npm-debug.log*

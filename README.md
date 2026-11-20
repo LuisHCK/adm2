@@ -59,6 +59,7 @@ yarn dev
 ```
 
 Open the printed local URL. On first run the app asks you to create the store owner account.
+Locale defaults live in `.env.example`; copy it to `.env` only if you need to override them.
 
 ## Scripts
 
