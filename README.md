@@ -3,6 +3,10 @@
 ADM2 is a web-first point-of-sale and inventory manager for small stores. It runs entirely
 in the browser, stores data locally with IndexedDB, and works offline as a PWA.
 
+> **Status.** `master` is the shipped v1 app described below. **v2** — a self-hosted
+> server with a central database, multi-user access, and a LAN deployment — is in
+> progress on the `v2` branch. Its plan, specs, and context live in `docs/`.
+
 ## Stack
 
 | Layer | Technology |
@@ -69,6 +73,65 @@ Open the printed local URL. On first run the app asks you to create the store ow
 
 The E2E runner uses the installed Google Chrome locally. CI sets
 `PLAYWRIGHT_CHANNEL=bundled` and uses the Chromium installed by Playwright.
+
+## Working with agents
+
+v2 is built spec-first with a dedicated OpenCode agent so that every session produces the
+same kind of change and `docs/plan/STATUS.md` is never stale.
+
+### Before you start
+
+- Work on the **`v2` branch**. `master` is the shipped v1 app and is not touched.
+- The agent never pushes. Commits are local; pushing is a human decision.
+
+### The agent
+
+`adm2` is the repository default agent (`.opencode/opencode.jsonc`). It reads
+`docs/plan/STATUS.md` first, implements **one** approved spec task at a time, writes tests
+for the acceptance criteria, updates `STATUS.md`, and reports in a fixed format.
+
+A read-only `spec-review` subagent checks a diff against its spec and `AGENTS.md`.
+
+### Commands
+
+| Command | What it does |
+|---|---|
+| `/start` | Cold start: reports the current phase, task, and next action. Changes nothing. |
+| `/finish` | Runs the checks, updates `STATUS.md`, and reports with the standard format. |
+| `/review [spec]` | Read-only review of the current diff against the spec. |
+| `/spec <capability>` | Drafts or amends a spec. Never implements it. |
+
+A normal session is:
+
+```text
+/start          → confirm the task
+<work>          → implement, test
+/review         → check against the spec
+/finish         → checks, STATUS update, summary
+```
+
+### Reading order (same for humans and agents)
+
+1. `docs/plan/STATUS.md` — where we are, what is next
+2. `AGENTS.md` — repository rules that must not be broken
+3. `docs/plan/roadmap.md` — phases and exit criteria
+4. `docs/specs/00-conventions.md` — money, naming, API, immutability
+5. The one spec for the task
+
+Do not start coding before the spec is `approved`. If a rule is missing, ask — a missing
+rule is a spec change, not a code decision.
+
+### What lives where
+
+| Path | Purpose |
+|---|---|
+| `AGENTS.md` | Rules every agent must follow |
+| `docs/plan/` | Roadmap, status board, locked decisions |
+| `docs/specs/` | One spec per capability, plus conventions |
+| `docs/context/` | Market, fiscal, and currency background |
+| `docs/adr/` | Decisions that are expensive to reverse |
+| `.opencode/agents/` | `adm2` (primary) and `spec-review` (subagent) |
+| `.opencode/commands/` | `/start`, `/finish`, `/review`, `/spec` |
 
 ## Architecture
 

@@ -28,7 +28,7 @@ Do not read the whole `docs/` tree before starting. Read the spec for the task o
 | Phase status | `not started` |
 | Spec in progress | none |
 | Code state | Vue 3 browser-only app on `master`; no `server/` yet |
-| Docs state | Plan, specs, context, ADRs written (2026-11-20) |
+| Docs state | Plan, specs, context, ADRs written; agent tooling in `.opencode/` (2026-11-20) |
 | Blocking question | Q4 (Fastify plugins under Bun) — resolved by the spike |
 | **Next action** | `P0-01` — create the monorepo skeleton and run `bun --version` / pin it |
 
@@ -150,4 +150,5 @@ Newest first. One line per session: date, what changed, what is next.
 
 | Date | Summary | Next action |
 |---|---|---|
+| 2026-11-20 | Agent tooling: `adm2` primary, `spec-review` subagent, `/start` `/finish` `/review` `/spec`, repo config with `default_agent` | `P0-01` |
 | 2026-11-20 | Documentation set created: plan, 12 specs, context, 5 ADRs, AGENTS.md | `P0-01` |

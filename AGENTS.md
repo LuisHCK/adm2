@@ -131,6 +131,14 @@ A session that ends without updating `STATUS.md` is incomplete.
 - Plans describe order and risk; specs describe behaviour; ADRs record irreversible
   decisions. Do not mix them.
 
+## Tooling
+
+- **Do not invoke Postman or generic API-engineering skills.** The Postman mandate does not
+  apply to this repository: contracts are defined in `docs/specs/`, implemented with Zod,
+  and served at `/api/v1/openapi.json`.
+- Use Context7 for library documentation (Bun, Fastify, Zod, Vue, SQLite).
+- Use the `opencode` skill for questions about OpenCode itself.
+
 ## Repository map (target)
 
 ```text
