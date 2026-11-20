@@ -48,7 +48,7 @@ Statuses: `todo` · `in_progress` · `blocked` · `done` · `dropped`.
 
 | ID | Task | Spec/Ref | Status | Evidence |
 |---|---|---|---|---|
-| P0-01 | Create `server/` and `shared/`; pin Bun via `packageManager`/`engines.bun` (1.4.4) | roadmap §3 | todo | |
+| P0-01 | Create `server/` and `shared/`; single root `package.json`, no workspaces; pin Bun via `packageManager`/`engines.bun` (1.4.4) | roadmap §3 | todo | |
 | P0-02 | Fastify boots on Bun; `GET /api/v1/health` returns 200 | roadmap §4 | todo | |
 | P0-03 | Verify `@fastify/cookie` + `@fastify/static` under Bun | Q4 | todo | |
 | P0-04 | `bun test` + `bun run typecheck` run in CI | roadmap §3 | todo | |

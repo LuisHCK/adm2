@@ -155,6 +155,9 @@ agent/                     optional print agent (Node) — Phase 5
 docs/                      plan, specs, context, ADRs
 ```
 
+Dependencies live in a **single root `package.json` and `bun.lock`**. There are no
+workspaces; do not create per-directory manifests.
+
 ## Do not
 
 - Add an ORM, a query builder, or an API client generator.

@@ -77,6 +77,7 @@ changes, add a new row and mark the old one `superseded`.
 | D37 | Fastify on Bun | Continuity over raw throughput | `adr/0006-fastify-on-bun.md` |
 | D38 | Single deployable artifact: server + embedded SPA | Installation and updates stay simple | `adr/0004-modular-monolith.md` |
 | D39 | Server tests on `bun test`; frontend on Vitest; E2E on Node | Each tool on its reliable runtime | `00-conventions.md` §10 |
+| D40 | Single root `package.json`, no workspaces | One install, one lockfile, one artifact | `roadmap.md` §3 |
 
 ## Superseded
 

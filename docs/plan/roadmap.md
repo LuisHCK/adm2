@@ -48,6 +48,9 @@ docs/         this documentation set
 `src/` becomes `frontend/` in Phase 1. The existing `tests/e2e/` moves under
 `frontend/tests/e2e/` at the same time.
 
+All directories share **one root `package.json` and one `bun.lock`**. There are no
+workspaces: a single install, a single dependency list, and a single artifact to build.
+
 ## 4. Phases
 
 Each phase has **exit criteria**. A phase is not done because the code compiles; it is
